@@ -1,3 +1,12 @@
 body{
     font-family: 'Nanum Gothic', sans-serif;
 }
+
+.btn-gray{
+    background-color: #4a4e4f;
+    color: white;
+}
+.btn-gray:hover{
+    background-color: #f6b419;
+    color: #4a4e4f;
+}
