@@ -16,7 +16,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import { Link } from 'react-router-dom';
 
-const drawerWidth = 260;
+const drawerWidth = 240;
 
 const styles = theme => ({
     drawer: {
@@ -171,7 +171,7 @@ class MyDrawer extends Component {
                         variant="temporary"
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
                         open={this.props.mobileOpen}
-                        onClose={ () =>  this.props.handleDrawerToggle(false)}
+                        onClose={() => this.props.handleDrawerToggle(false)}
                         classes={{
                             paper: classes.drawerPaper,
                         }}
