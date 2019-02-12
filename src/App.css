@@ -4,9 +4,73 @@ body{
 
 .btn-gray{
     background-color: #4a4e4f;
-    color: white;
+    color: white; 
 }
 .btn-gray:hover{
-    background-color: #f6b419;
-    color: #4a4e4f;
+    background-color: #f6b419;  /* primary color  */
+    color: #4a4e4f;             /* secondary color  */
+}
+
+
+.functionalities{
+    clear: both;
+  /* top: 50px; */
+  position: relative;
+}
+.functionalities li{
+  list-style: none;
+  float: left;
+  padding-right: 10px;
+}
+.funcionalidades.container {
+  width: 90%;
+  margin: auto;
+}
+.functionalities ul.breadcrumb{
+  background-color: #b0bec5;
+    padding: 0 1.5em;
+  clear: both;
+  height: 40px;
+}
+.functionalities ul.breadcrumb li{  
+  background-color: #90a4ae; 
+  border-right: 3px solid #fff;
+  transform: skewX(-25deg);
+  height: 40px;
+  padding: 0 20px;
+  position: relative;
+  top: 0; 
+  line-height: 40px;
+}
+.functionalities ul.breadcrumb li:first-child {
+  display: none;
+}
+.functionalities ul.breadcrumb li:nth-child(2) {
+  border-left: 3px solid #fff;
+}
+.functionalities ul.breadcrumb li:last-child {
+  border-right: none;
+}
+.functionalities ul.breadcrumb li a{	
+    color: #fff;
+  transform: skewX(25deg);
+  display: inline-block;
+}
+.functionalities ul.breadcrumb li a:hover, .functionalities ul.breadcrumb li a:focus{
+  text-decoration: none;
+  color: #f6b419;
+}
+.functionalities ul.breadcrumb li strong {
+  color: #fff;
+  text-decoration: none;
+  transform: skewX(25deg);
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+.functionalities ul.breadcrumb i{
+  position: relative;
+  top: 6px;
+  float: none;
 }
