@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 
 const styles = {
     root: {
@@ -17,9 +16,9 @@ function SimpleAppBar(props) {
         <div className={classes.root}>
             <AppBar position="static" color="default" style={{ backgroundColor: '#f6b419', color: 'white' }}>
                 <Toolbar>
-                    <Typography variant="headline" style={{ color: 'white' }}>
-                        Shopbox <small>store</small>
-                    </Typography>
+                    <span style={{ color: 'white' }}>
+                        <h4>Shopbox <small>store</small></h4>
+                    </span>
                 </Toolbar>
             </AppBar>
         </div>

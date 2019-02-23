@@ -23,7 +23,7 @@ const styles = theme => ({
         padding: 20
     },
     twitter: {
-        backgroundColor: '#64b5f6',
+        // backgroundColor: '#64b5f6',s
         backgroundColor: '#4fc3f7',
         height: '100px',
         color: 'white',
