@@ -9,6 +9,7 @@ import ContentHolder from '../layout/ContentHolder';
 import Loader from '../../layout/Loader';
 import { Grid } from '@material-ui/core';
 import Breadcrum from '../layout/Breadcrum';
+import TitleBar from '../layout/TitleBar';
 
 
 class Products extends Component {
@@ -45,6 +46,13 @@ class Products extends Component {
 
     render() {
         const history = [{ link: '/dashboard', title: 'Dashboard' }];
+        const actionsForTitleBar = (
+            <Grid item>
+                <Link to="/dashboard/product/add" className="btn btn-secondary btn-sm" style={{ marginTop: '7px', borderRadius: '5px' }}>
+                    <i className="fas fa-plus-circle"></i> ADD NEW
+                </Link>
+            </Grid>
+        );
 
         let mainContent;
 
@@ -57,18 +65,7 @@ class Products extends Component {
                 mainContent = (
                     <div>
                         <Breadcrum history={history} current="Products" />
-                        <Grid container>
-                            <Grid container>
-                                <Grid item>
-                                    <h2 className="mr-3">Products</h2>
-                                </Grid>
-                                <Grid item>
-                                    <Link to="/dashboard/product/add" className="btn btn-secondary btn-sm" style={{ marginTop: '7px', borderRadius: '5px' }}>
-                                        <i className="fas fa-plus-circle"></i> ADD NEW
-                                    </Link>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        <TitleBar titleName="Products" actions={actionsForTitleBar} />
 
                         <div className="row mt-3">
                             <div className="col-xs-6 col-md-8 ">

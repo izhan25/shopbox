@@ -13,6 +13,8 @@ import Public from './components/public/Public';
 import Dashboard from './components/dashboard/Dashboard';
 import Products from './components/dashboard/products/Products';
 import ProductDetails from './components/dashboard/products/ProductDetails';
+import AddProduct from './components/dashboard/products/AddProduct';
+import Categories from './components/dashboard/categories/Categories'
 import Users from './components/dashboard/users/Users';
 import Orders from './components/dashboard/orders/Orders';
 import Profile from './components/dashboard/profile/Profile';
@@ -29,7 +31,9 @@ class App extends Component {
               <Route exact path="/" component={Public} />
               <Route exact path="/dashboard" component={Dashboard} />
               <Route exact path="/dashboard/products" component={Products} />
+              <Route exact path="/dashboard/product/add" component={AddProduct} />
               <Route exact path="/dashboard/product/:id" component={ProductDetails} />
+              <Route exact path="/dashboard/categories" component={Categories} />
               <Route exact path="/dashboard/users" component={Users} />
               <Route exact path="/dashboard/orders" component={Orders} />
               <Route exact path="/dashboard/profile" component={Profile} />

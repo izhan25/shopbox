@@ -8,7 +8,7 @@ export default function Breadcrum({ history, current }) {
 
     return (
         <div className="row">
-            <div className="col-md-12 mb-3">
+            <div className="col-md-12 mb-4">
 
                 <Paper className="functionalities">
                     <ul id="breadcrumb" className="breadcrumb">

@@ -7,7 +7,7 @@ body{
     color: white; 
 }
 .btn-gray:hover{
-    background-color: #f6b419;  /* primary color  */
+    background-color: #ff9800;  /* primary color  */
     color: #4a4e4f;             /* secondary color  */
 }
 .link-btn{
@@ -21,12 +21,47 @@ body{
   text-decoration: none
 }
 .form-control:focus{
-  border-color: #f6b419;
-  box-shadow: 0px 1px 1px #f6b419 inset, 0px 0px 8px #f6b419;
+  border-color: #ff9800;
+  box-shadow: 0px 1px 1px #ff9800 inset, 0px 0px 8px #ff9800;
 }
 .btn{
   border-radius: 5px;
 }
+.fa-btn{
+  cursor: pointer;
+}
+.fa-btn:hover{
+  color: #ff9800;
+}
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=23);
+  opacity: 35;
+  outline: none;   
+  cursor: inherit;
+  display: block;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 .functionalities{
     clear: both;
@@ -74,7 +109,7 @@ body{
 }
 .functionalities ul.breadcrumb li a:hover, .functionalities ul.breadcrumb li a:focus{
   text-decoration: none;
-  color: #f6b419;
+  color: #ff9800;
 }
 .functionalities ul.breadcrumb li strong {
   color: #fff;
