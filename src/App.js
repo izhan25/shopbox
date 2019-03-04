@@ -14,6 +14,7 @@ import Dashboard from './components/dashboard/Dashboard';
 import Products from './components/dashboard/products/Products';
 import ProductDetails from './components/dashboard/products/ProductDetails';
 import AddProduct from './components/dashboard/products/AddProduct';
+import EditProduct from './components/dashboard/products/EditProduct';
 import Categories from './components/dashboard/categories/Categories'
 import Users from './components/dashboard/users/Users';
 import Orders from './components/dashboard/orders/Orders';
@@ -32,6 +33,7 @@ class App extends Component {
               <Route exact path="/dashboard" component={Dashboard} />
               <Route exact path="/dashboard/products" component={Products} />
               <Route exact path="/dashboard/product/add" component={AddProduct} />
+              <Route exact path="/dashboard/product/edit/:id" component={EditProduct} />
               <Route exact path="/dashboard/product/:id" component={ProductDetails} />
               <Route exact path="/dashboard/categories" component={Categories} />
               <Route exact path="/dashboard/users" component={Users} />

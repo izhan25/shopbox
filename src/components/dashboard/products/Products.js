@@ -58,11 +58,11 @@ class Products extends Component {
 
         if (products) {
             mainContent = (
-                <div>
+                <React.Fragment>
                     <Breadcrum history={history} current="Products" />
                     <TitleBar titleName="Products" actions={actionsForTitleBar} />
 
-                    <div className="row mt-3">
+                    <div className="row">
                         <div className="col-xs-6 col-md-8 ">
                             <button className="btn btn-link" style={{ fontSize: '14px' }}>
                                 All
@@ -144,7 +144,7 @@ class Products extends Component {
 
                     <div className="table-responsive">
                         <table className="table table-striped">
-                            <thead className="thead-inverse font-weight-bold">
+                            <thead className="font-weight-bold">
                                 <tr>
                                     <th><i className="far fa-image" style={{ fontSize: '25px' }}></i></th>
                                     <th>Name</th>
@@ -174,7 +174,8 @@ class Products extends Component {
                             </tbody>
                         </table>
                     </div>
-                </div >
+
+                </React.Fragment>
             )
         }
         else {

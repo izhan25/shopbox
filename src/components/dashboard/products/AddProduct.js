@@ -2,19 +2,24 @@ import React, { Component } from 'react';
 import ContentHolder from '../layout/ContentHolder';
 import Breadcrum from '../layout/Breadcrum';
 import Loader from '../../layout/Loader';
-import ImageViewer from '../layout/ImageViewerSmallBox'
 // import InventoryInfoBox from '../layout/InventoryInfoBox';
 // import TitleBar from '../layout/TitleBar';
-import { TextField } from '@material-ui/core';
+import { TextField, Snackbar, IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
 
 class AddProduct extends Component {
 
     state = {
         catDropdownDisplay: 'Select Category',
         fileUploaded: false,
+        openSnackBar: false,
+        msgSnackBar: '',
 
         category: {},
         productName: '',
@@ -28,9 +33,17 @@ class AddProduct extends Component {
         productType: 'published',
         images: [],
 
-        defaultImage: 'https://firebasestorage.googleapis.com/v0/b/shopbox-35ae7.appspot.com/o/products%2Fproduct_default.png?alt=media&token=fbaae708-2697-432e-a3a9-c24b1dce45ac',
+        defaultImage: ['https://firebasestorage.googleapis.com/v0/b/shopbox-35ae7.appspot.com/o/products%2Fproduct_default.png?alt=media&token=fbaae708-2697-432e-a3a9-c24b1dce45ac'],
 
     }
+
+    handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackBar: false, msgSnackBar: '' });
+    };
 
     onChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
@@ -41,24 +54,34 @@ class AddProduct extends Component {
         const file = e.target.files[0];
         const { images } = this.state;
 
-        const uploadTask = firebase.storage().ref('products/' + file.name).put(file);
-        const that = this;
+        if (file) {
+            const uploadTask = firebase.storage().ref('products/' + file.name).put(file);
+            const that = this;
 
-        uploadTask.on('state_changed',
-            function (snapshot) {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log('Upload is ' + progress + '% done');
-            },
-            function (error) {
-                console.log(error);
-            },
-            function () {
-                uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                    images.push(downloadURL);
-                    that.setState({ images });
-                });
-            }
-        );
+            uploadTask.on('state_changed',
+                function (snapshot) {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress.toFixed(2) + '% done');
+                    that.setState({
+                        msgSnackBar: 'Upload is ' + progress.toFixed(0) + '% done',
+                        openSnackBar: true
+                    });
+                },
+                function (error) {
+                    console.log(error);
+                },
+                function () {
+                    uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                        images.push(downloadURL);
+                        that.setState({
+                            images,
+                            msgSnackBar: 'Successfully Uploaded',
+                            openSnackBar: true
+                        });
+                    });
+                }
+            );
+        }
 
     }
 
@@ -66,11 +89,34 @@ class AddProduct extends Component {
         document.getElementById("inputFile").click();
     }
 
+    onDeleteImage = (index) => {
+        const { images } = this.state;
+        const { firebase } = this.props;
+        const fileToDelete = images[index];
+
+        firebase.storage().refFromURL(fileToDelete).delete()
+            .then(() => {
+                this.setState({
+                    images: images.filter(img => img !== fileToDelete),
+                    msgSnackBar: 'Image Deleted',
+                    openSnackBar: true
+                })
+            });
+
+    }
+
     onSubmit = e => {
         e.preventDefault();
 
-        const { firestore } = this.props;
-        const { productName, originalPrice, discountPrice, description, stockQty, lowOrderLevel, notification, category, images } = this.state;
+        const { firestore, history } = this.props;
+        const { productName, originalPrice, discountPrice, description, stockQty, orderQty, lowOrderLevel, notification, category, images, defaultImage } = this.state;
+
+        // Uploading To Firebase
+        let imagesToUpload;
+        if (images.length === 0)
+            imagesToUpload = defaultImage;
+        else
+            imagesToUpload = images;
 
         const newProduct = {
             productName,
@@ -79,18 +125,55 @@ class AddProduct extends Component {
             description,
             category,
             productImages: {
-                images
+                images: imagesToUpload
             },
             productStatus: {
                 stockQty,
+                orderQty,
                 lowOrderLevel,
                 notification
-            }
+            },
+            published: 'published'
         }
 
         firestore
             .add({ collection: 'products' }, newProduct)
-            .then(() => console.log('success'))
+            .then(() => {
+                confirmAlert({
+                    title: 'Product Added',
+                    message: 'The Product Was Added Successfully',
+                    buttons: [
+                        {
+                            label: 'Add more',
+                            onClick: () => {
+                                // Resetting State
+                                this.setState({
+                                    catDropdownDisplay: 'Select Category',
+                                    fileUploaded: false,
+                                    category: {},
+                                    productName: '',
+                                    originalPrice: '',
+                                    discountPrice: '',
+                                    description: '',
+                                    stockQty: '',
+                                    lowOrderLevel: '',
+                                    notification: '',
+                                    orderQty: 0,
+                                    productType: 'published',
+                                    images: [],
+                                    defaultImage: ['https://firebasestorage.googleapis.com/v0/b/shopbox-35ae7.appspot.com/o/products%2Fproduct_default.png?alt=media&token=fbaae708-2697-432e-a3a9-c24b1dce45ac'],
+                                })
+                                // Redirecting
+                                history.push('/dashboard/product/add');
+                            }
+                        },
+                        {
+                            label: 'See All Products',
+                            onClick: () => history.push('/dashboard/products')
+                        }
+                    ]
+                })
+            })
     }
 
     render() {
@@ -136,7 +219,6 @@ class AddProduct extends Component {
                         </div>
 
                     </div>
-
 
                     <div className="card">
                         <div className="card-header bg-light text-secondary">
@@ -190,8 +272,6 @@ class AddProduct extends Component {
                         </div>
                     </div>
 
-
-
                     <div className="card">
                         <div className="card-header bg-light text-secondary">
                             <h6 className="font-weight-bold">Inventory Information</h6>
@@ -236,7 +316,6 @@ class AddProduct extends Component {
                         </div>
                     </div>
 
-
                     <div className="card">
                         <div className="card-header bg-light text-secondary">
                             Images Panel
@@ -246,7 +325,12 @@ class AddProduct extends Component {
                             {images.length > 0
                                 ? images.map(img => (
                                     <div key={images.indexOf(img)} className="col-md-2">
-                                        <ImageViewer img={img} />
+                                        <div style={{ width: '100px', height: '100px', overflow: 'hidden' }}>
+                                            <img src={img} className="img-fluid rounded-top my-auto" alt="..." />
+                                        </div>
+                                        <button style={{ width: '100px' }} className="btn btn-outline-danger btn-sm btn-block rounded-bottom" onClick={() => { this.onDeleteImage(images.indexOf(img)) }}>
+                                            <i className="fas fa-trash mr-1" /> Delete
+                                            </button>
                                     </div>
                                 ))
                                 : null
@@ -262,6 +346,29 @@ class AddProduct extends Component {
                     <button onClick={this.onSubmit} className="btn btn-gray btn-lg float-right rounded-left rounded-right">Add Product</button>
 
                 </div>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackBar}
+                    autoHideDuration={6000}
+                    onClose={this.handleCloseSnackBar}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.msgSnackBar}</span>}
+                    action={[
+                        <IconButton
+                            key="close"
+                            aria-label="Close"
+                            color="inherit"
+                            onClick={this.handleCloseSnackBar}
+                        >
+                            <CloseIcon />
+                        </IconButton>,
+                    ]}
+                />
             </div >
         )
 

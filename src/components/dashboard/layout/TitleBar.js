@@ -3,7 +3,7 @@ import { Grid } from '@material-ui/core';
 
 export default function TitleBar({ titleName, actions }) {
     return (
-        <Grid container>
+        <Grid container className="mb-3 mt-2">
             <Grid container>
                 <Grid item>
                     <h2 className="mr-3"> {titleName} </h2>
