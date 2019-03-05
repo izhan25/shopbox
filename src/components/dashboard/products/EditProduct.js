@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 import ContentHolder from '../layout/ContentHolder';
 import Breadcrum from '../layout/Breadcrum';
 import Loader from '../../layout/Loader';
-// import InventoryInfoBox from '../layout/InventoryInfoBox';
-// import TitleBar from '../layout/TitleBar';
-import { TextField, Snackbar, IconButton } from '@material-ui/core';
+import { TextField, Snackbar, IconButton, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 
 class EditProduct extends Component {
 
@@ -21,19 +17,19 @@ class EditProduct extends Component {
         this.originalPriceInput = React.createRef();
         this.discountPriceInput = React.createRef();
         this.descriptionInput = React.createRef();
-        this.stockQty = React.createRef();
+        this.stockQtyInput = React.createRef();
         this.lowOrderLevelInput = React.createRef();
         this.notificationInput = React.createRef();
     }
 
     state = {
-        catDropdownDisplay: 'Select Category',
+        catDropdownDisplay: '',
         fileUploaded: false,
         openSnackBar: false,
         msgSnackBar: '',
 
-        category: {},
-        productType: 'published',
+        category: '',
+        productType: '',
         images: [],
 
         defaultImage: ['https://firebasestorage.googleapis.com/v0/b/shopbox-35ae7.appspot.com/o/products%2Fproduct_default.png?alt=media&token=fbaae708-2697-432e-a3a9-c24b1dce45ac'],
@@ -43,13 +39,21 @@ class EditProduct extends Component {
     static getDerivedStateFromProps(props, state) {
         const { product } = props;
 
-        if (product) {
-            const { images } = product.productImages;
-            return { images }
+        if (product && state.images.length === 0 && state.productType === '' && state.catDropdownDisplay === '' && state.category === '') {
+            return {
+                images: product.productImages.images,
+                productType: product.productType,
+                catDropdownDisplay: product.category.catName,
+                category: product.category
+            }
         }
 
         return null;
     }
+
+    onProductTypeChange = event => {
+        this.setState({ productType: event.target.value });
+    };
 
     handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
@@ -120,71 +124,46 @@ class EditProduct extends Component {
     onSubmit = e => {
         e.preventDefault();
 
-        const { firestore, history } = this.props;
-        const { productName, originalPrice, discountPrice, description, stockQty, lowOrderLevel, notification, category, images, defaultImage } = this.state;
+        const { firestore, history, product } = this.props;
+        const { category, images, defaultImage, productType } = this.state;
 
-        // Uploading To Firebase
-        let imagesToUpload;
-        if (images.length === 0)
-            imagesToUpload = defaultImage;
-        else
-            imagesToUpload = images;
+        if (product) {
+            // Uploading To Firebase
+            let imagesToUpload;
+            if (images.length === 0)
+                imagesToUpload = defaultImage;
+            else
+                imagesToUpload = images;
 
-        const newProduct = {
-            productName,
-            originalPrice,
-            discountPrice,
-            description,
-            category,
-            productImages: {
-                images: imagesToUpload
-            },
-            productStatus: {
-                stockQty,
-                lowOrderLevel,
-                notification
-            },
-            published: 'published'
+            const newProduct = {
+                productName: this.productNameInput.current.value,
+                originalPrice: this.originalPriceInput.current.value,
+                discountPrice: this.discountPriceInput.current.value,
+                description: this.descriptionInput.current.value,
+                category,
+                productImages: {
+                    images: imagesToUpload
+                },
+                productStatus: {
+                    stockQty: this.stockQtyInput.current.value,
+                    orderQty: product.productStatus.orderQty,
+                    lowOrderLevel: this.lowOrderLevelInput.current.value,
+                    notification: this.notificationInput.current.value
+                },
+                productType
+            }
+
+            firestore
+                .update({ collection: 'products', doc: product.id }, newProduct)
+                .then(history.push('/dashboard/products'));
+
+            // history.push(`/dashboard/product/${product.id}`)
+        }
+        else {
+            console.log('error in submiting');
         }
 
-        firestore
-            .add({ collection: 'products' }, newProduct)
-            .then(() => {
-                confirmAlert({
-                    title: 'Product Added',
-                    message: 'The Product Was Added Successfully',
-                    buttons: [
-                        {
-                            label: 'Add more',
-                            onClick: () => {
-                                // Resetting State
-                                this.setState({
-                                    catDropdownDisplay: 'Select Category',
-                                    fileUploaded: false,
-                                    category: {},
-                                    productName: '',
-                                    originalPrice: '',
-                                    discountPrice: '',
-                                    description: '',
-                                    stockQty: '',
-                                    lowOrderLevel: '',
-                                    notification: '',
-                                    orderQty: 0,
-                                    productType: 'published',
-                                    images: [],
-                                    defaultImage: ['https://firebasestorage.googleapis.com/v0/b/shopbox-35ae7.appspot.com/o/products%2Fproduct_default.png?alt=media&token=fbaae708-2697-432e-a3a9-c24b1dce45ac'],
-                                })
-                                // Redirecting
-                                history.push('/dashboard/product/add');
-                            }
-                        },
-                        {
-                            label: 'See All Products',
-                            onClick: () => history.push('/dashboard/products')
-                        }
-                    ]
-                })
-            })
+
     }
 
     render() {
@@ -205,7 +184,8 @@ class EditProduct extends Component {
 
         if (product) {
             const { productName, originalPrice, discountPrice, description, productStatus: { stockQty, lowOrderLevel, notification } } = product;
-            const { images, catDropdownDisplay } = this.state;
+
+            const { images, catDropdownDisplay, productType } = this.state;
 
             mainContent = (
                 <div>
@@ -240,6 +220,18 @@ class EditProduct extends Component {
                                 <h6 className="font-weight-bold">Basic Information</h6>
                             </div>
                             <div className="card-body">
+
+                                <RadioGroup
+                                    aria-label="Gender"
+                                    name="gender1"
+                                    className="d-inline"
+                                    value={productType}
+                                    onChange={this.onProductTypeChange}
+                                >
+                                    <FormControlLabel value="published" control={<Radio />} label="Publish" />
+                                    <FormControlLabel value="unpublish" control={<Radio />} label="Un Publish" />
+                                </RadioGroup>
+
                                 <TextField
                                     name="productName"
                                     placeholder="Enter Product Name"
@@ -372,7 +364,7 @@ class EditProduct extends Component {
                             </div>
                         </div>
 
-                        <button onClick={this.onSubmit} className="btn btn-gray btn-lg float-right rounded-left rounded-right">Add Product</button>
+                        <button onClick={this.onSubmit} className="btn btn-gray btn-lg float-right rounded-left rounded-right">Update</button>
 
                     </div>
                     <Snackbar

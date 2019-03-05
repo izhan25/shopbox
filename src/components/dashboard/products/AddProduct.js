@@ -109,7 +109,7 @@ class AddProduct extends Component {
         e.preventDefault();
 
         const { firestore, history } = this.props;
-        const { productName, originalPrice, discountPrice, description, stockQty, orderQty, lowOrderLevel, notification, category, images, defaultImage } = this.state;
+        const { productName, originalPrice, discountPrice, description, stockQty, orderQty, lowOrderLevel, notification, category, images, defaultImage, productType } = this.state;
 
         // Uploading To Firebase
         let imagesToUpload;
@@ -133,7 +133,7 @@ class AddProduct extends Component {
                 lowOrderLevel,
                 notification
             },
-            published: 'published'
+            productType
         }
 
         firestore
