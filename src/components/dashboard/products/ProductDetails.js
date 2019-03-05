@@ -11,6 +11,7 @@ import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import classnames from 'classnames';
 import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Link } from 'react-router-dom';
 
 
