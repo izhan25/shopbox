@@ -17,12 +17,29 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 class Categories extends Component {
 
     state = {
+        categories: [],
+
         openSnackBar: false,
         msgSnackBar: '',
         dense: false,
 
+        updating: false,
+
+        catId: '',
         catName: '',
-        secured: true
+        secured: false
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        const { categories } = props;
+
+        if (categories) {
+            return {
+                categories
+            }
+        }
+
+        return null;
     }
 
     onChange = e => this.setState({ [e.target.name]: e.target.value });
@@ -35,15 +52,45 @@ class Categories extends Component {
         this.setState({ openSnackBar: false, msgSnackBar: '' });
     };
 
-    secureToggle = () => {
+    editCategory = cat => {
         this.setState({
-            secured: !this.state.secured
+            catId: cat.id,
+            catName: cat.catName,
+            updating: true
         })
+    }
+    cancelUpdate = () => {
+        this.setState({
+            catId: '',
+            catName: '',
+            updating: false
+        })
+    }
+
+    secureCategory = cat => {
+        const { firestore } = this.props;
+
+        const updCat = {
+            catName: cat.catName,
+            secured: !cat.secured
+        }
+
+        let msg = cat.secured ? 'Category Unsecured' : 'Category Secured';
+
+        firestore
+            .update({ collection: 'categories', doc: cat.id }, updCat)
+            .then(() => {
+                this.setState({
+                    msgSnackBar: msg,
+                    openSnackBar: true
+                })
+            });
+
     }
 
     onDelete = id => {
         const { firestore } = this.props;
-
+        const that = this;
         confirmAlert({
             message: 'Are You Sure You Want To Delete This Category?',
             buttons: [
@@ -56,6 +103,23 @@ class Categories extends Component {
                                     msgSnackBar: 'Category Deleted',
                                     openSnackBar: true
                                 })
+                            })
+                            .then(() => {
+                                const { firebase } = this.props;
+                                const db = firebase.firestore();
+
+                                db.collection('products').where('category.id', '==', id).get().then(querySnapshot => {
+                                    querySnapshot.forEach(doc => {
+                                        const { firestore } = that.props;
+                                        firestore.delete({ collection: 'products', doc: doc.id }).then(() => {
+                                            this.setState({
+                                                msgSnackBar: `Deleted Associated Product`,
+                                                openSnackBar: true
+                                            })
+                                        })
+                                    })
+                                })
+
                             });
                     }
                 },
@@ -69,6 +133,45 @@ class Categories extends Component {
         })
     }
 
+    onUpdate = e => {
+        e.preventDefault();
+
+        const { catName, catId, secured } = this.state;
+        const { firestore } = this.props;
+
+        const updCat = { catName, secured }
+
+        const that = this;
+
+        firestore
+            .update({ collection: 'categories', doc: catId }, updCat)
+            .then(() => {
+                this.setState({
+                    catId: '',
+                    catName: '',
+                    msgSnackBar: 'Category Updated',
+                    openSnackBar: true
+                })
+            })
+            .then(() => {
+                const { firebase } = this.props;
+                const db = firebase.firestore();
+
+                db.collection('products').where('category.id', '==', catId).get().then(querySnapshot => {
+                    querySnapshot.forEach((doc) => {
+                        const { firestore } = that.props;
+                        const updProd = {
+                            ...doc.data(),
+                            category: {
+                                id: catId,
+                                catName
+                            }
+                        }
+                        firestore.update({ collection: 'products', doc: doc.id }, updProd);
+                    });
+                })
+            })
+    }
     onSubmit = e => {
         e.preventDefault();
 
@@ -90,10 +193,10 @@ class Categories extends Component {
 
     render() {
 
-        const { catName, dense, secured } = this.state;
-        const { categories } = this.props;
+        const { catName, dense, categories, updating } = this.state;
 
-        let catDisplay = <Loader />
+        // Building Category List
+        let catDisplay;
         if (categories) {
             catDisplay = (
                 <List dense={dense}>
@@ -111,16 +214,28 @@ class Categories extends Component {
                                     // secondary={secondary ? 'Secondary text' : null}
                                     />
                                     <ListItemSecondaryAction>
-                                        <IconButton aria-label="security" onClick={this.secureToggle}>
-                                            {
-                                                secured
-                                                    ? <i className="fas fa-lock"></i>
-                                                    : <i className="fas fa-lock-open"></i>
-                                            }
+                                        <IconButton aria-label="security" onClick={() => { this.editCategory(cat) }}>
+                                            <i className="fas fa-pencil-alt"></i>
                                         </IconButton>
-                                        <IconButton aria-label="Delete" onClick={() => { this.onDelete(cat.id) }}>
-                                            <DeleteIcon />
-                                        </IconButton>
+                                        {
+                                            cat.secured
+                                                ? (
+                                                    <IconButton aria-label="security" onClick={() => { this.secureCategory(cat) }}>
+                                                        <i className="fas fa-lock"></i>
+                                                    </IconButton>
+                                                )
+                                                : (
+                                                    <React.Fragment>
+                                                        <IconButton aria-label="security" onClick={() => { this.secureCategory(cat) }}>
+                                                            <i className="fas fa-lock-open"></i>
+                                                        </IconButton>
+                                                        <IconButton aria-label="Delete" onClick={() => { this.onDelete(cat.id) }}>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </React.Fragment>
+                                                )
+
+                                        }
                                     </ListItemSecondaryAction>
                                 </ListItem>
                             )
@@ -130,6 +245,36 @@ class Categories extends Component {
                 </List>
             )
         }
+        else {
+            catDisplay = <Loader />;
+        }
+
+
+        // Building Button
+        let button;
+        if (updating) {
+            if (catName !== '') {
+                button = <div>
+                    <input type="submit" value="Update" className="btn btn-gray" onClick={this.onUpdate} />
+                    <input type="button" value="Cancel" className="btn btn-secondary rounded-right" onClick={this.cancelUpdate} />
+                </div>
+            }
+            else {
+                button = <div>
+                    <input type="submit" value="Update" className="btn btn-secondary" disabled />
+                    <input type="button" value="Cancel" className="btn btn-secondary rounded-right" onClick={this.cancelUpdate} />
+                </div>
+            }
+        }
+        else {
+            if (catName !== '') {
+                button = <input type="submit" className="btn btn-gray rounded-right" />
+            }
+            else {
+                button = <input type="submit" className="btn btn-secondary rounded-right" disabled />
+            }
+        }
+
 
         const mainContent = (
             <React.Fragment>
@@ -139,11 +284,7 @@ class Categories extends Component {
                     <div className="input-group">
                         <input type="text" name="catName" value={catName} onChange={this.onChange} className="form-control" autoComplete="off" />
                         <div className="input-group-append">
-                            {
-                                catName !== ''
-                                    ? <input type="submit" className="btn btn-gray rounded-right" />
-                                    : <input type="submit" className="btn btn-secondary rounded-right" disabled />
-                            }
+                            {button}
                         </div>
                     </div>
 

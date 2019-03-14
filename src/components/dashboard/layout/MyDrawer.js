@@ -100,14 +100,6 @@ class MyDrawer extends Component {
                                     <ListItemText inset secondary="Show Categories" />
                                 </ListItem>
                             </Link>
-                            <Link to="/dashboard/category/add" style={{ textDecoration: 'none' }}>
-                                <ListItem button className={classes.nested}>
-                                    <ListItemIcon>
-                                        <StarBorder />
-                                    </ListItemIcon>
-                                    <ListItemText inset secondary="Add New Category" />
-                                </ListItem>
-                            </Link>
                         </List>
                     </Collapse>
 
