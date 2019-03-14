@@ -3,8 +3,12 @@ import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
-import { Link } from 'react-router-dom';
+import Hidden from '@material-ui/core/Hidden';
 import { withStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { firebaseConnect } from 'react-redux-firebase';
+
 
 
 const styles = theme => ({
@@ -23,8 +27,35 @@ const styles = theme => ({
 
 class Appbar extends Component {
 
+    state = {
+        isAuthenticated: false,
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        const { auth } = props;
+
+        if (auth.uid) {
+            return { isAuthenticated: true };
+        } else {
+            return { isAuthenticated: false };
+        }
+    }
+
+    handleClose = () => {
+        this.setState({ anchorEl: null });
+    };
+
+
+    onLogout = e => {
+        e.preventDefault();
+
+        const { firebase } = this.props;
+        firebase.logout();
+    }
+
     render() {
-        const { classes } = this.props;
+        const { classes, auth } = this.props;
+        const { isAuthenticated } = this.state;
         return (
             <div>
                 {/* <AppBar position="fixed" className={classes.appBar} style={{ backgroundColor: '#f6b419' }}> */}
@@ -38,11 +69,28 @@ class Appbar extends Component {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
-                            <span style={{ color: 'white' }}>
-                                <i className="fas fa-arrow-circle-left" /> Back
-                            </span>
-                        </Link>
+
+                        <Hidden smDown>
+                            <h4 style={{ color: 'white' }}>
+                                ShopBox
+                            </h4>
+                        </Hidden>
+
+
+
+                        {
+                            isAuthenticated
+                                ? (
+                                    <div className="ml-auto">
+                                        <Hidden smDown>
+                                            <a href="!#" className="btn text-white">{auth.email}</a>
+                                        </Hidden>
+                                        <a href="!#" className="btn text-white" onClick={this.onLogout}>Logout</a>
+                                    </div>
+                                )
+                                : null
+                        }
+
                     </Toolbar>
                 </AppBar>
             </div>
@@ -50,4 +98,10 @@ class Appbar extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(Appbar);
+export default compose(
+    withStyles(styles, { withTheme: true }),
+    firebaseConnect(),
+    connect((state, props) => ({
+        auth: state.firebase.auth,
+    }))
+)(Appbar);
