@@ -15,9 +15,11 @@ import Products from './components/dashboard/products/Products';
 import ProductDetails from './components/dashboard/products/ProductDetails';
 import AddProduct from './components/dashboard/products/AddProduct';
 import EditProduct from './components/dashboard/products/EditProduct';
-import Categories from './components/dashboard/categories/Categories'
-import Users from './components/dashboard/users/Users';
+import Categories from './components/dashboard/categories/Categories';
+import Customers from './components/dashboard/customers/Customers';
+import CustomerDetails from './components/dashboard/customers/CustomerDetails';
 import Orders from './components/dashboard/orders/Orders';
+import OrderDetails from './components/dashboard/orders/OrderDetails';
 import Profile from './components/dashboard/profile/Profile';
 
 
@@ -36,8 +38,10 @@ class App extends Component {
               <Route exact path="/dashboard/product/edit/:id" component={EditProduct} />
               <Route exact path="/dashboard/product/:id" component={ProductDetails} />
               <Route exact path="/dashboard/categories" component={Categories} />
-              <Route exact path="/dashboard/users" component={Users} />
+              <Route exact path="/dashboard/customers" component={Customers} />
+              <Route exact path="/dashboard/customer/:id" component={CustomerDetails} />
               <Route exact path="/dashboard/orders" component={Orders} />
+              <Route exact path="/dashboard/order/:id" component={OrderDetails} />
               <Route exact path="/dashboard/profile" component={Profile} />
             </Switch>
           </div>

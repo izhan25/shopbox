@@ -65,7 +65,6 @@ class MyDrawer extends Component {
                         </ListItem>
                     </Link>
 
-                    {/* <Link to="/dashboard/products" style={{ textDecoration: 'none' }}> */}
                     <ListItem button onClick={this.onProductDownClick}>
                         <ListItemIcon>
                             <InboxIcon />
@@ -73,7 +72,6 @@ class MyDrawer extends Component {
                         <ListItemText inset primary="Products" />
                         {this.state.showProducts ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
-                    {/* </Link> */}
                     <Collapse in={this.state.showProducts} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
                             <Link to="/dashboard/products" style={{ textDecoration: 'none' }}>
@@ -103,15 +101,15 @@ class MyDrawer extends Component {
                         </List>
                     </Collapse>
 
-                    {/* <Link to="/dashboard/users" style={{ textDecoration: 'none' }}> */}
-                    <ListItem button onClick={this.onUsersDownClick}>
+                    {/* FOLLOWING CODE IS FOR USERS OPTIONS TO SHOW IN DRAWER  */}
+
+                    {/* <ListItem button onClick={this.onUsersDownClick}>
                         <ListItemIcon>
                             <InboxIcon />
                         </ListItemIcon>
                         <ListItemText inset primary="Users" />
                         {this.state.showUsers ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
-                    {/* </Link> */}
                     <Collapse in={this.state.showUsers} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
                             <Link to="/dashboard/users" style={{ textDecoration: 'none' }}>
@@ -131,7 +129,16 @@ class MyDrawer extends Component {
                                 </ListItem>
                             </Link>
                         </List>
-                    </Collapse>
+                    </Collapse> */}
+
+                    <Link to="/dashboard/customers" style={{ textDecoration: 'none' }}>
+                        <ListItem button>
+                            <ListItemIcon>
+                                <SendIcon />
+                            </ListItemIcon>
+                            <ListItemText inset primary="Customers" />
+                        </ListItem>
+                    </Link>
 
                     <Link to="/dashboard/orders" style={{ textDecoration: 'none' }}>
                         <ListItem button>
