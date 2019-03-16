@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ContentHolder from '../layout/ContentHolder';
-import Breadcrum from '../layout/Breadcrum';
 import PropTypes from 'prop-types';
 import Loader from '../../layout/Loader';
 import TitleBar from '../layout/TitleBar';
@@ -45,10 +44,7 @@ class ProductDetails extends Component {
     }
 
     render() {
-        const history = [
-            { link: '/dashboard', title: 'Dashboard' },
-            { link: '/dashboard/products', title: 'Products' },
-        ];
+
         const { product } = this.props;
         let mainContent;
 
@@ -57,7 +53,9 @@ class ProductDetails extends Component {
 
             mainContent = (
                 <React.Fragment>
-                    <Breadcrum history={history} current="Product Details" />
+                    <Link to="/dashboard/products" className="btn btn-link">
+                        <i class="fas fa-arrow-circle-left mr-1"></i>Back To Products
+                    </Link>
                     <TitleBar titleName="Product Details" />
                     <div className="row">
 

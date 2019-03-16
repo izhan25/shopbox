@@ -9,7 +9,7 @@ import ContentHolder from '../layout/ContentHolder';
 import TitleBar from '../layout/TitleBar';
 import Loader from '../../layout/Loader';
 import { Grid } from '@material-ui/core';
-import Breadcrum from '../layout/Breadcrum';
+// import Breadcrum from '../layout/Breadcrum';
 
 
 class Products extends Component {
@@ -44,9 +44,6 @@ class Products extends Component {
     render() {
 
         const { products } = this.state;
-        const history = [
-            { link: '/dashboard', title: 'Dashboard' },
-        ];
         const actionsForTitleBar = (
             <Grid item>
                 <Link to="/dashboard/product/add" className="btn btn-secondary btn-sm" style={{ marginTop: '7px', borderRadius: '5px' }}>
@@ -59,7 +56,6 @@ class Products extends Component {
         if (products) {
             mainContent = (
                 <React.Fragment>
-                    <Breadcrum history={history} current="Products" />
                     <TitleBar titleName="Products" actions={actionsForTitleBar} />
 
                     <div className="row">

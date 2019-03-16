@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Divider from '@material-ui/core/Divider';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -9,7 +8,6 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import StarBorder from '@material-ui/icons/StarBorder';
-import SendIcon from '@material-ui/icons/Send';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import { withStyles } from '@material-ui/core/styles';
@@ -59,15 +57,24 @@ class MyDrawer extends Component {
                     <Link to="/dashboard" style={{ textDecoration: 'none' }}>
                         <ListItem button>
                             <ListItemIcon>
-                                <SendIcon />
+                                <i className="fas fa-tachometer-alt" style={{ fontSize: '22px' }}></i>
                             </ListItemIcon>
                             <ListItemText inset primary="Dashboard" />
                         </ListItem>
                     </Link>
 
+                    <Link to="/dashboard/categories" style={{ textDecoration: 'none' }}>
+                        <ListItem button>
+                            <ListItemIcon>
+                                <i className="fas fa-folder" style={{ fontSize: '22px' }}></i>
+                            </ListItemIcon>
+                            <ListItemText inset primary="Categories" />
+                        </ListItem>
+                    </Link>
+
                     <ListItem button onClick={this.onProductDownClick}>
                         <ListItemIcon>
-                            <InboxIcon />
+                            <i className="fas fa-shopping-cart" style={{ fontSize: '22px' }}></i>
                         </ListItemIcon>
                         <ListItemText inset primary="Products" />
                         {this.state.showProducts ? <ExpandLess /> : <ExpandMore />}
@@ -134,7 +141,7 @@ class MyDrawer extends Component {
                     <Link to="/dashboard/customers" style={{ textDecoration: 'none' }}>
                         <ListItem button>
                             <ListItemIcon>
-                                <SendIcon />
+                                <i className="fas fa-user-tag" style={{ fontSize: '22px' }}></i>
                             </ListItemIcon>
                             <ListItemText inset primary="Customers" />
                         </ListItem>
@@ -143,7 +150,7 @@ class MyDrawer extends Component {
                     <Link to="/dashboard/orders" style={{ textDecoration: 'none' }}>
                         <ListItem button>
                             <ListItemIcon>
-                                <SendIcon />
+                                <i className="fas fa-hand-pointer" style={{ fontSize: '22px' }}></i>
                             </ListItemIcon>
                             <ListItemText inset primary="Orders" />
                         </ListItem>
@@ -154,7 +161,7 @@ class MyDrawer extends Component {
                 <Link to="/dashboard/profile" style={{ textDecoration: 'none' }}>
                     <ListItem button>
                         <ListItemIcon>
-                            <InboxIcon />
+                            <i className="fas fa-user" style={{ fontSize: '22px' }}></i>
                         </ListItemIcon>
                         <ListItemText inset primary="Profile" />
                     </ListItem>

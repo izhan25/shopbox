@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import ContentHolder from '../layout/ContentHolder';
-import Breadcrum from '../layout/Breadcrum';
+import TitleBar from '../layout/TitleBar';
 import Loader from '../../layout/Loader';
-// import InventoryInfoBox from '../layout/InventoryInfoBox';
-// import TitleBar from '../layout/TitleBar';
 import { TextField, Snackbar, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
+import { firestoreConnect, firebaseConnect, isEmpty } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { confirmAlert } from 'react-confirm-alert';
@@ -33,6 +31,15 @@ class AddProduct extends Component {
         productType: 'published',
         images: [],
 
+        productNameError: false, productNameMsg: '',
+        originalPriceError: false, originalPriceMsg: '',
+        discountPriceError: false, discountPriceMsg: '',
+        descriptionError: false, descriptionMsg: '',
+        stockQtyError: false, stockQtyMsg: '',
+        lowOrderLevelError: false, lowOrderLevelMsg: '',
+        categoryError: false, categoryMsg: '',
+        btnError: false, btnMsg: '',
+
         defaultImage: ['https://firebasestorage.googleapis.com/v0/b/shopbox-35ae7.appspot.com/o/products%2Fproduct_default.png?alt=media&token=fbaae708-2697-432e-a3a9-c24b1dce45ac'],
 
     }
@@ -45,9 +52,105 @@ class AddProduct extends Component {
         this.setState({ openSnackBar: false, msgSnackBar: '' });
     };
 
-    onChange = (e) => this.setState({ [e.target.name]: e.target.value });
+    onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
 
-    onCategoryChange = category => this.setState({ category, catDropdownDisplay: category.catName });
+        const field = e.target.name;
+        const value = e.target.value;
+
+        const { originalPrice } = this.state;
+
+        // Form Validation
+        switch (field) {
+            case 'productName':
+                if (value === '') {
+                    this.setState({ productNameError: true, productNameMsg: '*Required' })
+                }
+                else {
+                    this.setState({ productNameError: false, productNameMsg: '' })
+                }
+                break;
+            case 'originalPrice':
+                if (value === '') {
+                    this.setState({ originalPriceError: true, originalPriceMsg: '*Required' })
+                }
+                else if (isNaN(value)) {
+                    this.setState({ originalPriceError: true, originalPriceMsg: 'Must Be A Number' })
+                }
+                else if (parseInt(value, 10) < 500 || parseInt(value, 10) > 100000) {
+                    this.setState({ originalPriceError: true, originalPriceMsg: 'Range Must Be Between 500 To 100,000' })
+                }
+                else {
+                    this.setState({ originalPriceError: false, originalPriceMsg: '' })
+                }
+                break;
+            case 'discountPrice':
+                if (value === '') {
+                    this.setState({ discountPriceError: true, discountPriceMsg: '*Required' })
+                }
+                else if (isNaN(value)) {
+                    this.setState({ discountPriceError: true, discountPriceMsg: 'Must Be A Number' })
+                }
+                else if (parseInt(value, 10) < 500) {
+                    this.setState({ discountPriceError: true, discountPriceMsg: 'Must Greater Then 500' })
+                }
+                else if (parseInt(value, 10) > parseInt(originalPrice, 10)) {
+                    this.setState({ discountPriceError: true, discountPriceMsg: 'Exceeds Orginal Amount' })
+                }
+                else {
+                    this.setState({ discountPriceError: false, discountPriceMsg: '' })
+                }
+                break;
+            case 'description':
+                if (value === '') {
+                    this.setState({ descriptionError: true, descriptionMsg: '*Required' })
+                }
+                else {
+                    this.setState({ descriptionError: false, descriptionMsg: '' })
+                }
+                break;
+            case 'stockQty':
+                if (value === '') {
+                    this.setState({ stockQtyError: true, stockQtyMsg: '*Required' })
+                }
+                else if (isNaN(value)) {
+                    this.setState({ stockQtyError: true, stockQtyMsg: 'Must Be A Number' })
+                }
+                else if (parseInt(value, 10) < 0 || parseInt(value, 10) > 10000) {
+                    this.setState({ stockQtyError: true, stockQtyMsg: 'Range Must Be Between 0 To 10,000' })
+                }
+                else {
+                    this.setState({ stockQtyError: false, stockQtyMsg: '' })
+                }
+                break;
+            case 'lowOrderLevel':
+                if (value === '') {
+                    this.setState({ lowOrderLevelError: true, lowOrderLevelMsg: '*Required' })
+                }
+                else if (isNaN(value)) {
+                    this.setState({ lowOrderLevelError: true, lowOrderLevelMsg: 'Must Be A Number' })
+                }
+                else if (parseInt(value, 10) < 0 || parseInt(value, 10) > 10000) {
+                    this.setState({ lowOrderLevelError: true, lowOrderLevelMsg: 'Range Must Be Between 0 To 10,000' })
+                }
+                else {
+                    this.setState({ lowOrderLevelError: false, lowOrderLevelMsg: '' })
+                }
+                break;
+            default:
+                //
+                break;
+
+        }
+
+    }
+
+    onCategoryChange = category => this.setState({
+        category,
+        catDropdownDisplay: category.catName,
+        categoryError: false,
+        categoryMsg: ''
+    });
 
     onFileChange = e => {
         const { firebase } = this.props;
@@ -61,7 +164,7 @@ class AddProduct extends Component {
             uploadTask.on('state_changed',
                 function (snapshot) {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log('Upload is ' + progress.toFixed(2) + '% done');
+                    // console.log('Upload is ' + progress.toFixed(2) + '% done');
                     that.setState({
                         msgSnackBar: 'Upload is ' + progress.toFixed(0) + '% done',
                         openSnackBar: true
@@ -109,7 +212,28 @@ class AddProduct extends Component {
         e.preventDefault();
 
         const { firestore, history } = this.props;
-        const { productName, originalPrice, discountPrice, description, stockQty, orderQty, lowOrderLevel, notification, category, images, defaultImage, productType } = this.state;
+        const {
+            productName, originalPrice, discountPrice, description, stockQty, orderQty, lowOrderLevel, notification, category, images, defaultImage, productType,
+            productNameError, originalPriceError, discountPriceError, descriptionError, stockQtyError, lowOrderLevelError
+        } = this.state;
+
+        // If Validation is False
+        if (
+            isEmpty(category) ||
+            productNameError ||
+            originalPriceError ||
+            discountPriceError ||
+            descriptionError ||
+            stockQtyError ||
+            lowOrderLevelError
+        ) {
+            this.setState({
+                categoryError: true, categoryMsg: 'Please Select A Category',
+                btnError: true, btnMsg: 'Please Resolve Above Errors To Proceed'
+            });
+            return false;
+        }
+
 
         // Uploading To Firebase
         let imagesToUpload;
@@ -120,20 +244,21 @@ class AddProduct extends Component {
 
         const newProduct = {
             productName,
-            originalPrice,
-            discountPrice,
+            originalPrice: parseInt(originalPrice, 10),
+            discountPrice: parseInt(discountPrice, 10),
             description,
             category,
             productImages: {
                 images: imagesToUpload
             },
             productStatus: {
-                stockQty,
-                orderQty,
-                lowOrderLevel,
+                stockQty: parseInt(stockQty, 10),
+                orderQty: parseInt(orderQty, 10),
+                lowOrderLevel: parseInt(lowOrderLevel, 10),
                 notification
             },
-            productType
+            productType,
+            createdAt: new Date()
         }
 
         firestore
@@ -162,6 +287,14 @@ class AddProduct extends Component {
                                     productType: 'published',
                                     images: [],
                                     defaultImage: ['https://firebasestorage.googleapis.com/v0/b/shopbox-35ae7.appspot.com/o/products%2Fproduct_default.png?alt=media&token=fbaae708-2697-432e-a3a9-c24b1dce45ac'],
+                                    productNameError: false, productNameMsg: '',
+                                    originalPriceError: false, originalPriceMsg: '',
+                                    discountPriceError: false, discountPriceMsg: '',
+                                    descriptionError: false, descriptionMsg: '',
+                                    stockQtyError: false, stockQtyMsg: '',
+                                    lowOrderLevelError: false, lowOrderLevelMsg: '',
+                                    categoryError: false, categoryMsg: '',
+                                    btnError: false, btnMsg: ''
                                 })
                                 // Redirecting
                                 history.push('/dashboard/product/add');
@@ -177,26 +310,33 @@ class AddProduct extends Component {
     }
 
     render() {
-        const history = [
-            { link: '/dashboard', title: 'Dashboard' },
-            { link: '/dashboard/products', title: 'Products' }
-        ];
-        const { productName, originalPrice, discountPrice, description, stockQty, lowOrderLevel, notification, catDropdownDisplay, images } = this.state;
+        const {
+            productName, originalPrice, discountPrice, description, stockQty, lowOrderLevel, notification, catDropdownDisplay, images,
+            productNameError, productNameMsg,
+            originalPriceError, originalPriceMsg,
+            discountPriceError, discountPriceMsg,
+            descriptionError, descriptionMsg,
+            stockQtyError, stockQtyMsg,
+            lowOrderLevelError, lowOrderLevelMsg,
+            categoryError, categoryMsg,
+            btnError, btnMsg
+        } = this.state;
 
         // Getting Categories From Categories' Collection    
         const { categories } = this.props;
         let catDropdown = <Loader />;
         if (categories) {
             catDropdown = categories.map(
-                cat => <div key={cat.id} onClick={() => { this.onCategoryChange(cat) }} className="dropdown-item" style={{ cursor: 'pointer' }}>{cat.catName}</div>
+                cat => <div key={cat.id} onClick={() => { this.onCategoryChange(cat) }} className="dropdown-item" style={{ cursor: 'pointer' }}>
+                    {cat.catName}
+                </div>
             )
         }
 
         const mainContent = (
             <div>
-                <Breadcrum current="Add" history={history} />
-
-                <div className="container mt-2">
+                <TitleBar titleName="Add Product" />
+                <div className="mt-2">
 
                     <div className="row">
 
@@ -214,6 +354,11 @@ class AddProduct extends Component {
                                             {catDropdown}
                                         </div>
                                     </div>
+                                    {
+                                        categoryError
+                                            ? <div className="text-danger error">{categoryMsg}</div>
+                                            : null
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -234,29 +379,54 @@ class AddProduct extends Component {
                                 placeholder="Enter Product Name"
                                 margin="normal"
                                 style={{ width: '100%' }}
+                                error={productNameError}
                             />
-                            <TextField
-                                name="originalPrice"
-                                value={originalPrice}
-                                onChange={this.onChange}
-                                id="standard-with-placeholder"
-                                label="Amount"
-                                placeholder="Enter Product's Original Amount"
-                                margin="normal"
-                                style={{ width: '49%' }}
-                                className="float-left"
-                            />
-                            <TextField
-                                name="discountPrice"
-                                value={discountPrice}
-                                onChange={this.onChange}
-                                id="standard-with-placeholder"
-                                label="Discount"
-                                placeholder="Enter Product's Amount After Discount"
-                                margin="normal"
-                                style={{ width: '49%' }}
-                                className="float-right"
-                            />
+                            {
+                                productNameError
+                                    ? <span className="text-danger error">{productNameMsg}</span>
+                                    : null
+                            }
+                            <br />
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <TextField
+                                        name="originalPrice"
+                                        value={originalPrice}
+                                        onChange={this.onChange}
+                                        id="standard-with-placeholder"
+                                        label="Amount"
+                                        placeholder="Enter Product's Original Amount"
+                                        margin="normal"
+                                        fullWidth
+                                        error={originalPriceError}
+                                    />
+                                    {
+                                        originalPriceError
+                                            ? <span className="text-danger error">{originalPriceMsg}</span>
+                                            : null
+                                    }
+                                </div>
+                                <div className="col-md-6">
+                                    <TextField
+                                        name="discountPrice"
+                                        value={discountPrice}
+                                        onChange={this.onChange}
+                                        id="standard-with-placeholder"
+                                        label="Discount"
+                                        placeholder="Enter Product's Amount After Discount"
+                                        margin="normal"
+                                        fullWidth
+                                        error={discountPriceError}
+                                    />
+                                    {
+                                        discountPriceError
+                                            ? <span className="text-danger error">{discountPriceMsg}</span>
+                                            : null
+                                    }
+                                </div>
+                            </div>
+
+
                             <TextField
                                 name="description"
                                 value={description}
@@ -268,7 +438,14 @@ class AddProduct extends Component {
                                 multiline
                                 rows="4"
                                 fullWidth
+                                error={descriptionError}
                             />
+                            {
+                                descriptionError
+                                    ? <span className="text-danger error">{descriptionMsg}</span>
+                                    : null
+                            }
+                            <br />
                         </div>
                     </div>
 
@@ -278,7 +455,7 @@ class AddProduct extends Component {
                         </div>
                         <div className="card-body">
                             <div className="row">
-                                <div className="col-md-12">
+                                <div className="col-md-6">
                                     <TextField
                                         name="stockQty"
                                         value={stockQty}
@@ -287,9 +464,16 @@ class AddProduct extends Component {
                                         label="Stock"
                                         placeholder="Enter The Stock Amount"
                                         margin="normal"
-                                        style={{ width: '49%' }}
-                                        className="float-left"
+                                        fullWidth
+                                        error={stockQtyError}
                                     />
+                                    {
+                                        stockQtyError
+                                            ? <span className="text-danger error">{stockQtyMsg}</span>
+                                            : null
+                                    }
+                                </div>
+                                <div className="col-md-6">
                                     <TextField
                                         name="lowOrderLevel"
                                         value={lowOrderLevel}
@@ -298,21 +482,29 @@ class AddProduct extends Component {
                                         label="Low Order"
                                         placeholder="Enter The Low Order"
                                         margin="normal"
-                                        style={{ width: '49%' }}
-                                        className="float-right"
-                                    />
-                                    <TextField
-                                        name="notification"
-                                        value={notification}
-                                        onChange={this.onChange}
-                                        id="standard-with-placeholder"
-                                        label="Notification"
-                                        placeholder="Enter The Notification Message"
-                                        margin="normal"
                                         fullWidth
+                                        error={lowOrderLevelError}
                                     />
+                                    {
+                                        lowOrderLevelError
+                                            ? <span className="text-danger error">{lowOrderLevelMsg}</span>
+                                            : null
+                                    }
                                 </div>
                             </div>
+
+
+                            <TextField
+                                name="notification"
+                                value={notification}
+                                onChange={this.onChange}
+                                id="standard-with-placeholder"
+                                label="Notification"
+                                placeholder="Enter The Notification Message"
+                                margin="normal"
+                                fullWidth
+                            />
+
                         </div>
                     </div>
 
@@ -343,7 +535,16 @@ class AddProduct extends Component {
                         </div>
                     </div>
 
+
                     <button onClick={this.onSubmit} className="btn btn-gray btn-lg float-right rounded-left rounded-right">Add Product</button>
+                    <br /><br />
+                    {
+                        btnError
+                            ? <span className="text-danger error float-right">{btnMsg}</span>
+                            : null
+                    }
+
+
 
                 </div>
                 <Snackbar

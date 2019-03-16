@@ -3,7 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import './assets/css/styles.css';
 import ContentHolder from './layout/ContentHolder';
-import Breadcrum from './layout/Breadcrum';
+import TitleBar from './layout/TitleBar';
+// import Breadcrum from './layout/Breadcrum';
 import { Link } from 'react-router-dom';
 
 const styles = theme => ({
@@ -52,14 +53,15 @@ class Dashboard extends Component {
 
     render() {
         const { classes } = this.props;
-        const history = [
-            // { link: '/', title: 'Home' },
-            // { link: '/dashboard', title: 'Dashboard' }
-        ]
+        // const history = [
+        //     // { link: '/', title: 'Home' },
+        //     // { link: '/dashboard', title: 'Dashboard' }
+        // ]
 
         const mainContent = (
             <React.Fragment>
-                <Breadcrum history={history} current="Home" />
+                {/* <Breadcrum history={history} current="Home" /> */}
+                <TitleBar titleName="Dashboard" />
                 <Hidden xsDown>
                     <Grid container className={classes.root} spacing={16}>
                         <Grid item xs={12} sm={4} md={4}>
@@ -124,7 +126,7 @@ class Dashboard extends Component {
                                                 src="https://upload.wikimedia.org/wikipedia/commons/3/38/Wikipedia_User-ICON_byNightsight.png" alt="user img" />
                                         </Link>
                                         <div className="media-body">
-                                            <h2 className="text-white display-6">Jim Doe</h2>
+                                            <h2 className="text-white display-6">Izhan Baig</h2>
                                             <p className="text-light">Project Manager</p>
                                         </div>
                                     </div>

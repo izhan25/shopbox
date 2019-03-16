@@ -178,7 +178,11 @@ class Categories extends Component {
         const { catName, secured } = this.state;
         const { firestore } = this.props;
 
-        const newCategory = { catName, secured }
+        const newCategory = {
+            catName,
+            secured,
+            createdAt: new Date()
+        }
 
         firestore.add({ collection: 'categories' }, newCategory)
             .then(() => {
@@ -331,7 +335,7 @@ class Categories extends Component {
 export default compose(
     firebaseConnect(),
     firestoreConnect([
-        { collection: 'categories' }
+        { collection: 'categories', queryParams: ['orderByChild=createdAt'] }
     ]),
     connect(
         (state, props) => ({

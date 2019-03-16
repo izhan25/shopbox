@@ -6,7 +6,7 @@ import TitleBar from '../layout/TitleBar';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
-
+import { Link } from 'react-router-dom';
 
 class CustomerDetails extends Component {
     render() {
@@ -17,6 +17,9 @@ class CustomerDetails extends Component {
             const { date, month, year } = customer.birthDate;
             mainContent = (
                 <React.Fragment>
+                    <Link to="/dashboard/customers" className="btn btn-link">
+                        <i class="fas fa-arrow-circle-left mr-1"></i>Back To Customers
+                    </Link>
                     <TitleBar titleName="Customer Details" />
                     <div className="card">
                         <div className="card-header bg-light text-secondary">
