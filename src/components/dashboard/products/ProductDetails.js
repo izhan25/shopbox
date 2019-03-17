@@ -54,7 +54,7 @@ class ProductDetails extends Component {
             mainContent = (
                 <React.Fragment>
                     <Link to="/dashboard/products" className="btn btn-link">
-                        <i class="fas fa-arrow-circle-left mr-1"></i>Back To Products
+                        <i className="fas fa-arrow-circle-left mr-1"></i>Back To Products
                     </Link>
                     <TitleBar titleName="Product Details" />
                     <div className="row">

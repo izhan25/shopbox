@@ -214,22 +214,21 @@ class AddProduct extends Component {
         const { firestore, history } = this.props;
         const {
             productName, originalPrice, discountPrice, description, stockQty, orderQty, lowOrderLevel, notification, category, images, defaultImage, productType,
-            productNameError, originalPriceError, discountPriceError, descriptionError, stockQtyError, lowOrderLevelError
         } = this.state;
 
         // If Validation is False
         if (
             isEmpty(category) ||
-            productNameError ||
-            originalPriceError ||
-            discountPriceError ||
-            descriptionError ||
-            stockQtyError ||
-            lowOrderLevelError
+            productName === '' ||
+            originalPrice === '' ||
+            discountPrice === '' ||
+            description === '' ||
+            stockQty === '' ||
+            lowOrderLevel === ''
         ) {
             this.setState({
                 categoryError: true, categoryMsg: 'Please Select A Category',
-                btnError: true, btnMsg: 'Please Resolve Above Errors To Proceed'
+                btnError: true, btnMsg: 'Please Fill Complete Form'
             });
             return false;
         }

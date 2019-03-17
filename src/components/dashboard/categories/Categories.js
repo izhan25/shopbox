@@ -335,7 +335,10 @@ class Categories extends Component {
 export default compose(
     firebaseConnect(),
     firestoreConnect([
-        { collection: 'categories', queryParams: ['orderByChild=createdAt'] }
+        {
+            collection: 'categories',
+            orderBy: [['createdAt', 'desc']]
+        }
     ]),
     connect(
         (state, props) => ({

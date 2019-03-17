@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
+import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 
 import ContentHolder from '../layout/ContentHolder';
 import TitleBar from '../layout/TitleBar';
@@ -15,13 +15,15 @@ import { Grid } from '@material-ui/core';
 class Products extends Component {
 
     state = {
-        products: []
+        products: [],
+        isAll: false,
+        searchText: ''
     }
 
     static getDerivedStateFromProps(props, state) {
         const { products } = props;
 
-        if (products) {
+        if (products && !state.isAll) {
             return { products }
         }
 
@@ -29,21 +31,86 @@ class Products extends Component {
     }
 
     onFilterProductTypeClick = type => {
-        //
+        const { firebase } = this.props;
+        const db = firebase.firestore();
+
+        if (type === 'all') {
+            this.setState({ isAll: false });
+        }
+        else {
+            this.setState({ isAll: true });
+
+            db.collection('products').where('productType', '==', type).get().then(querySnapshot => {
+                const products = [];
+                querySnapshot.forEach((doc) => {
+                    const prod = {
+                        ...doc.data(),
+                        id: doc.id
+                    }
+                    products.push(prod);
+                });
+                this.setState({ products });
+            })
+        }
     }
 
-
-    onFilterByStockStatusClick = status => {
-        //
-    }
 
     onSortCategoryClick = category => {
-        // console.log(category);
+        const { firebase } = this.props;
+        const db = firebase.firestore();
+
+        if (category === 'all') {
+            this.setState({ isAll: false });
+        }
+        else {
+            this.setState({ isAll: true });
+
+            db.collection('products').where('category.id', '==', category.id).get().then(querySnapshot => {
+                const products = [];
+                querySnapshot.forEach((doc) => {
+                    const prod = {
+                        ...doc.data(),
+                        id: doc.id
+                    }
+                    products.push(prod);
+                });
+                this.setState({ products });
+            })
+        }
+
+
+    }
+
+    onChange = e => {
+        this.setState({ searchText: e.target.value });
+
+        const { firebase } = this.props;
+        const { searchText } = this.state;
+        const db = firebase.firestore();
+
+        db.collection('products').orderBy('productName').startAt(searchText).endAt(searchText + "\uf8ff").get().then(querySnapshot => {
+            const products = [];
+            querySnapshot.forEach((doc) => {
+                const prod = {
+                    ...doc.data(),
+                    id: doc.id
+                }
+                products.push(prod);
+            });
+            this.setState({ products });
+        })
+
+    }
+
+    onSearch = () => {
+        const { searchText } = this.state;
+        console.log(searchText);
     }
 
     render() {
 
-        const { products } = this.state;
+        const { products, searchText } = this.state;
+        const { categories } = this.props;
         const actionsForTitleBar = (
             <Grid item>
                 <Link to="/dashboard/product/add" className="btn btn-secondary btn-sm" style={{ marginTop: '7px', borderRadius: '5px' }}>
@@ -59,31 +126,18 @@ class Products extends Component {
                     <TitleBar titleName="Products" actions={actionsForTitleBar} />
 
                     <div className="row">
-                        <div className="col-xs-6 col-md-8 ">
-                            <button className="btn btn-link" style={{ fontSize: '14px' }}>
-                                All
-                                    <span style={{ color: 'gray' }}>
-                                    (24)
-                                    </span>
-                            </button>
-                            <button className="btn btn-link" style={{ fontSize: '14px' }}>
-                                Published
-                                    <span style={{ color: 'gray' }}>
-                                    (10)
-                                    </span>
-                            </button>
-                            <button className="btn btn-link" style={{ fontSize: '14px' }}>
-                                Trash
-                                    <span style={{ color: 'gray' }}>
-                                    (0)
-                                    </span>
-                            </button>
-                        </div>
-                        <div className="col-xs-6 col-md-4 float-right">
+                        <div className="col-md-12">
                             <div className="input-group">
-                                <input type="text" name="searchBox" className="form-control" />
+                                <input
+                                    type="text"
+                                    value={searchText}
+                                    name="searchText"
+                                    onChange={this.onChange}
+                                    className="form-control"
+                                    placeholder="Enter Product Name"
+                                />
                                 <div className="input-group-append">
-                                    <button className="btn btn-secondary rounded-right">
+                                    <button onClick={this.onSearch} className="btn btn-secondary rounded-right">
                                         Search
                                     </button>
                                 </div>
@@ -99,16 +153,20 @@ class Products extends Component {
                                 </button>
                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <a className="dropdown-item" onClick={() => { this.onSortCategoryClick('all') }} style={{ cursor: 'pointer' }}>Show All</a>
-                                    {products.map(prod => (
-                                        <div
-                                            key={prod.id}
-                                            className="dropdown-item"
-                                            onClick={() => { this.onSortCategoryClick(prod.category) }}
-                                            style={{ cursor: 'pointer' }}
-                                        >
-                                            {prod.category.catName}
-                                        </div>
-                                    ))}
+                                    {
+                                        categories
+                                            ? categories.map(cat => (
+                                                <div
+                                                    key={cat.id}
+                                                    className="dropdown-item"
+                                                    onClick={() => { this.onSortCategoryClick(cat) }}
+                                                    style={{ cursor: 'pointer' }}
+                                                >
+                                                    {cat.catName}
+                                                </div>
+                                            ))
+                                            : <Loader />
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -118,21 +176,9 @@ class Products extends Component {
                                     Filter By Product Type
                                 </button>
                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a className="dropdown-item" onClick={() => { this.onFilterProductTypeClick('published') }}>Published</a>
-                                    <a className="dropdown-item" onClick={() => { this.onFilterProductTypeClick('unpublished') }}>UnPublished</a>
-                                    <a className="dropdown-item" onClick={() => { this.onFilterProductTypeClick('all') }}>Show All</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-auto mt-3">
-                            <div className="dropdown">
-                                <button className="btn btn-secondary btn-sm dropdown-toggle rounded-right rounded-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Filter By Stock Status
-                                </button>
-                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a className="dropdown-item" onClick={() => { this.onFilterByStockStatusClick('low stock') }}>Low Stock</a>
-                                    <a className="dropdown-item" onClick={() => { this.onFilterByStockStatusClick('available') }}>Available</a>
-                                    <a className="dropdown-item" onClick={() => { this.onFilterByStockStatusClick('all') }}>Show All</a>
+                                    <a className="dropdown-item" style={{ cursor: 'pointer' }} onClick={() => { this.onFilterProductTypeClick('published') }}>Published</a>
+                                    <a className="dropdown-item" style={{ cursor: 'pointer' }} onClick={() => { this.onFilterProductTypeClick('unpublish') }}>UnPublished</a>
+                                    <a className="dropdown-item" style={{ cursor: 'pointer' }} onClick={() => { this.onFilterProductTypeClick('all') }}>Show All</a>
                                 </div>
                             </div>
                         </div>
@@ -193,10 +239,19 @@ Products.propTypes = {
 }
 
 export default compose(
-    firestoreConnect([
-        { collection: 'products' }
+    firebaseConnect(),
+    firestoreConnect(props => [
+        {
+            collection: 'products',
+            orderBy: [['createdAt', 'desc']],
+        },
+        {
+            collection: 'categories',
+            orderBy: [['createdAt', 'desc']]
+        }
     ]),
     connect((state, props) => ({
-        products: state.firestore.ordered.products
+        products: state.firestore.ordered.products,
+        categories: state.firestore.ordered.categories,
     })),
 )(Products);

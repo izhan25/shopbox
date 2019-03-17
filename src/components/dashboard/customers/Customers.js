@@ -62,7 +62,10 @@ class Customers extends Component {
 
 export default compose(
     firestoreConnect([
-        { collection: 'customers' }
+        {
+            collection: 'customers',
+            orderBy: [['fullName', 'desc']]
+        }
     ]),
     connect(
         (state, props) => ({

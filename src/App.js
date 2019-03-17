@@ -39,7 +39,7 @@ class App extends Component {
               <Route exact path="/" component={Public} />
               <Route exact path="/dashboard/login" component={UserIsNotAuthenticated(Login)} />
               <Route exact path="/dashboard" component={UserIsAuthenticated(Dashboard)} />
-              <Route exact path="/dashboard/products" component={UserIsAuthenticated(Products)} />
+              <Route exact path="/dashboard/products/:category?/:productType?" component={UserIsAuthenticated(Products)} />
               <Route exact path="/dashboard/product/add" component={UserIsAuthenticated(AddProduct)} />
               <Route exact path="/dashboard/product/edit/:id" component={UserIsAuthenticated(EditProduct)} />
               <Route exact path="/dashboard/product/:id" component={UserIsAuthenticated(ProductDetails)} />
