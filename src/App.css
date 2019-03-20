@@ -56,9 +56,17 @@ body{
   font-weight: bold;
 }
 
-
-
-
+/* front end */
+.bg-ribbon{
+  height: 45px;
+  background-color: #f5f5f5;
+  position: relative;
+  padding: 7px;
+}
+.logoText{
+  font-family: 'Paytone One', sans-serif;
+  font-size: 40px;
+}
 
 
 

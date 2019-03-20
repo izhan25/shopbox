@@ -7,7 +7,7 @@ import InventoryInfoBox from '../layout/InventoryInfoBox';
 
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { firestoreConnect } from 'react-redux-firebase';
+import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import classnames from 'classnames';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -16,6 +16,10 @@ import { Link } from 'react-router-dom';
 
 
 class ProductDetails extends Component {
+
+    state = {
+        defaultImage: 'https://firebasestorage.googleapis.com/v0/b/shopbox-35ae7.appspot.com/o/products%2Fproduct_default.png?alt=media&token=fbaae708-2697-432e-a3a9-c24b1dce45ac'
+    }
 
     // Deleting Product
     onDeleteClick = () => {
@@ -27,7 +31,20 @@ class ProductDetails extends Component {
                 {
                     label: 'Yes',
                     onClick: () => {
-                        firestore.delete({ collection: 'products', doc: product.id })
+                        firestore
+                            .delete({ collection: 'products', doc: product.id }) // Deleting Product
+                            .then(() => {
+                                // Deleting Images
+                                const { images } = product.productImages;
+                                const { defaultImage } = this.state;
+
+                                images.forEach(img => {
+                                    if (img !== defaultImage) {
+                                        const { firebase } = this.props;
+                                        firebase.storage().refFromURL(img).delete();
+                                    }
+                                });
+                            })
                             .then(history.push('/dashboard/products'));
                     }
                 },
@@ -194,6 +211,7 @@ ProductDetails.propTypes = {
 
 
 export default compose(
+    firebaseConnect(),
     firestoreConnect(props => [
         { collection: 'products', storeAs: 'product', doc: props.match.params.id }
     ]),

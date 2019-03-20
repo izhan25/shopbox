@@ -158,7 +158,8 @@ class AddProduct extends Component {
         const { images } = this.state;
 
         if (file) {
-            const uploadTask = firebase.storage().ref('products/' + file.name).put(file);
+            const fileName = new Date() + file.name;
+            const uploadTask = firebase.storage().ref('products/' + fileName).put(file);
             const that = this;
 
             uploadTask.on('state_changed',

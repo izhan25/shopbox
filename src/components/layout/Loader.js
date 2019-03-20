@@ -5,7 +5,7 @@ class Loader extends Component {
     render() {
         return (
             <div>
-                <CircularProgress style={{ margin: 'auto', display: 'block' }} color="inherit" />
+                <CircularProgress style={{ margin: 'auto', display: 'block' }} color="primary" />
             </div>
         )
     }

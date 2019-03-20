@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../layout/logo/sampleLogo.jpg'
-import Appbar from './layout/Appbar'
-import '../../App.css';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { firestoreConnect } from 'react-redux-firebase';
 
-export default class Public extends Component {
+import logo from '../layout/logo/sampleLogo.jpg'
+import './assets/css/main.css';
+
+
+import Header from './layout/Header';
+
+class Public extends Component {
+
     render() {
+
         return (
             <React.Fragment>
-                <Appbar />
+                <Header />
+                <br /><br /><br /><br />
                 <div className="container">
                     <div className="card mt-5">
                         <div className="card-body">
@@ -25,3 +34,14 @@ export default class Public extends Component {
         )
     }
 }
+
+export default compose(
+    firestoreConnect(props => [
+        {
+            collection: 'categories',
+        }
+    ]),
+    connect((state, props) => ({
+        categories: state.firestore.ordered.categories,
+    })),
+)(Public);
