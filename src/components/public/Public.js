@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../layout/logo/sampleLogo.jpg'
-import '../../App.css';
+import Header from './layout/Header';
+// import '../../App.css';
 
 export default class Public extends Component {
     render() {
         return (
             <React.Fragment>
+                <Header />
                 <div className="container">
                     <div className="card mt-5">
                         <div className="card-body">
