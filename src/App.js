@@ -26,6 +26,7 @@ import Orders from './components/dashboard/orders/Orders';
 import OrderDetails from './components/dashboard/orders/OrderDetails';
 import Profile from './components/dashboard/profile/Profile';
 import Login from './components/dashboard/auth/Login';
+import Display from './components/dashboard/display/Display';
 
 
 
@@ -49,6 +50,7 @@ class App extends Component {
               <Route exact path="/dashboard/orders" component={UserIsAuthenticated(Orders)} />
               <Route exact path="/dashboard/order/:id" component={UserIsAuthenticated(OrderDetails)} />
               <Route exact path="/dashboard/profile" component={UserIsAuthenticated(Profile)} />
+              <Route exact path="/dashboard/display" component={UserIsAuthenticated(Display)} />
             </Switch>
           </div>
         </Router>

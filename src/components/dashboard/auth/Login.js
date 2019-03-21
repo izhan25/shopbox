@@ -2,16 +2,23 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firebaseConnect } from 'react-redux-firebase';
+import Loader from '../../layout/Loader';
 
 class Login extends Component {
 
     state = {
         email: '',
-        password: ''
+        password: '',
+        error: '',
+        showLoader: false,
     }
 
     onSubmit = e => {
         e.preventDefault();
+        this.setState({
+            showLoader: true,
+            error: ''
+        })
 
         const { firebase } = this.props;
         const { email, password } = this.state;
@@ -21,14 +28,35 @@ class Login extends Component {
                 email,
                 password
             })
-            .catch(err => { console.log(err) });
+            .catch(err => {
+                this.setState({
+                    error: 'Invalid Credentials',
+                    showLoader: false
+                })
+            });
     }
     onChange = e => this.setState({ [e.target.name]: e.target.value });
     render() {
+        const { error, showLoader } = this.state;
         return (
             <React.Fragment>
                 <div className="row" style={{ marginTop: '50px' }}>
                     <div className="col-md-4 mx-auto">
+                        {
+                            error !== ''
+                                ? <div className="alert alert-danger text-center">
+                                    {error}
+                                </div>
+                                : null
+                        }
+                        {
+                            showLoader
+                                ? <div>
+                                    <Loader />
+                                    <br />
+                                </div>
+                                : null
+                        }
                         <div className="card">
                             <div className="card-body">
                                 <h3 className="text-center">

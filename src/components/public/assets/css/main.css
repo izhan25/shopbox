@@ -138,14 +138,14 @@ ul, li {
 
 
 /* ------------------------------------ */
-input {
+/* input {
 	outline: none;
 	border: none !important;
 }
 
 textarea {
   outline: none;
-}
+} */
 
 /* textarea:focus, input:focus {
   border-color: transparent !important;

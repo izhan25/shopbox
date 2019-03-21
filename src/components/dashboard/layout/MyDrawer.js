@@ -158,6 +158,15 @@ class MyDrawer extends Component {
 
                 </List>
                 <Divider />
+                <Link to="/dashboard/display" style={{ textDecoration: 'none' }}>
+                    <ListItem button>
+                        <ListItemIcon>
+                            <i className="fas fa-images" style={{ fontSize: '22px' }}></i>
+                        </ListItemIcon>
+                        <ListItemText inset primary="Display" />
+                    </ListItem>
+                </Link>
+                <Divider />
                 <Link to="/dashboard/profile" style={{ textDecoration: 'none' }}>
                     <ListItem button>
                         <ListItemIcon>

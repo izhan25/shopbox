@@ -1,5 +1,9 @@
 import { createStore, combineReducers, compose } from 'redux';
-import firebase from 'firebase';
+// import firebase from 'firebase';
+import firebase from 'firebase/app'
+import 'firebase/app'
+import 'firebase/auth'
+
 import { reactReduxFirebase, firebaseReducer } from 'react-redux-firebase';
 import { reduxFirestore, firestoreReducer } from 'redux-firestore';
 import 'firebase/firestore';
@@ -17,7 +21,8 @@ const firebaseConfig = {
 
 // react-redux-firebase config
 const rrfConfig = {
-    userProfile: 'users',
+    // userProfile: 'users',
+    userProfile: null,
     useFirestoreForProfile: true
 }
 

@@ -27,7 +27,9 @@ class Categories extends Component {
 
         catId: '',
         catName: '',
-        secured: false
+        secured: false,
+
+        error: ''
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -184,20 +186,30 @@ class Categories extends Component {
             createdAt: new Date()
         }
 
-        firestore.add({ collection: 'categories' }, newCategory)
+        firestore
+            .add({ collection: 'categories' }, newCategory)
             .then(() => {
                 this.setState({
                     catName: '',
                     msgSnackBar: 'Category Added',
                     openSnackBar: true
                 })
+            })
+            .catch(err => {
+                this.setState({
+                    error: 'Permission Denied'
+                });
+
+                setTimeout(() => {
+                    this.setState({ error: '' })
+                }, 3000);
             });
 
     }
 
     render() {
 
-        const { catName, dense, categories, updating } = this.state;
+        const { catName, dense, categories, updating, error } = this.state;
 
         // Building Category List
         let catDisplay;
@@ -282,6 +294,11 @@ class Categories extends Component {
 
         const mainContent = (
             <React.Fragment>
+                {
+                    error !== ''
+                        ? <div className="alert alert-danger">{error}</div>
+                        : null
+                }
                 <TitleBar titleName="Categories" />
 
                 <form onSubmit={this.onSubmit} className="mb-4">

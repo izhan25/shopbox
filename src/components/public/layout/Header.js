@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css';
+// import '../assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css';
 import '../assets/fonts/themify/themify-icons.css';
 import '../assets/fonts/Linearicons-Free-v1.0.0/icon-font.min.css';
 import '../assets/fonts/elegant-font/html-css/style.css';
@@ -28,11 +28,11 @@ class Header extends Component {
                 <div className="container-menu-header">
                     <div className="topbar">
                         <div className="topbar-social">
-                            <Link to="!#" className="topbar-social-item fa fa-facebook"></Link>
-                            <Link to="!#" className="topbar-social-item fa fa-instagram"></Link>
-                            <Link to="!#" className="topbar-social-item fa fa-pinterest-p"></Link>
-                            <Link to="!#" className="topbar-social-item fa fa-snapchat-ghost"></Link>
-                            <Link to="!#" className="topbar-social-item fa fa-youtube-play"></Link>
+                            <Link to="!#" className="topbar-social-item fab fa-facebook"></Link>
+                            <Link to="!#" className="topbar-social-item fab fa-instagram"></Link>
+                            <Link to="!#" className="topbar-social-item fab fa-pinterest-p"></Link>
+                            <Link to="!#" className="topbar-social-item fab fa-snapchat-ghost"></Link>
+                            <Link to="!#" className="topbar-social-item fab fa-youtube-play"></Link>
                         </div>
 
                         <span className="topbar-child1">
@@ -42,14 +42,7 @@ class Header extends Component {
                         <div className="topbar-child2">
                             <span className="topbar-email">
                                 fashe@example.com
-                        </span>
-
-                            <div className="topbar-language rs1-select2">
-                                <select className="selection-1" name="time">
-                                    <option>USD</option>
-                                    <option>EUR</option>
-                                </select>
-                            </div>
+                            </span>
                         </div>
                     </div>
 

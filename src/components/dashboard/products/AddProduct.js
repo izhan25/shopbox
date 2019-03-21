@@ -529,7 +529,7 @@ class AddProduct extends Component {
 
                             <div className="col-md-2">
                                 <i className="fas fa-camera fa-4x fa-btn p-3 bg-light" onClick={this.triggerInputFile} />
-                                <input type="file" id="inputFile" onChange={this.onFileChange} hidden />
+                                <input type="file" accept="image/x-png,image/gif,image/jpeg" id="inputFile" onChange={this.onFileChange} hidden />
                             </div>
                         </div>
                     </div>
