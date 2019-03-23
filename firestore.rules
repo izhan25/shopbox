@@ -19,5 +19,9 @@ service cloud.firestore {
       allow write: if request.auth.uid != null;
       allow read: if request.auth.token.email == 'izhan.yameen25@gmail.com';
     }
+    match /bannerImages/{bannerID}{
+      allow read;
+      allow write: if request.auth.token.email == 'izhan.yameen25@gmail.com';
+    }
   }
 }

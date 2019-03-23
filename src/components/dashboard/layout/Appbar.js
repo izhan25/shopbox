@@ -8,7 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firebaseConnect } from 'react-redux-firebase';
-
+import { Link } from 'react-router-dom';
 
 
 const styles = theme => ({
@@ -71,9 +71,11 @@ class Appbar extends Component {
                         </IconButton>
 
                         <Hidden smDown>
-                            <h4 style={{ color: 'white' }}>
-                                ShopBox
-                            </h4>
+                            <Link to="/">
+                                <h4 style={{ color: 'white' }}>
+                                    ShopBox
+                                </h4>
+                            </Link>
                         </Hidden>
 
 

@@ -1,7 +1,14 @@
 body{
     font-family: 'Nanum Gothic', sans-serif;
 }
-
+.btn-pink{
+  background-color: #e65540;
+  color: white;
+}
+.btn-pink:hover{
+  background-color: #f3634c;
+  color: white;
+}
 .btn-gray{
     background-color: #4a4e4f;
     color: white; 

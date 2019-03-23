@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import '../assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css';
 import '../assets/fonts/themify/themify-icons.css';
 import '../assets/fonts/Linearicons-Free-v1.0.0/icon-font.min.css';
 import '../assets/fonts/elegant-font/html-css/style.css';
@@ -8,16 +7,13 @@ import '../assets/vendor/css-hamburgers/hamburgers.min.css';
 import '../assets/vendor/animsition/css/animsition.min.css';
 import '../assets/vendor/select2/select2.min.css';
 import '../assets/vendor/daterangepicker/daterangepicker.css';
+import '../assets/vendor/slick/slick.css';
 import '../assets/vendor/lightbox2/css/lightbox.min.css';
 import '../assets/css/util.css';
 import '../assets/css/main.css';
 // import '../assets/';
 
 import { Link } from 'react-router-dom';
-import { compose } from 'redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { connect } from 'react-redux';
-
 
 class Header extends Component {
     render() {
@@ -37,7 +33,7 @@ class Header extends Component {
 
                         <span className="topbar-child1">
                             Free shipping for standard order over $100
-                    </span>
+                        </span>
 
                         <div className="topbar-child2">
                             <span className="topbar-email">
@@ -49,7 +45,8 @@ class Header extends Component {
                     <div className="wrap_header">
                         {/* <!-- Logo --> */}
                         <a href="index.html" className="logo">
-                            <img src="images/icons/logo.png" alt="IMG-LOGO" />
+                            {/* <img src="images/icons/logo.png" alt="IMG-LOGO" /> */}
+                            <h2><b>Shopbox</b></h2>
                         </a>
 
                         {/* <!-- Menu --> */}
@@ -302,11 +299,4 @@ class Header extends Component {
     }
 }
 
-export default compose(
-    firestoreConnect([
-        { collection: 'categories' }
-    ]),
-    connect((state, props) => ({
-        categories: state.firestore.ordered.categories
-    }))
-)(Header);
+export default Header;

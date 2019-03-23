@@ -157,33 +157,67 @@ class AddProduct extends Component {
         const file = e.target.files[0];
         const { images } = this.state;
 
-        if (file) {
-            const uploadTask = firebase.storage().ref('products/' + file.name).put(file);
-            const that = this;
+        const parsePath = (path) => {
+            var parts = (/(\w?:?\\?[\w\-_ \\]*\\+)?([\w-_ ]+)?(\.[\w-_ ]+)?/gi).exec(path);
+            return {
+                path: parts[0] || "",
+                folder: parts[1] || "",
+                name: parts[2] || "",
+                extension: parts[3] || "",
+            };
+        }
 
-            uploadTask.on('state_changed',
-                function (snapshot) {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    // console.log('Upload is ' + progress.toFixed(2) + '% done');
-                    that.setState({
-                        msgSnackBar: 'Upload is ' + progress.toFixed(0) + '% done',
-                        openSnackBar: true
-                    });
-                },
-                function (error) {
-                    console.log(error);
-                },
-                function () {
-                    uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                        images.push(downloadURL);
+        const extValidator = ext => {
+            switch (ext) {
+                case '.jpg':
+                    return true;
+                case '.png':
+                    return true;
+                case '.jpeg':
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        if (file) {
+            const fileDetails = parsePath(e.target.value);
+
+            if (extValidator(fileDetails.extension)) {
+                // if File is Image
+                const fileName = new Date() + file.name;
+                const uploadTask = firebase.storage().ref('products/' + fileName).put(file);
+                const that = this;
+
+                uploadTask.on('state_changed',
+                    function (snapshot) {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        // console.log('Upload is ' + progress.toFixed(2) + '% done');
                         that.setState({
-                            images,
-                            msgSnackBar: 'Successfully Uploaded',
+                            msgSnackBar: 'Upload is ' + progress.toFixed(0) + '% done',
                             openSnackBar: true
                         });
-                    });
-                }
-            );
+                    },
+                    function (error) {
+                        console.log(error);
+                    },
+                    function () {
+                        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                            images.push(downloadURL);
+                            that.setState({
+                                images,
+                                msgSnackBar: 'Successfully Uploaded',
+                                openSnackBar: true
+                            });
+                        });
+                    }
+                );
+            }
+            else {
+                // If File is not Image
+                console.log('invalid');
+            }
+
         }
 
     }
