@@ -57,7 +57,8 @@ class Categories extends Component {
     editCategory = cat => {
         this.setState({
             catId: cat.id,
-            catName: cat.catName,
+            catName: cat.catName.toLowerCase(),
+            secured: cat.secured,
             updating: true
         })
     }
@@ -73,7 +74,7 @@ class Categories extends Component {
         const { firestore } = this.props;
 
         const updCat = {
-            catName: cat.catName,
+            catName: cat.catName.toLowerCase(),
             secured: !cat.secured
         }
 
@@ -141,7 +142,7 @@ class Categories extends Component {
         const { catName, catId, secured } = this.state;
         const { firestore } = this.props;
 
-        const updCat = { catName, secured }
+        const updCat = { catName: catName.toLowerCase(), secured }
 
         const that = this;
 
@@ -181,7 +182,7 @@ class Categories extends Component {
         const { firestore } = this.props;
 
         const newCategory = {
-            catName,
+            catName: catName.toLowerCase(),
             secured,
             createdAt: new Date()
         }
@@ -209,7 +210,8 @@ class Categories extends Component {
 
     render() {
 
-        const { catName, dense, categories, updating, error } = this.state;
+        const { catName, dense, updating, error } = this.state;
+        const { categories } = this.props;
 
         // Building Category List
         let catDisplay;

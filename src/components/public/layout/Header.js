@@ -14,17 +14,18 @@ import '../assets/css/main.css';
 // import '../assets/';
 
 import { Link } from 'react-router-dom';
+import classnames from 'classnames';
 
 class Header extends Component {
     render() {
-        const { categories } = this.props;
+        const { categories, activePage } = this.props;
         return (
             <header className="header1">
                 {/* <!-- Header desktop --> */}
                 <div className="container-menu-header">
                     <div className="topbar">
                         <div className="topbar-social">
-                            <Link to="!#" className="topbar-social-item fab fa-facebook"></Link>
+                            <Link to="!#" className="topbar-social-item fab fa-facebook-f"></Link>
                             <Link to="!#" className="topbar-social-item fab fa-instagram"></Link>
                             <Link to="!#" className="topbar-social-item fab fa-pinterest-p"></Link>
                             <Link to="!#" className="topbar-social-item fab fa-snapchat-ghost"></Link>
@@ -44,37 +45,38 @@ class Header extends Component {
 
                     <div className="wrap_header">
                         {/* <!-- Logo --> */}
-                        <a href="index.html" className="logo">
+                        <Link to="/" className="logo">
                             {/* <img src="images/icons/logo.png" alt="IMG-LOGO" /> */}
                             <h2><b>Shopbox</b></h2>
-                        </a>
+                        </Link>
 
                         {/* <!-- Menu --> */}
                         <div className="wrap_menu">
                             <nav className="menu">
                                 <ul className="main_menu">
-                                    <li>
-                                        <a href="product.html">Home</a>
+                                    <li className={classnames({ 'sale-noti': activePage === 'home' })}>
+                                        <Link to="/">Home</Link>
                                     </li>
 
-                                    <li className="sale-noti">
-                                        <a href="product.html">Products</a>
+                                    <li className={classnames({ 'sale-noti': activePage === 'products' })}>
+                                        <Link to="/products">Products</Link>
                                         <ul className="sub_menu">
                                             {
                                                 categories
-                                                    ? categories.map(cat => <li key={cat.id}><a href="!#">{cat.catName}</a></li>)
+                                                    ? categories.map(cat => <li key={cat.id}><Link to={`/products/category/${cat.id}`}>{cat.catName}</Link></li>)
                                                     : <li><a href="!#">Loading ...</a></li>
                                             }
-
+                                            <hr style={{ backgroundColor: 'white' }} />
+                                            <li><Link to="/products"><i className="fas fa-plus-circle mr-2" />More </Link></li>
                                         </ul>
                                     </li>
 
-                                    <li>
-                                        <a href="!#">About</a>
+                                    <li className={classnames({ 'sale-noti': activePage === 'about' })}>
+                                        <Link to="/about">About</Link>
                                     </li>
 
-                                    <li>
-                                        <a href="!#">Contact</a>
+                                    <li className={classnames({ 'sale-noti': activePage === 'contact' })}>
+                                        <Link to="/contact">Contact</Link>
                                     </li>
                                 </ul>
                             </nav>
@@ -82,7 +84,7 @@ class Header extends Component {
 
                         {/* <!-- Header Icon --> */}
                         <div className="header-icons">
-                            <a href="!#" className="header-wrapicon1 dis-block">
+                            <a className="header-wrapicon1 dis-block">
                                 <img src="images/icons/icon-header-01.png" className="header-icon1" alt="ICON" />
                             </a>
 

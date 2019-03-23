@@ -14,7 +14,10 @@ import { UserIsAuthenticated, UserIsNotAuthenticated } from './helpers/auth';
 
 // Components
 import Public from './components/public/Public';
-import Dashboard from './components/dashboard/Dashboard';
+import ProductsPublic from './components/public/products/Products';
+import AboutPublic from './components/public/about/About';
+import ContactPublic from './components/public/contact/Contact';
+import Dashboard from './components/dashboard/Dashboard'; // Dashboard
 import Products from './components/dashboard/products/Products';
 import ProductDetails from './components/dashboard/products/ProductDetails';
 import AddProduct from './components/dashboard/products/AddProduct';
@@ -38,6 +41,9 @@ class App extends Component {
           <div className="App">
             <Switch>
               <Route exact path="/" component={Public} />
+              <Route exact path="/products" component={ProductsPublic} />
+              <Route exact path="/about" component={AboutPublic} />
+              <Route exact path="/contact" component={ContactPublic} />
               <Route exact path="/dashboard/login" component={UserIsNotAuthenticated(Login)} />
               <Route exact path="/dashboard" component={UserIsAuthenticated(Dashboard)} />
               <Route exact path="/dashboard/products/:category?/:productType?" component={UserIsAuthenticated(Products)} />

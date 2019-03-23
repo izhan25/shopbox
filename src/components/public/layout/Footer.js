@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 export default class Footer extends Component {
     render() {
@@ -9,12 +10,12 @@ export default class Footer extends Component {
                     <div className="w-size6 p-t-30 p-l-15 p-r-15 respon3">
                         <h4 className="s-text12 p-b-30">
                             GET IN TOUCH
-				</h4>
+				        </h4>
 
                         <div>
                             <p className="s-text7 w-size27">
                                 Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
-					</p>
+					        </p>
 
                             <div className="flex-m p-t-30">
                                 <i style={{ cursor: 'pointer' }} className="fs-18 color1 p-r-20 fab fa-facebook-f"></i>
@@ -36,9 +37,9 @@ export default class Footer extends Component {
                                 categories.map(
                                     cat => (
                                         <li className="p-b-9" key={cat.id}>
-                                            <a href="!#" className="s-text7">
+                                            <Link to={`/products/category/${cat.id}`} className="s-text7">
                                                 {cat.catName}
-                                            </a>
+                                            </Link>
                                         </li>
                                     )
                                 )
@@ -50,32 +51,28 @@ export default class Footer extends Component {
                     <div className="w-size7 p-t-30 p-l-15 p-r-15 respon4">
                         <h4 className="s-text12 p-b-30">
                             Links
-				</h4>
+				        </h4>
 
                         <ul>
                             <li className="p-b-9">
-                                <a href="!#" className="s-text7">
+                                <a className="s-text7">
                                     Search
 						</a>
                             </li>
 
                             <li className="p-b-9">
-                                <a href="!#" className="s-text7">
+                                <Link to="/about" className="s-text7">
                                     About Us
-						</a>
+						        </Link>
                             </li>
 
                             <li className="p-b-9">
-                                <a href="!#" className="s-text7">
+                                <Link to="/contact" className="s-text7">
                                     Contact Us
-						</a>
+						        </Link>
                             </li>
 
-                            <li className="p-b-9">
-                                <a href="!#" className="s-text7">
-                                    Returns
-						        </a>
-                            </li>
+
                         </ul>
                     </div>
 
@@ -86,25 +83,25 @@ export default class Footer extends Component {
 
                         <ul>
                             <li className="p-b-9">
-                                <a href="!#" className="s-text7">
+                                <a className="s-text7">
                                     Track Order
-						</a>
+						        </a>
                             </li>
 
                             <li className="p-b-9">
-                                <a href="!#" className="s-text7">
+                                <a className="s-text7">
                                     Returns
-						</a>
+						        </a>
                             </li>
 
                             <li className="p-b-9">
-                                <a href="!#" className="s-text7">
+                                <a className="s-text7">
                                     Shipping
-						</a>
+						        </a>
                             </li>
 
                             <li className="p-b-9">
-                                <a href="!#" className="s-text7">
+                                <a className="s-text7">
                                     FAQs
 						        </a>
                             </li>
@@ -134,23 +131,23 @@ export default class Footer extends Component {
                 </div>
 
                 <div className="t-center p-l-15 p-r-15">
-                    <a href="!#">
+                    <a>
                         <img className="h-size2" src="images/icons/paypal.png" alt="IMG-PAYPAL" />
                     </a>
 
-                    <a href="!#">
+                    <a>
                         <img className="h-size2" src="images/icons/visa.png" alt="IMG-VISA" />
                     </a>
 
-                    <a href="!#">
+                    <a>
                         <img className="h-size2" src="images/icons/mastercard.png" alt="IMG-MASTERCARD" />
                     </a>
 
-                    <a href="!#">
+                    <a>
                         <img className="h-size2" src="images/icons/express.png" alt="IMG-EXPRESS" />
                     </a>
 
-                    <a href="!#">
+                    <a>
                         <img className="h-size2" src="images/icons/discover.png" alt="IMG-DISCOVER" />
                     </a>
 
