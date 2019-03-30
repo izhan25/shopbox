@@ -9,6 +9,7 @@ import '../assets/vendor/select2/select2.min.css';
 import '../assets/vendor/daterangepicker/daterangepicker.css';
 import '../assets/vendor/slick/slick.css';
 import '../assets/vendor/lightbox2/css/lightbox.min.css';
+import '../assets/vendor/noui/nouislider.min.css';
 import '../assets/css/util.css';
 import '../assets/css/main.css';
 // import '../assets/';
@@ -172,10 +173,11 @@ class Header extends Component {
                 </div>
 
                 {/* <!-- Header Mobile --> */}
-                <div className="wrap_header_mobile">
+                <div className="wrap_header_mobile shadow-sm p-3 mb-1 bg-white rounded">
                     {/* <!-- Logo moblie --> */}
                     <a href="index.html" className="logo-mobile">
-                        <img src="images/icons/logo.png" alt="IMG-LOGO" />
+                        {/* <img src="images/icons/logo.png" alt="IMG-LOGO" /> */}
+                        <h2><b>Shopbox</b></h2>
                     </a>
 
                     {/* <!-- Button show menu --> */}
@@ -280,18 +282,18 @@ class Header extends Component {
                     <nav className="side-menu">
                         <ul className="main-menu">
                             <li className="item-menu-mobile">
-                                <a href="!#">Home</a>
+                                <Link to="/">Home</Link>
                             </li>
                             <li className="item-menu-mobile">
-                                <a href="!#">Products</a>
-                            </li>
-
-                            <li className="item-menu-mobile">
-                                <a href="!#">About</a>
+                                <Link to="/products">Products</Link>
                             </li>
 
                             <li className="item-menu-mobile">
-                                <a href="!#">Contact</a>
+                                <Link to="/about">About</Link>
+                            </li>
+
+                            <li className="item-menu-mobile">
+                                <Link to="/contact">Contact</Link>
                             </li>
                         </ul>
                     </nav>

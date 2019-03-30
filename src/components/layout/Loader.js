@@ -4,7 +4,11 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 class Loader extends Component {
     render() {
         return (
-            <div>
+            <div style={{
+                position: 'fixed',
+                left: '50%',
+                top: '50%',
+            }}>
                 <CircularProgress style={{ margin: 'auto', display: 'block' }} color="inherit" />
             </div>
         )

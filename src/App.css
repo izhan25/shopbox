@@ -1,8 +1,26 @@
 body{
     font-family: 'Nanum Gothic', sans-serif;
 }
+.font-pink{
+  color: #e65540;
+}
+.font-pink:hover{
+  color: #f3634c;
+}
+.font-facebook:hover{
+  color: #4300fc;
+}
+.font-instagram:hover{
+  color: #e95b0a;
+}
+.font-twitter:hover{
+  color: #00dffc;
+}
+.font-youtube:hover{
+  color: #fc0000;
+}
 .btn-pink{
-  background-color: #e65540;
+  background-color: #e65540; /* primary new color */
   color: white;
 }
 .btn-pink:hover{
