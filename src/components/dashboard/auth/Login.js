@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firebaseConnect } from 'react-redux-firebase';
-import Loader from '../../layout/Loader';
+import CircularProgress from '@material-ui/core/CircularProgress';
+// import Loader from '../../layout/Loader';
 
 class Login extends Component {
 
@@ -51,8 +52,8 @@ class Login extends Component {
                         }
                         {
                             showLoader
-                                ? <div>
-                                    <Loader />
+                                ? <div >
+                                    <CircularProgress style={{ margin: 'auto', display: 'block' }} color="inherit" />
                                     <br />
                                 </div>
                                 : null

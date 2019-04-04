@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+// images
+import paypal from '../assets/images/icons/paypal.png';
+import visa from '../assets/images/icons/visa.png';
+import mastercard from '../assets/images/icons/mastercard.png';
+import express from '../assets/images/icons/express.png';
+import discover from '../assets/images/icons/discover.png';
+
 export default class Footer extends Component {
     render() {
         const { categories } = this.props;
@@ -132,27 +139,27 @@ export default class Footer extends Component {
 
                 <div className="t-center p-l-15 p-r-15">
                     <a>
-                        <img className="h-size2" src="images/icons/paypal.png" alt="IMG-PAYPAL" />
+                        <img className="h-size2" src={paypal} alt="IMG-PAYPAL" />
                     </a>
 
                     <a>
-                        <img className="h-size2" src="images/icons/visa.png" alt="IMG-VISA" />
+                        <img className="h-size2" src={visa} alt="IMG-VISA" />
                     </a>
 
                     <a>
-                        <img className="h-size2" src="images/icons/mastercard.png" alt="IMG-MASTERCARD" />
+                        <img className="h-size2" src={mastercard} alt="IMG-MASTERCARD" />
                     </a>
 
                     <a>
-                        <img className="h-size2" src="images/icons/express.png" alt="IMG-EXPRESS" />
+                        <img className="h-size2" src={express} alt="IMG-EXPRESS" />
                     </a>
 
                     <a>
-                        <img className="h-size2" src="images/icons/discover.png" alt="IMG-DISCOVER" />
+                        <img className="h-size2" src={discover} alt="IMG-DISCOVER" />
                     </a>
 
                     <div className="t-center s-text8 p-t-20">
-                        Copyright © 2018 All rights reserved. | This template is made with <i className="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" rel="noopener noreferrer">Colorlib</a>
+                        Copyright © 2018 All rights reserved. | This Webapp is made by <b>Izhan Yameen</b>
                     </div>
                 </div>
             </footer>

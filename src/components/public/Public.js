@@ -12,6 +12,32 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { Hidden } from '@material-ui/core';
 
+
+
+class Public extends Component {
+    render() {
+        const { categories, bannerImages, featuredProducts, productDisplay } = this.props;
+
+        if (categories && bannerImages && featuredProducts && productDisplay) {
+            return (
+                <React.Fragment>
+                    <Header activePage="home" categories={categories} />
+                    <Slider bannerImages={bannerImages} />
+                    <ProductDisplay products={productDisplay} />
+                    <Featured products={featuredProducts} />
+                    <img src={bannerImages[2].url} alt="DUMMY_IMG" />
+                    <Shipping />
+                    <Footer categories={categories} />
+                </React.Fragment>
+            )
+        }
+        else {
+            return <Loader />
+        }
+
+    }
+}
+
 const Shipping = () => {
     return (
         <section className="shipping bgwhite p-t-62 p-b-46">
@@ -98,16 +124,18 @@ const Item = data => {
 
 const Row = data => {
     return (
-        <div className="row container">
-            <Hidden xsDown>
-                {
-                    data.products.map(prod => <Item key={prod.id} prod={prod} />)
-                }
-            </Hidden>
-            <Hidden smUp>
-                <Item prod={data.products[0]} />
-                <Item prod={data.products[1]} />
-            </Hidden>
+        <div className="container">
+            <div className="row d-flex justify-content-center">
+                <Hidden xsDown>
+                    {
+                        data.products.map(prod => <Item key={prod.id} prod={prod} />)
+                    }
+                </Hidden>
+                <Hidden smUp>
+                    <Item prod={data.products[0]} />
+                    <Item prod={data.products[1]} />
+                </Hidden>
+            </div>
         </div>
 
     )
@@ -138,94 +166,37 @@ const Featured = data => {
 
 const ProductDisplay = data => {
     const { products } = data;
-    const items = [];
 
-    products.forEach(prod => {
-        const item = {
-            id: prod.id,
-            cat: prod.category.catName,
-            url: prod.productImages.images[0]
-        }
-        items.push(item);
-    });
 
     return (
         <section className="banner bgwhite p-t-40 p-b-40">
             <div className="container">
                 <div className="row">
-                    <div className="col-sm-10 col-md-8 col-lg-4 m-l-r-auto">
-                        {/* <!-- block1 --> */}
-                        <div className="block1 hov-img-zoom pos-relative m-b-30">
-                            <img src={items[0].url} alt="IMG-BENNER" />
+                    {
+                        products.map(prod => (
+                            <div key={prod.id} className="col-md-3">
+                                <div className="block1 hov-img-zoom pos-relative m-b-30">
+                                    <img src={prod.productImages.images[0]} alt="IMG-BENNER" />
 
-                            <div className="block1-wrapbtn w-size2">
-                                {/* <!-- Button --> */}
-                                <Link to={`/product/${items[0].id}`} className="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
-                                    {items[0].cat}
-                                </Link>
+                                    <div className="block1-wrapbtn w-size2">
+                                        {/* <!-- Button --> */}
+                                        <Link to={`/product/${prod.id}`} className="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
+                                            {prod.category.catName}
+                                        </Link>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        ))
+                    }
+                    <div className="col-md-6 mt-1">
 
-                        {/* <!-- block1 --> */}
-                        <div className="block1 hov-img-zoom pos-relative m-b-30">
-                            <img src={items[1].url} alt="IMG-BENNER" />
-
-                            <div className="block1-wrapbtn w-size2">
-                                {/* <!-- Button --> */}
-                                <Link to={`/product/${items[1].id}`} className="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
-                                    {items[1].cat}
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col-sm-10 col-md-8 col-lg-4 m-l-r-auto">
-                        {/* <!-- block1 --> */}
-                        <div className="block1 hov-img-zoom pos-relative m-b-30">
-                            <img src={items[2].url} alt="IMG-BENNER" />
-
-                            <div className="block1-wrapbtn w-size2">
-                                {/* <!-- Button --> */}
-                                <Link to={`/product/${items[2].id}`} className="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
-                                    {items[2].cat}
-                                </Link>
-                            </div>
-                        </div>
-
-                        {/* <!-- block1 --> */}
-                        <div className="block1 hov-img-zoom pos-relative m-b-30">
-                            <img src={items[3].url} alt="IMG-BENNER" />
-
-                            <div className="block1-wrapbtn w-size2">
-                                {/* <!-- Button --> */}
-                                <Link to={`/product/${items[3].id}`} className="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
-                                    {items[3].cat}
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col-sm-10 col-md-8 col-lg-4 m-l-r-auto">
-                        {/* <!-- block1 --> */}
-                        <div className="block1 hov-img-zoom pos-relative m-b-30">
-                            <img src={items[4].url} alt="IMG-BENNER" />
-
-                            <div className="block1-wrapbtn w-size2">
-                                {/* <!-- Button --> */}
-                                <Link to={`/product/${items[4].id}`} className="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
-                                    {items[4].cat}
-                                </Link>
-                            </div>
-                        </div>
-
-                        {/* <!-- block2 --> */}
-                        <div className="block2 wrap-pic-w pos-relative m-b-30">
+                        <div className="block2 wrap-pic-w pos-relative m-b-30" style={{ height: '350px', overflow: 'hidden' }}>
                             <img src="images/icons/bg-01.jpg" alt="IMG" />
 
                             <div className="block2-content sizefull ab-t-l flex-col-c-m">
                                 <h4 className="m-text4 t-center w-size3 p-b-8">
                                     Sign up & get 20% off
-							</h4>
+							    </h4>
 
                                 <p className="t-center w-size4">
                                     Be the frist to know about the latest fashion news and get exclu-sive offers
@@ -240,34 +211,11 @@ const ProductDisplay = data => {
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
     )
-}
-
-class Public extends Component {
-    render() {
-        const { categories, bannerImages, featuredProducts, productDisplay } = this.props;
-
-        if (categories && bannerImages && featuredProducts && productDisplay) {
-            return (
-                <React.Fragment>
-                    <Header activePage="home" categories={categories} />
-                    <Slider bannerImages={bannerImages} />
-                    <ProductDisplay products={productDisplay} />
-                    <Featured products={featuredProducts} />
-                    <img src={bannerImages[2].url} alt="DUMMY_IMG" />
-                    <Shipping />
-                    <Footer categories={categories} />
-                </React.Fragment>
-            )
-        }
-        else {
-            return <Loader />
-        }
-
-    }
 }
 
 export default compose(
@@ -291,7 +239,7 @@ export default compose(
                 collection: 'products',
                 storeAs: 'productDisplay',
                 orderBy: [['createdAt', 'desc']],
-                limit: 5,
+                limit: 6,
             },
         ]
     }),

@@ -157,24 +157,25 @@ const Product = ({ prod }) => {
                         </a>
 
                         <div className="block2-btn-addcart w-size1 trans-0-4">
-                            <div className="btn-group d-flex justify-content-center" data-toggle="buttons">
-                                <label className="flex-c-m btn bg4 s-text1 hov1 trans-0-4 rounded-left">
+                            <div className="btn-group d-flex justify-content-center">
+                                <Link to="!#" className="flex-c-m btn bg4 s-text1 hov1 trans-0-4 rounded-left">
                                     <i className="fas fa-cart-plus fa-2x"></i>
-                                </label>
-                                <label className="flex-c-m btn btn-primary s-text1 trans-0-4 rounded-right">
+                                </Link>
+                                <Link to={`/product/${prod.id}`} className="flex-c-m btn btn-primary s-text1 trans-0-4 rounded-right">
                                     <i className="fas fa-search-plus fa-2x"></i>
-                                </label>
+                                </Link>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="block2-txt p-t-20">
-                    <a href="product-detail.html" className="block2-name dis-block s-text3 p-b-5">
+                    <a href="product-detail.html" className="block2-name dis-block s-text3 p-b-5 text-truncate">
                         {prod.productName}
                     </a>
 
                     <span className="block2-price m-text6 p-r-5">
-                        Rs.{prod.discountPrice}
+                        <del className="text-danger mr-1">Rs.{prod.originalPrice}</del>
+                        <span className="text-primary">Rs.{prod.discountPrice}</span>
                     </span>
                 </div>
             </div>

@@ -41,7 +41,7 @@ const Banner = () => {
         <div className="row">
             <div className="col-md-12 hov-img-zoom">
                 <img src="images/about.jpg" alt="IMG-ABOUT" style={{ opacity: '0.7' }} />
-                <div class="carousel-caption d-none d-md-block text-dark">
+                <div className="carousel-caption d-none d-md-block text-dark">
                     <h1 className="font-weight-bolder" style={{ textShadow: '2px 2px white' }}>Delivering happiness on the go!</h1>
                     <h5 className="font-weight-bold">Happy Shopping</h5>
                 </div>

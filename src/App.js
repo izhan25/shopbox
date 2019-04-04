@@ -15,6 +15,7 @@ import { UserIsAuthenticated, UserIsNotAuthenticated } from './helpers/auth';
 // Components
 import Public from './components/public/Public';
 import ProductsPublic from './components/public/products/Products';
+import ProductsPublicDetails from './components/public/products/ProductDetails';
 import AboutPublic from './components/public/about/About';
 import ContactPublic from './components/public/contact/Contact';
 import Dashboard from './components/dashboard/Dashboard'; // Dashboard
@@ -42,6 +43,7 @@ class App extends Component {
             <Switch>
               <Route exact path="/" component={Public} />
               <Route exact path="/products" component={ProductsPublic} />
+              <Route exact path="/product/:id" component={ProductsPublicDetails} />
               <Route exact path="/about" component={AboutPublic} />
               <Route exact path="/contact" component={ContactPublic} />
               <Route exact path="/dashboard/login" component={UserIsNotAuthenticated(Login)} />

@@ -14,6 +14,10 @@ import '../assets/css/util.css';
 import '../assets/css/main.css';
 // import '../assets/';
 
+// images
+import header1 from '../assets/images/icons/icon-header-01.png';
+import header2 from '../assets/images/icons/icon-header-02.png';
+
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 
@@ -86,13 +90,13 @@ class Header extends Component {
                         {/* <!-- Header Icon --> */}
                         <div className="header-icons">
                             <a className="header-wrapicon1 dis-block">
-                                <img src="images/icons/icon-header-01.png" className="header-icon1" alt="ICON" />
+                                <img src={header1} className="header-icon1" alt="ICON" />
                             </a>
 
                             <span className="linedivide1"></span>
 
                             <div className="header-wrapicon2">
-                                <img src="images/icons/icon-header-02.png" className="header-icon1 js-show-header-dropdown" alt="ICON" />
+                                <img src={header2} className="header-icon1 js-show-header-dropdown" alt="ICON" />
                                 <span className="header-icons-noti">0</span>
 
                                 {/* <!-- Header cart noti --> */}
