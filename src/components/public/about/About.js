@@ -5,15 +5,25 @@ import Footer from '../layout/Footer';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
+import scrollToTop from '../functions/scrollToTop';
+
+// images
+import TopBanner from '../assets/images/banners/topbanner.jpeg';
+import MiddleBanner from '../assets/images/banners/middlebanner.jpeg';
 
 class About extends Component {
+
+    componentDidMount() {
+        scrollToTop();
+    }
+
     render() {
         const { categories } = this.props;
 
         if (categories) {
             return (
                 <React.Fragment>
-                    <Header activePage="about" categories={categories} />
+                    <Header activePage="about" categories={categories} history={this.props.history} />
                     <ContentNew />
                     <Footer categories={categories} />
                 </React.Fragment>
@@ -40,9 +50,11 @@ const Banner = () => {
     return (
         <div className="row">
             <div className="col-md-12 hov-img-zoom">
-                <img src="images/about.jpg" alt="IMG-ABOUT" style={{ opacity: '0.7' }} />
-                <div className="carousel-caption d-none d-md-block text-dark">
-                    <h1 className="font-weight-bolder" style={{ textShadow: '2px 2px white' }}>Delivering happiness on the go!</h1>
+                <div style={{ height: '500px' }}>
+                    <img src={TopBanner} alt="IMG-ABOUT" style={{ opacity: '0.7' }} className="img-fluid" />
+                </div>
+                <div className="carousel-caption d-none d-md-block text-light">
+                    <h1 className="font-weight-bolder">Delivering happiness on the go!</h1>
                     <h5 className="font-weight-bold">Happy Shopping</h5>
                 </div>
             </div>
@@ -78,9 +90,11 @@ const OurStory = () => {
 
 const OurPromise = () => {
     return (
-        <div className="row" style={{ backgroundColor: '#ff7f35' }}>
-            <div className="col-md-12">
-                <img src="images/ourpromise.jpg" alt="IMG_PROMISE" className="img-fluid d-flex mx-auto" />
+        <div className="row">
+            <div className="col-md-12 hov-img-zoom">
+                <div style={{ height: '500px' }}>
+                    <img src={MiddleBanner} alt="IMG_PROMISE" className="img-fluid" />
+                </div>
             </div>
         </div>
     )

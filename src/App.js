@@ -18,6 +18,7 @@ import ProductsPublic from './components/public/products/Products';
 import ProductsPublicDetails from './components/public/products/ProductDetails';
 import AboutPublic from './components/public/about/About';
 import ContactPublic from './components/public/contact/Contact';
+import Cart from './components/public/cart/Cart';
 import Dashboard from './components/dashboard/Dashboard'; // Dashboard
 import Products from './components/dashboard/products/Products';
 import ProductDetails from './components/dashboard/products/ProductDetails';
@@ -43,9 +44,11 @@ class App extends Component {
             <Switch>
               <Route exact path="/" component={Public} />
               <Route exact path="/products" component={ProductsPublic} />
+              <Route exact path="/products/category/:id" component={ProductsPublic} />
               <Route exact path="/product/:id" component={ProductsPublicDetails} />
               <Route exact path="/about" component={AboutPublic} />
               <Route exact path="/contact" component={ContactPublic} />
+              <Route exact path="/cart" component={Cart} />
               <Route exact path="/dashboard/login" component={UserIsNotAuthenticated(Login)} />
               <Route exact path="/dashboard" component={UserIsAuthenticated(Dashboard)} />
               <Route exact path="/dashboard/products/:category?/:productType?" component={UserIsAuthenticated(Products)} />

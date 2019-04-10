@@ -8,19 +8,19 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 
-
 class ProductDetails extends Component {
 
     state = {
         categories: [],
         displayImg: '',
-        qty: 1
+        loadDisplayImg: true,
+        qty: 1,
     }
 
     static getDerivedStateFromProps(props, state) {
         const { categories, product } = props;
 
-        if (categories && product && state.displayImg === '') {
+        if (categories && product && state.loadDisplayImg) {
             return {
                 categories,
                 displayImg: product.productImages.images[0]
@@ -31,15 +31,14 @@ class ProductDetails extends Component {
 
     }
 
-    displayImage = img => {
-        this.setState({ displayImage: img });
-    }
 
     scrollToTop = () => {
         window.scrollTo(0, 0);
-        this.setState({
+        this.setState(prevState => ({
             qty: 1,
-        });
+            displayImg: '',
+            loadDisplayImg: true
+        }));
     }
 
     onQtyAdd = e => this.setState(state => {
@@ -51,7 +50,10 @@ class ProductDetails extends Component {
     });
 
     displayImage = img => {
-        this.setState({ displayImg: img })
+        this.setState(prevState => ({
+            loadDisplayImg: false,
+            displayImg: img,
+        }))
     }
 
 
@@ -69,11 +71,10 @@ class ProductDetails extends Component {
         if (categories && product && related) {
             return (
                 <React.Fragment>
-                    <Header activePage="products" categories={categories} />
+                    <Header activePage="products" categories={categories} history={this.props.history} />
                     <Content
                         prod={product}
                         state={this.state}
-                        displayImage={this.displayImage}
                         related={related}
                         functions={functions}
                     />
@@ -124,7 +125,7 @@ const Breadcrum = ({ prod }) => {
     )
 }
 
-const Details = ({ prod, state, displayImage, functions }) => {
+const Details = ({ prod, state, functions }) => {
     const { productImages: { images } } = prod;
     const { qty } = state;
     return (

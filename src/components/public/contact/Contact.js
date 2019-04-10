@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import Loader from '../../layout/Loader';
 import Header from '../layout/Header';
 import Footer from '../layout/Footer';
-
+import scrollToTop from '../functions/scrollToTop';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { IconButton } from '@material-ui/core';
+
 
 class Contact extends Component {
     state = {
@@ -29,6 +30,10 @@ class Contact extends Component {
         showAlert: false,
         alertMsg: '',
         alertClass: ''
+    }
+
+    componentDidMount() {
+        scrollToTop();
     }
 
     onChange = e => {
@@ -138,7 +143,7 @@ class Contact extends Component {
         if (categories) {
             return (
                 <React.Fragment>
-                    <Header activePage="contact" categories={categories} />
+                    <Header activePage="contact" categories={categories} history={this.props.history} />
                     <Content state={this.state} onChange={this.onChange} onSubmit={this.onSubmit} />
                     <Footer categories={categories} />
                 </React.Fragment>

@@ -11,17 +11,22 @@ import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { Hidden } from '@material-ui/core';
-
+import scrollToTop from './functions/scrollToTop';
 
 
 class Public extends Component {
+
+    componentDidMount() {
+        scrollToTop();
+    }
+
     render() {
         const { categories, bannerImages, featuredProducts, productDisplay } = this.props;
 
         if (categories && bannerImages && featuredProducts && productDisplay) {
             return (
                 <React.Fragment>
-                    <Header activePage="home" categories={categories} />
+                    <Header activePage="home" categories={categories} history={this.props.history} />
                     <Slider bannerImages={bannerImages} />
                     <ProductDisplay products={productDisplay} />
                     <Featured products={featuredProducts} />
@@ -174,7 +179,7 @@ const ProductDisplay = data => {
                 <div className="row">
                     {
                         products.map(prod => (
-                            <div key={prod.id} className="col-md-3">
+                            <div key={prod.id} className="col-xs-6 col-md-3">
                                 <div className="block1 hov-img-zoom pos-relative m-b-30">
                                     <img src={prod.productImages.images[0]} alt="IMG-BENNER" />
 

@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import LoaderGif from './loader.gif';
+// import CircularProgress from '@material-ui/core/CircularProgress';
 
 class Loader extends Component {
     render() {
         return (
             <div style={{
                 position: 'fixed',
-                left: '50%',
-                top: '50%',
+                left: '45%',
+                top: '45%',
             }}>
-                <CircularProgress style={{ margin: 'auto', display: 'block' }} color="inherit" />
+                {/* <CircularProgress style={{ margin: 'auto', display: 'block' }} color="inherit" /> */}
+                <img src={LoaderGif} style={{ margin: 'auto', display: 'block' }} alt="Loading..." className="img-fluid" />
             </div>
         )
     }

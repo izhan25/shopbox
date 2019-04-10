@@ -17,11 +17,17 @@ import '../assets/css/main.css';
 // images
 import header1 from '../assets/images/icons/icon-header-01.png';
 import header2 from '../assets/images/icons/icon-header-02.png';
+// import Logo from '../../layout/logo/sampleLogo.jpg';
 
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 
 class Header extends Component {
+
+    onCartClick = () => {
+        this.props.history.push('/cart');
+    }
+
     render() {
         const { categories, activePage } = this.props;
         return (
@@ -30,11 +36,11 @@ class Header extends Component {
                 <div className="container-menu-header">
                     <div className="topbar">
                         <div className="topbar-social">
-                            <Link to="!#" className="topbar-social-item fab fa-facebook-f"></Link>
-                            <Link to="!#" className="topbar-social-item fab fa-instagram"></Link>
-                            <Link to="!#" className="topbar-social-item fab fa-pinterest-p"></Link>
-                            <Link to="!#" className="topbar-social-item fab fa-snapchat-ghost"></Link>
-                            <Link to="!#" className="topbar-social-item fab fa-youtube-play"></Link>
+                            <i className="topbar-social-item fab fa-facebook-f btn-link"></i>
+                            <i className="topbar-social-item fab fa-instagram btn-link"></i>
+                            <i className="topbar-social-item fab fa-pinterest-p btn-link"></i>
+                            <i className="topbar-social-item fab fa-snapchat-ghost btn-link"></i>
+                            <i className="topbar-social-item fab fa-youtube-play btn-link"></i>
                         </div>
 
                         <span className="topbar-child1">
@@ -51,7 +57,7 @@ class Header extends Component {
                     <div className="wrap_header">
                         {/* <!-- Logo --> */}
                         <Link to="/" className="logo">
-                            {/* <img src="images/icons/logo.png" alt="IMG-LOGO" /> */}
+                            {/* <img src={Logo} alt="IMG-LOGO" /> */}
                             <h2><b>Shopbox</b></h2>
                         </Link>
 
@@ -96,7 +102,7 @@ class Header extends Component {
                             <span className="linedivide1"></span>
 
                             <div className="header-wrapicon2">
-                                <img src={header2} className="header-icon1 js-show-header-dropdown" alt="ICON" />
+                                <img src={header2} onClick={this.onCartClick} className="header-icon1 js-show-header-dropdown" alt="ICON" />
                                 <span className="header-icons-noti">0</span>
 
                                 {/* <!-- Header cart noti --> */}
@@ -179,23 +185,23 @@ class Header extends Component {
                 {/* <!-- Header Mobile --> */}
                 <div className="wrap_header_mobile shadow-sm p-3 mb-1 bg-white rounded">
                     {/* <!-- Logo moblie --> */}
-                    <a href="index.html" className="logo-mobile">
+                    <Link to="/" className="logo-mobile">
                         {/* <img src="images/icons/logo.png" alt="IMG-LOGO" /> */}
                         <h2><b>Shopbox</b></h2>
-                    </a>
+                    </Link>
 
                     {/* <!-- Button show menu --> */}
                     <div className="btn-show-menu">
                         {/* <!-- Header Icon mobile --> */}
                         <div className="header-icons-mobile">
-                            <a href="!#" className="header-wrapicon1 dis-block">
-                                <img src="images/icons/icon-header-01.png" className="header-icon1" alt="ICON" />
-                            </a>
+                            <Link to="/" className="header-wrapicon1 dis-block">
+                                <img src={header1} className="header-icon1" alt="ICON" />
+                            </Link>
 
                             <span className="linedivide2"></span>
 
                             <div className="header-wrapicon2">
-                                <img src="images/icons/icon-header-02.png" className="header-icon1 js-show-header-dropdown" alt="ICON" />
+                                <img src={header2} onClick={this.onCartClick} className="header-icon1 js-show-header-dropdown" alt="ICON" />
                                 <span className="header-icons-noti">0</span>
 
                                 {/* <!-- Header cart noti --> */}

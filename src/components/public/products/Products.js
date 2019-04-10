@@ -8,12 +8,19 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Hidden } from '@material-ui/core';
 import classnames from 'classnames';
+import scrollToTop from '../functions/scrollToTop';
+
 
 class Products extends Component {
     state = {
         searchText: '',
         categories: [],
-        products: []
+        products: [],
+        catDisplay: 'Select Category'
+    }
+
+    componentDidMount() {
+        scrollToTop();
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -34,14 +41,28 @@ class Products extends Component {
         const value = e.target.value;
         this.setState({ searchText: value })
     }
+
+    gotoCat = cat => {
+        if (cat === 'all') {
+            this.setState(prevState => ({ catDisplay: 'Select Category' }));
+
+            this.props.history.push('/products');
+        }
+        else {
+            this.setState(prevState => ({ catDisplay: cat.catName }));
+
+            this.props.history.push(`/products/category/${cat.id}`);
+        }
+    }
+
     render() {
         const { categories } = this.state;
 
         if (categories) {
             return (
                 <React.Fragment>
-                    <Header activePage="products" categories={categories} />
-                    <Content state={this.state} onSearchTextChange={this.onSearchTextChange} />
+                    <Header activePage="products" categories={categories} history={this.props.history} />
+                    <Content state={this.state} onSearchTextChange={this.onSearchTextChange} gotoCat={this.gotoCat} />
                     <Footer categories={categories} />
                 </React.Fragment>
             )
@@ -52,19 +73,51 @@ class Products extends Component {
     }
 }
 
-const Content = ({ state, onSearchTextChange }) => {
+const Content = ({ state, onSearchTextChange, gotoCat }) => {
 
-    const { categories, searchText, products } = state;
+    const { categories, searchText, products, catDisplay } = state;
     return (
         <section className="bgwhite p-t-55 p-b-65">
             <div className="container">
                 <SearchBar searchText={searchText} onSearchTextChange={onSearchTextChange} />
+                <Hidden mdUp>
+                    <Categories categories={categories} gotoCat={gotoCat} catDisplay={catDisplay} />
+                </Hidden>
                 <div className="row">
                     <RightSection categories={categories} />
                     <LeftSection products={products} />
                 </div>
             </div>
         </section>
+    )
+}
+
+const Categories = ({ categories, gotoCat, catDisplay }) => {
+
+    return (
+        <div className="dropdown mb-3">
+            <button className="btn btn-pink dropdown-toggle btn-block rounded-right rounded-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {catDisplay}
+            </button>
+            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a className="dropdown-item" style={{ cursor: 'pointer' }} onClick={() => { gotoCat('all') }}>
+                    All
+                </a>
+                {
+                    categories.map(cat =>
+                        <a
+                            key={cat.id}
+                            className="dropdown-item"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => { gotoCat(cat) }}
+                        >
+                            {cat.catName}
+                        </a>
+                    )
+                }
+
+            </div>
+        </div>
     )
 }
 
@@ -127,6 +180,12 @@ const RightSection = ({ categories }) => {
 }
 
 const LeftSection = ({ products }) => {
+
+    // If products of selected category are zero
+    if (products.length === 0) {
+        return <h3 className="text-center">Products from this category are comming soon..</h3>
+    }
+
     return (
         <div className="col-sm-6 col-md-8 col-lg-9 p-b-50">
             <div className="row">
@@ -187,16 +246,31 @@ const Product = ({ prod }) => {
 
 export default compose(
     firestoreConnect(props => {
-        return [
-            {
-                collection: 'categories',
-                limit: 3,
-            },
-            {
-                collection: 'products',
-                orderBy: [['createdAt', 'desc']]
-            }
-        ]
+        const { id } = props.match.params;
+
+        if (id) {
+            return [
+                {
+                    collection: 'categories',
+                },
+                {
+                    collection: 'products',
+                    where: ['category.id', '==', id],
+                }
+            ]
+        }
+        else {
+            return [
+                {
+                    collection: 'categories',
+                },
+                {
+                    collection: 'products',
+                    orderBy: [['createdAt', 'desc']]
+                }
+            ]
+        }
+
     }),
     connect((state, props) => ({
         categories: state.firestore.ordered.categories,
