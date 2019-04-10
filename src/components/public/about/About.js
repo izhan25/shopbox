@@ -6,6 +6,7 @@ import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import scrollToTop from '../functions/scrollToTop';
+import Hidden from '@material-ui/core/Hidden';
 
 // images
 import TopBanner from '../assets/images/banners/topbanner.jpeg';
@@ -50,9 +51,14 @@ const Banner = () => {
     return (
         <div className="row">
             <div className="col-md-12 hov-img-zoom">
-                <div style={{ height: '500px' }}>
+                <Hidden smUp>
                     <img src={TopBanner} alt="IMG-ABOUT" style={{ opacity: '0.7' }} className="img-fluid" />
-                </div>
+                </Hidden >
+                <Hidden smDown>
+                    <div style={{ height: '500px' }}>
+                        <img src={TopBanner} alt="IMG-ABOUT" style={{ opacity: '0.7' }} className="img-fluid" />
+                    </div>
+                </Hidden>
                 <div className="carousel-caption d-none d-md-block text-light">
                     <h1 className="font-weight-bolder">Delivering happiness on the go!</h1>
                     <h5 className="font-weight-bold">Happy Shopping</h5>
@@ -92,9 +98,14 @@ const OurPromise = () => {
     return (
         <div className="row">
             <div className="col-md-12 hov-img-zoom">
-                <div style={{ height: '500px' }}>
+                <Hidden smUp>
                     <img src={MiddleBanner} alt="IMG_PROMISE" className="img-fluid" />
-                </div>
+                </Hidden>
+                <Hidden smDown>
+                    <div style={{ height: '500px' }}>
+                        <img src={MiddleBanner} alt="IMG_PROMISE" className="img-fluid" />
+                    </div>
+                </Hidden>
             </div>
         </div>
     )

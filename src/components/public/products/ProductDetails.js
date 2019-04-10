@@ -7,6 +7,7 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
+import { addItem, updateItem } from '../../../actions/cartActions';
 
 class ProductDetails extends Component {
 
@@ -46,7 +47,7 @@ class ProductDetails extends Component {
     });
 
     onQtySub = e => this.setState(state => {
-        return { qty: state.qty > 0 ? state.qty - 1 : 0 }
+        return { qty: state.qty > 1 ? state.qty - 1 : 1 }
     });
 
     displayImage = img => {
@@ -54,6 +55,31 @@ class ProductDetails extends Component {
             loadDisplayImg: false,
             displayImg: img,
         }))
+    }
+
+    addItemToCart = product => {
+        const { cart, addItem } = this.props;
+        const { qty } = this.state;
+        let inCart = false;
+
+        const prevProd = cart.products.filter(prod => prod.id === product.id ? inCart = true : inCart = false);
+
+        if (inCart) {
+            const updProduct = {
+                ...prevProd[0],
+                qty: prevProd[0].qty + 1
+            }
+            // updateItem(updProduct);
+            console.log(updProduct);
+        }
+        else {
+            const newProduct = {
+                ...product,
+                qty,
+            }
+            addItem(newProduct);
+        }
+
     }
 
 
@@ -65,7 +91,8 @@ class ProductDetails extends Component {
             scrollToTop: this.scrollToTop,
             onQtyAdd: this.onQtyAdd,
             onQtySub: this.onQtySub,
-            displayImage: this.displayImage
+            displayImage: this.displayImage,
+            addItemToCart: this.addItemToCart,
         }
 
         if (categories && product && related) {
@@ -128,6 +155,7 @@ const Breadcrum = ({ prod }) => {
 const Details = ({ prod, state, functions }) => {
     const { productImages: { images } } = prod;
     const { qty } = state;
+
     return (
         <div className="container-fluid bgwhite p-t-35 p-b-80">
             <div className="container flex-w flex-sb">
@@ -140,7 +168,8 @@ const Details = ({ prod, state, functions }) => {
 
 const RightPanel = ({ prod, qty, functions }) => {
     const { productName, discountPrice, description, category: { catName } } = prod;
-    const { onQtyAdd, onQtySub } = functions;
+    const { onQtyAdd, onQtySub, addItemToCart } = functions;
+
     return (
         <div className="w-size14 p-t-30 respon5">
             <h4 className="product-detail-name m-text16 p-b-13">
@@ -203,7 +232,7 @@ const RightPanel = ({ prod, qty, functions }) => {
                         </div>
 
                         <div className="btn-addcart-product-detail size9 trans-0-4 m-t-10 m-b-10">
-                            <button className="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4 btn-block">
+                            <button onClick={() => { addItemToCart(prod) }} className="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4 btn-block">
                                 Add to Cart
                             </button>
                         </div>
@@ -348,9 +377,13 @@ export default compose(
             }
         ]
     }),
-    connect(({ firestore: { ordered } }, props) => ({
-        categories: ordered.categories,
-        product: ordered.product && ordered.product[0],
-        related: ordered.products
-    }))
+    connect(
+        ({ firestore: { ordered }, cart }, props) => ({
+            categories: ordered.categories,
+            product: ordered.product && ordered.product[0],
+            related: ordered.products,
+            cart
+        }),
+        { addItem, updateItem }
+    )
 )(ProductDetails);
