@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Header from '../layout/Header';
-import Loader from '../../layout/Loader';
+import Loader from '../../layout/LoaderForPublic';
 import Footer from '../layout/Footer';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';

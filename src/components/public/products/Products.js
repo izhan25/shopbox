@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Header from '../layout/Header';
 import Footer from '../layout/Footer';
-import Loader from '../../layout/Loader';
+import Loader from '../../layout/LoaderForPublic';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { Hidden } from '@material-ui/core';
 import classnames from 'classnames';
 import scrollToTop from '../functions/scrollToTop';
+import { addItem } from '../../../actions/cartActions';
 
 
 class Products extends Component {
@@ -55,6 +56,18 @@ class Products extends Component {
         }
     }
 
+    addItemToCart = product => {
+        const { addItem } = this.props;
+
+        const newProduct = {
+            ...product,
+            qty: 1,
+            totalPrice: product.discountPrice
+        }
+
+        addItem(newProduct);
+    }
+
     render() {
         const { categories } = this.state;
 
@@ -62,7 +75,7 @@ class Products extends Component {
             return (
                 <React.Fragment>
                     <Header activePage="products" categories={categories} history={this.props.history} />
-                    <Content state={this.state} onSearchTextChange={this.onSearchTextChange} gotoCat={this.gotoCat} />
+                    <Content state={this.state} onSearchTextChange={this.onSearchTextChange} gotoCat={this.gotoCat} addItemToCart={this.addItemToCart} />
                     <Footer categories={categories} />
                 </React.Fragment>
             )
@@ -73,7 +86,7 @@ class Products extends Component {
     }
 }
 
-const Content = ({ state, onSearchTextChange, gotoCat }) => {
+const Content = ({ state, onSearchTextChange, gotoCat, addItemToCart }) => {
 
     const { categories, searchText, products, catDisplay } = state;
     return (
@@ -81,18 +94,18 @@ const Content = ({ state, onSearchTextChange, gotoCat }) => {
             <div className="container">
                 <SearchBar searchText={searchText} onSearchTextChange={onSearchTextChange} />
                 <Hidden mdUp>
-                    <Categories categories={categories} gotoCat={gotoCat} catDisplay={catDisplay} />
+                    <CategoriesForMobile categories={categories} gotoCat={gotoCat} catDisplay={catDisplay} />
                 </Hidden>
                 <div className="row">
-                    <RightSection categories={categories} />
-                    <LeftSection products={products} />
+                    <CategoriesForDesktop categories={categories} />
+                    <ProductsShowcase products={products} addItemToCart={addItemToCart} />
                 </div>
             </div>
         </section>
     )
 }
 
-const Categories = ({ categories, gotoCat, catDisplay }) => {
+const CategoriesForMobile = ({ categories, gotoCat, catDisplay }) => {
 
     return (
         <div className="dropdown mb-3">
@@ -140,7 +153,7 @@ const SearchBar = ({ searchText, onSearchTextChange }) => {
     )
 }
 
-const RightSection = ({ categories }) => {
+const CategoriesForDesktop = ({ categories }) => {
 
     if (categories) {
         return (
@@ -179,7 +192,7 @@ const RightSection = ({ categories }) => {
 
 }
 
-const LeftSection = ({ products }) => {
+const ProductsShowcase = ({ products, addItemToCart }) => {
 
     // If products of selected category are zero
     if (products.length === 0) {
@@ -190,14 +203,14 @@ const LeftSection = ({ products }) => {
         <div className="col-sm-6 col-md-8 col-lg-9 p-b-50">
             <div className="row">
                 {products.map(prod =>
-                    <Product key={prod.id} prod={prod} />
+                    <Product key={prod.id} prod={prod} addItemToCart={addItemToCart} />
                 )}
             </div>
         </div>
     )
 }
 
-const Product = ({ prod }) => {
+const Product = ({ prod, addItemToCart }) => {
     return (
         <div className="col-sm-12 col-md-6 col-lg-4 p-b-50">
             <div className="block2">
@@ -210,16 +223,16 @@ const Product = ({ prod }) => {
                     <img src={prod.productImages.images[0]} alt="IMG-PRODUCT" />
 
                     <div className="block2-overlay trans-0-4">
-                        <a href="!#" className="block2-btn-addwishlist hov-pointer trans-0-4">
+                        <a className="block2-btn-addwishlist hov-pointer trans-0-4">
                             <i className="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
                             <i className="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
                         </a>
 
                         <div className="block2-btn-addcart w-size1 trans-0-4">
                             <div className="btn-group d-flex justify-content-center">
-                                <Link to="!#" className="flex-c-m btn bg4 s-text1 hov1 trans-0-4 rounded-left">
-                                    <i className="fas fa-cart-plus fa-2x"></i>
-                                </Link>
+                                <a className="flex-c-m btn bg4 s-text1 hov1 trans-0-4 rounded-left" onClick={() => { addItemToCart(prod) }}>
+                                    <i className="fas fa-cart-plus fa-2x text-white"></i>
+                                </a>
                                 <Link to={`/product/${prod.id}`} className="flex-c-m btn btn-primary s-text1 trans-0-4 rounded-right">
                                     <i className="fas fa-search-plus fa-2x"></i>
                                 </Link>
@@ -272,8 +285,11 @@ export default compose(
         }
 
     }),
-    connect((state, props) => ({
-        categories: state.firestore.ordered.categories,
-        products: state.firestore.ordered.products,
-    }))
+    connect(
+        (state, props) => ({
+            categories: state.firestore.ordered.categories,
+            products: state.firestore.ordered.products,
+        }),
+        { addItem }
+    )
 )(Products);

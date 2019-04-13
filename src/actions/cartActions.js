@@ -1,4 +1,4 @@
-import { ADD_ITEM, UPDATE_ITEM } from './types';
+import { ADD_ITEM, CLEAR_CART, DEC_QTY } from './types';
 
 export const addItem = (product) => {
     return {
@@ -6,10 +6,16 @@ export const addItem = (product) => {
         product
     }
 }
-
-export const updateItem = (product) => {
+export const clearCart = () => {
     return {
-        type: UPDATE_ITEM,
+        type: CLEAR_CART,
+    }
+}
+export const decreaseQty = (product) => {
+    return {
+        type: DEC_QTY,
         product
     }
 }
+
+

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Header from '../layout/Header';
 import Footer from '../layout/Footer';
-import Loader from '../../layout/Loader';
+import Loader from '../../layout/LoaderForPublic';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
-import { addItem, updateItem } from '../../../actions/cartActions';
+import { addItem } from '../../../actions/cartActions';
+import Snack from '../layout/Snack';
 
 class ProductDetails extends Component {
 
@@ -16,6 +17,9 @@ class ProductDetails extends Component {
         displayImg: '',
         loadDisplayImg: true,
         qty: 1,
+
+        openSnackBar: false,
+        msgSnackBar: '',
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -31,6 +35,14 @@ class ProductDetails extends Component {
         return null;
 
     }
+
+    handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackBar: false, msgSnackBar: '' });
+    };
 
 
     scrollToTop = () => {
@@ -58,33 +70,21 @@ class ProductDetails extends Component {
     }
 
     addItemToCart = product => {
-        const { cart, addItem } = this.props;
+        const { addItem } = this.props;
         const { qty } = this.state;
-        let inCart = false;
 
-        const prevProd = cart.products.filter(prod => prod.id === product.id ? inCart = true : inCart = false);
-
-        if (inCart) {
-            const updProduct = {
-                ...prevProd[0],
-                qty: prevProd[0].qty + 1
-            }
-            // updateItem(updProduct);
-            console.log(updProduct);
-        }
-        else {
-            const newProduct = {
-                ...product,
-                qty,
-            }
-            addItem(newProduct);
+        const newProduct = {
+            ...product,
+            qty,
+            totalPrice: product.discountPrice * qty
         }
 
+        addItem(newProduct);
+        this.setState(prevState => ({ openSnackBar: true, msgSnackBar: 'Added To Cart' }));
     }
 
-
     render() {
-        const { categories } = this.state;
+        const { categories, openSnackBar, msgSnackBar } = this.state;
         const { product, related } = this.props;
 
         const functions = {
@@ -106,6 +106,11 @@ class ProductDetails extends Component {
                         functions={functions}
                     />
                     <Footer categories={categories} />
+                    <Snack
+                        openSnackBar={openSnackBar}
+                        handleCloseSnackBar={this.handleCloseSnackBar}
+                        msgSnackBar={msgSnackBar}
+                    />
                 </React.Fragment>
             )
         }
@@ -115,6 +120,7 @@ class ProductDetails extends Component {
 
     }
 }
+
 
 const Content = ({ prod, state, related, functions }) => {
     return (
@@ -314,7 +320,7 @@ const RelatedProducts = ({ related, functions }) => {
     )
 }
 
-const RelatedProductItem = ({ prod, functions: { scrollToTop } }) => {
+const RelatedProductItem = ({ prod, functions: { scrollToTop, addItemToCart } }) => {
 
     return (
         <div className="col-md-3 mt-2">
@@ -335,9 +341,9 @@ const RelatedProductItem = ({ prod, functions: { scrollToTop } }) => {
 
                         <div className="block2-btn-addcart w-size1 trans-0-4">
                             <div className="btn-group d-flex justify-content-center">
-                                <Link to="!#" className="flex-c-m btn bg4 s-text1 hov1 trans-0-4 rounded-left">
-                                    <i className="fas fa-cart-plus fa-2x"></i>
-                                </Link>
+                                <a onClick={() => { addItemToCart(prod) }} className="flex-c-m btn bg4 s-text1 hov1 trans-0-4 rounded-left">
+                                    <i className="fas fa-cart-plus fa-2x text-white"></i>
+                                </a>
                                 <Link to={`/product/${prod.id}`} onClick={scrollToTop} className="flex-c-m btn btn-primary s-text1 trans-0-4 rounded-right">
                                     <i className="fas fa-search-plus fa-2x"></i>
                                 </Link>
@@ -384,6 +390,6 @@ export default compose(
             related: ordered.products,
             cart
         }),
-        { addItem, updateItem }
+        { addItem }
     )
 )(ProductDetails);

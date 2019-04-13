@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Loader from '../../layout/Loader';
+import Loader from '../../layout/LoaderForPublic';
 import Header from '../layout/Header';
 import Footer from '../layout/Footer';
 import scrollToTop from '../functions/scrollToTop';

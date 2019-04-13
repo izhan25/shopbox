@@ -1,27 +1,53 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-// import logo from '../layout/logo/sampleLogo.jpg'
 import Header from './layout/Header';
 import Slider from './layout/Slider';
 import Footer from './layout/Footer';
-import Loader from '../layout/Loader';
-// import '../../App.css';
-
+import Loader from '../layout/LoaderForPublic';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { Hidden } from '@material-ui/core';
 import scrollToTop from './functions/scrollToTop';
-
+import { addItem } from '../../actions/cartActions';
+import Snack from './layout/Snack';
+import Grid from '@material-ui/core/Grid';
 
 class Public extends Component {
+
+    state = {
+        openSnackBar: false,
+        msgSnackBar: '',
+    }
 
     componentDidMount() {
         scrollToTop();
     }
 
+    handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackBar: false, msgSnackBar: '' });
+    };
+
+    addItemToCart = product => {
+        const { addItem } = this.props;
+
+        const newProduct = {
+            ...product,
+            qty: 1,
+            totalPrice: product.discountPrice
+        }
+
+        addItem(newProduct);
+        this.setState(prevState => ({ openSnackBar: true, msgSnackBar: 'Added To Cart' }))
+    }
+
     render() {
         const { categories, bannerImages, featuredProducts, productDisplay } = this.props;
+        const { openSnackBar, msgSnackBar } = this.state;
 
         if (categories && bannerImages && featuredProducts && productDisplay) {
             return (
@@ -29,10 +55,15 @@ class Public extends Component {
                     <Header activePage="home" categories={categories} history={this.props.history} />
                     <Slider bannerImages={bannerImages} />
                     <ProductDisplay products={productDisplay} />
-                    <Featured products={featuredProducts} />
+                    <Featured products={featuredProducts} addItemToCart={this.addItemToCart} />
                     <img src={bannerImages[2].url} alt="DUMMY_IMG" />
                     <Shipping />
                     <Footer categories={categories} />
+                    <Snack
+                        openSnackBar={openSnackBar}
+                        handleCloseSnackBar={this.handleCloseSnackBar}
+                        msgSnackBar={msgSnackBar}
+                    />
                 </React.Fragment>
             )
         }
@@ -85,11 +116,11 @@ const Item = data => {
     if (data) {
         const { productName, productImages: { images }, discountPrice, originalPrice } = data.prod;
         return (
-            <div className="col-md-3 item-slick2 p-l-15 p-r-15">
+            <Grid item xs={6} sm={4} md={3} className="item-slick2 p-l-15 p-r-15">
                 {/* <!-- Block2 --> */}
                 <div className="block2">
                     <div className="block2-img wrap-pic-w of-hidden pos-relative">
-                        <img src={images[0]} alt="IMG-PRODUCT" />
+                        <img src={images[0]} alt="IMG-PRODUCT" className="img-fluid" />
 
                         <div className="block2-overlay trans-0-4">
                             <a className="block2-btn-addwishlist hov-pointer trans-0-4">
@@ -99,7 +130,7 @@ const Item = data => {
 
                             <div className="block2-btn-addcart w-size1 trans-0-4">
                                 {/* <!-- Button --> */}
-                                <button className="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+                                <button onClick={() => { data.addItemToCart(data.prod) }} className="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
                                     Add to Cart
                                 </button>
                             </div>
@@ -119,7 +150,7 @@ const Item = data => {
                         </span>
                     </div>
                 </div>
-            </div>
+            </Grid>
         )
     }
 
@@ -130,17 +161,17 @@ const Item = data => {
 const Row = data => {
     return (
         <div className="container">
-            <div className="row d-flex justify-content-center">
+            <Grid container className="d-flex justify-content-center">
                 <Hidden xsDown>
                     {
-                        data.products.map(prod => <Item key={prod.id} prod={prod} />)
+                        data.products.map(prod => <Item key={prod.id} prod={prod} addItemToCart={data.addItemToCart} />)
                     }
                 </Hidden>
                 <Hidden smUp>
-                    <Item prod={data.products[0]} />
-                    <Item prod={data.products[1]} />
+                    <Item prod={data.products[0]} addItemToCart={data.addItemToCart} />
+                    <Item prod={data.products[1]} addItemToCart={data.addItemToCart} />
                 </Hidden>
-            </div>
+            </Grid>
         </div>
 
     )
@@ -154,14 +185,14 @@ const Featured = data => {
                     <h3 className="m-text5 t-center">
                         Featured Products
 				    </h3>
-                    <Link to="/" className="row d-flex justify-content-center">
+                    <Link to="/products" className="row d-flex justify-content-center">
                         <h6 className="mt-4 btn btn-pink text-center rounded-right rounded-left mx-auto">Show more from featured</h6>
                     </Link>
                 </div>
 
                 {/* <!-- Slide2 --> */}
                 <div className="wrap-slick2">
-                    <Row products={data.products} />
+                    <Row products={data.products} addItemToCart={data.addItemToCart} />
                 </div>
 
             </div>
@@ -172,31 +203,29 @@ const Featured = data => {
 const ProductDisplay = data => {
     const { products } = data;
 
-
     return (
         <section className="banner bgwhite p-t-40 p-b-40">
             <div className="container">
-                <div className="row">
+                <Grid container>
                     {
                         products.map(prod => (
-                            <div key={prod.id} className="col-xs-6 col-md-3">
+                            <Grid item xs={6} sm={4} md={3} key={prod.id} className="col-xs-3 col-md-3">
                                 <div className="block1 hov-img-zoom pos-relative m-b-30">
-                                    <img src={prod.productImages.images[0]} alt="IMG-BENNER" />
+                                    <img src={prod.productImages.images[0]} alt="IMG-BENNER" className="img-fluid" />
 
                                     <div className="block1-wrapbtn w-size2">
-                                        {/* <!-- Button --> */}
-                                        <Link to={`/product/${prod.id}`} className="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
+                                        <Link to={`/product/${prod.id}`} className="flex-c-m size1 m-text2 bg3 hov1 trans-0-4">
                                             {prod.category.catName}
                                         </Link>
                                     </div>
                                 </div>
-                            </div>
+                            </Grid>
                         ))
                     }
-                    <div className="col-md-6 mt-1">
+                    <Grid item xs={12} sm={12} md={6} className="mt-1">
 
-                        <div className="block2 wrap-pic-w pos-relative m-b-30" style={{ height: '350px', overflow: 'hidden' }}>
-                            <img src="images/icons/bg-01.jpg" alt="IMG" />
+                        <div className="block2 wrap-pic-w pos-relative m-b-30" style={{ height: '280px', overflow: 'hidden' }}>
+                            <img src="images/icons/bg-01.jpg" alt="IMG" className="img-fluid" />
 
                             <div className="block2-content sizefull ab-t-l flex-col-c-m">
                                 <h4 className="m-text4 t-center w-size3 p-b-8">
@@ -215,9 +244,9 @@ const ProductDisplay = data => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </Grid>
 
-                </div>
+                </Grid>
             </div>
         </section>
     )
@@ -248,10 +277,13 @@ export default compose(
             },
         ]
     }),
-    connect((state, props) => ({
-        categories: state.firestore.ordered.categories,
-        bannerImages: state.firestore.ordered.bannerImages,
-        featuredProducts: state.firestore.ordered.featuredProducts,
-        productDisplay: state.firestore.ordered.productDisplay,
-    }))
+    connect(
+        (state, props) => ({
+            categories: state.firestore.ordered.categories,
+            bannerImages: state.firestore.ordered.bannerImages,
+            featuredProducts: state.firestore.ordered.featuredProducts,
+            productDisplay: state.firestore.ordered.productDisplay,
+        }),
+        { addItem }
+    )
 )(Public);

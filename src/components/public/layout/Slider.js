@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Loader from '../../layout/Loader';
+import Loader from '../../layout/LoaderForPublic';
 import classnames from 'classnames';
 
 class Slider extends Component {

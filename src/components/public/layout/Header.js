@@ -17,10 +17,11 @@ import '../assets/css/main.css';
 // images
 import header1 from '../assets/images/icons/icon-header-01.png';
 import header2 from '../assets/images/icons/icon-header-02.png';
-// import Logo from '../../layout/logo/sampleLogo.jpg';
+import Logo from '../assets/images/Logo600w.png';
 
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
+import { connect } from 'react-redux';
 
 class Header extends Component {
 
@@ -30,6 +31,7 @@ class Header extends Component {
 
     render() {
         const { categories, activePage } = this.props;
+        const { quantity } = this.props.cart;
         return (
             <header className="header1">
                 {/* <!-- Header desktop --> */}
@@ -57,8 +59,8 @@ class Header extends Component {
                     <div className="wrap_header">
                         {/* <!-- Logo --> */}
                         <Link to="/" className="logo">
-                            {/* <img src={Logo} alt="IMG-LOGO" /> */}
-                            <h2><b>Shopbox</b></h2>
+                            <img src={Logo} alt="IMG-LOGO" />
+                            {/* <h2><b>Shopbox</b></h2> */}
                         </Link>
 
                         {/* <!-- Menu --> */}
@@ -103,7 +105,7 @@ class Header extends Component {
 
                             <div className="header-wrapicon2">
                                 <img src={header2} onClick={this.onCartClick} className="header-icon1 js-show-header-dropdown" alt="ICON" />
-                                <span className="header-icons-noti">0</span>
+                                <span className="header-icons-noti">{quantity}</span>
 
                                 {/* <!-- Header cart noti --> */}
                                 <div className="header-cart header-dropdown">
@@ -184,10 +186,9 @@ class Header extends Component {
 
                 {/* <!-- Header Mobile --> */}
                 <div className="wrap_header_mobile shadow-sm p-3 mb-1 bg-white rounded">
-                    {/* <!-- Logo moblie --> */}
                     <Link to="/" className="logo-mobile">
-                        {/* <img src="images/icons/logo.png" alt="IMG-LOGO" /> */}
-                        <h2><b>Shopbox</b></h2>
+                        <img src={Logo} alt="IMG-LOGO" style={{ width: '185px' }} />
+                        {/* <h2><b>Shopbox</b></h2> */}
                     </Link>
 
                     {/* <!-- Button show menu --> */}
@@ -202,7 +203,7 @@ class Header extends Component {
 
                             <div className="header-wrapicon2">
                                 <img src={header2} onClick={this.onCartClick} className="header-icon1 js-show-header-dropdown" alt="ICON" />
-                                <span className="header-icons-noti">0</span>
+                                <span className="header-icons-noti">{quantity}</span>
 
                                 {/* <!-- Header cart noti --> */}
                                 <div className="header-cart header-dropdown">
@@ -313,4 +314,6 @@ class Header extends Component {
     }
 }
 
-export default Header;
+export default connect((state, props) => ({
+    cart: state.cart
+}))(Header);
