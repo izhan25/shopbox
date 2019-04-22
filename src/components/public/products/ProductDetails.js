@@ -9,6 +9,10 @@ import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 import { addItem } from '../../../actions/cartActions';
 import Snack from '../layout/Snack';
+import Product from '../layout/Product';
+import { Grid } from '@material-ui/core';
+import scrollToTop from '../functions/scrollToTop';
+
 
 class ProductDetails extends Component {
 
@@ -20,6 +24,9 @@ class ProductDetails extends Component {
 
         openSnackBar: false,
         msgSnackBar: '',
+    }
+    componentDidMount() {
+        scrollToTop();
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -35,6 +42,7 @@ class ProductDetails extends Component {
         return null;
 
     }
+
 
     handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
@@ -306,11 +314,14 @@ const RelatedProducts = ({ related, functions }) => {
                 <div className="wrap-slick2">
                     <div className="slick2">
                         <div className="container">
-                            <div className="row d-flex justify-content-center">
+                            <Grid container className="d-flex justify-content-center">
                                 {
-                                    related.map(prod => <RelatedProductItem key={prod.id} prod={prod} functions={functions} />)
+                                    related.map(prod => <Grid item xs={6} sm={4} md={3} key={prod.id}>
+                                        <Product prod={prod} functions={functions} />
+                                    </Grid>
+                                    )
                                 }
-                            </div>
+                            </Grid>
                         </div>
                     </div>
                 </div>
@@ -320,51 +331,7 @@ const RelatedProducts = ({ related, functions }) => {
     )
 }
 
-const RelatedProductItem = ({ prod, functions: { scrollToTop, addItemToCart } }) => {
 
-    return (
-        <div className="col-md-3 mt-2">
-            <div className="block2">
-                <div className={classnames(
-                    'block2-img wrap-pic-w of-hidden pos-relative ',
-                    {
-                        'block2-labelnew': prod.createdAt.toDate().getDate() === new Date().getDate()
-                    }
-                )}>
-                    <img src={prod.productImages.images[0]} alt="IMG-PRODUCT" />
-
-                    <div className="block2-overlay trans-0-4">
-                        <a href="!#" className="block2-btn-addwishlist hov-pointer trans-0-4">
-                            <i className="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
-                            <i className="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
-                        </a>
-
-                        <div className="block2-btn-addcart w-size1 trans-0-4">
-                            <div className="btn-group d-flex justify-content-center">
-                                <a onClick={() => { addItemToCart(prod) }} className="flex-c-m btn bg4 s-text1 hov1 trans-0-4 rounded-left">
-                                    <i className="fas fa-cart-plus fa-2x text-white"></i>
-                                </a>
-                                <Link to={`/product/${prod.id}`} onClick={scrollToTop} className="flex-c-m btn btn-primary s-text1 trans-0-4 rounded-right">
-                                    <i className="fas fa-search-plus fa-2x"></i>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="block2-txt p-t-20">
-                    <a href="product-detail.html" className="block2-name dis-block s-text3 p-b-5 text-capitalize text-truncate">
-                        {prod.productName}
-                    </a>
-
-                    <span className="block2-price m-text6 p-r-5">
-                        <del className="text-danger mr-1">Rs.{prod.originalPrice}</del>
-                        <span className="text-primary">Rs.{prod.discountPrice}</span>
-                    </span>
-                </div>
-            </div>
-        </div>
-    )
-}
 
 export default compose(
     firestoreConnect(props => {

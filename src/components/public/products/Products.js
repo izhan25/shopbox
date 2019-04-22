@@ -7,9 +7,11 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Hidden } from '@material-ui/core';
-import classnames from 'classnames';
 import scrollToTop from '../functions/scrollToTop';
 import { addItem } from '../../../actions/cartActions';
+import { Grid } from '@material-ui/core';
+import Snack from '../layout/Snack';
+import Product from '../layout/Product';
 
 
 class Products extends Component {
@@ -17,7 +19,10 @@ class Products extends Component {
         searchText: '',
         categories: [],
         products: [],
-        catDisplay: 'Select Category'
+        catDisplay: 'Select Category',
+
+        openSnackBar: false,
+        msgSnackBar: '',
     }
 
     componentDidMount() {
@@ -66,17 +71,35 @@ class Products extends Component {
         }
 
         addItem(newProduct);
+        this.setState(prevState => ({ openSnackBar: true, msgSnackBar: 'Added To Cart' }));
     }
 
+    handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackBar: false, msgSnackBar: '' });
+    };
+
     render() {
-        const { categories } = this.state;
+        const { categories, openSnackBar, msgSnackBar } = this.state;
+
+        const functions = {
+            addItemToCart: this.addItemToCart,
+        }
 
         if (categories) {
             return (
                 <React.Fragment>
                     <Header activePage="products" categories={categories} history={this.props.history} />
-                    <Content state={this.state} onSearchTextChange={this.onSearchTextChange} gotoCat={this.gotoCat} addItemToCart={this.addItemToCart} />
+                    <Content state={this.state} onSearchTextChange={this.onSearchTextChange} gotoCat={this.gotoCat} functions={functions} />
                     <Footer categories={categories} />
+                    <Snack
+                        openSnackBar={openSnackBar}
+                        handleCloseSnackBar={this.handleCloseSnackBar}
+                        msgSnackBar={msgSnackBar}
+                    />
                 </React.Fragment>
             )
         }
@@ -86,7 +109,7 @@ class Products extends Component {
     }
 }
 
-const Content = ({ state, onSearchTextChange, gotoCat, addItemToCart }) => {
+const Content = ({ state, onSearchTextChange, gotoCat, functions }) => {
 
     const { categories, searchText, products, catDisplay } = state;
     return (
@@ -96,10 +119,12 @@ const Content = ({ state, onSearchTextChange, gotoCat, addItemToCart }) => {
                 <Hidden mdUp>
                     <CategoriesForMobile categories={categories} gotoCat={gotoCat} catDisplay={catDisplay} />
                 </Hidden>
-                <div className="row">
-                    <CategoriesForDesktop categories={categories} />
-                    <ProductsShowcase products={products} addItemToCart={addItemToCart} />
-                </div>
+                <Grid container>
+                    <Hidden smDown>
+                        <CategoriesForDesktop categories={categories} />
+                    </Hidden>
+                    <ProductsShowcase products={products} functions={functions} />
+                </Grid>
             </div>
         </section>
     )
@@ -157,33 +182,31 @@ const CategoriesForDesktop = ({ categories }) => {
 
     if (categories) {
         return (
-            <div className="col-sm-6 col-md-4 col-lg-3 p-b-50" >
-                <Hidden smDown>
-                    <div className="leftbar p-r-20 p-r-0-sm">
-                        <h4 className="m-text14 p-b-7">
-                            Categories
+            <Grid item xs={2} sm={2} md={2} className="col-sm-6 col-md-4 col-lg-3 p-b-50" >
+                <div className="leftbar p-r-20 p-r-0-sm">
+                    <h4 className="m-text14 p-b-7">
+                        Categories
                         </h4>
-                        <ul className="p-b-54">
-                            <li className="p-t-4">
-                                <Link to="/products" className="s-text13 active1">
-                                    <i className="fas fa-chevron-circle-right mr-1"></i>
-                                    All
+                    <ul className="p-b-54">
+                        <li className="p-t-4">
+                            <Link to="/products" className="s-text13 active1">
+                                <i className="fas fa-chevron-circle-right mr-1"></i>
+                                All
                                 </Link>
-                            </li>
-                            {
-                                categories.map(cat => (
-                                    <li key={cat.id} className="p-t-4">
-                                        <Link to={`/products/category/${cat.id}`} className="s-text13 active1">
-                                            <i className="fas fa-chevron-circle-right mr-1"></i>
-                                            {cat.catName}
-                                        </Link>
-                                    </li>
-                                ))
-                            }
-                        </ul>
-                    </div>
-                </Hidden>
-            </div>
+                        </li>
+                        {
+                            categories.map(cat => (
+                                <li key={cat.id} className="p-t-4">
+                                    <Link to={`/products/category/${cat.id}`} className="s-text13 active1">
+                                        <i className="fas fa-chevron-circle-right mr-1"></i>
+                                        {cat.catName}
+                                    </Link>
+                                </li>
+                            ))
+                        }
+                    </ul>
+                </div>
+            </Grid>
         )
     }
     else {
@@ -192,7 +215,7 @@ const CategoriesForDesktop = ({ categories }) => {
 
 }
 
-const ProductsShowcase = ({ products, addItemToCart }) => {
+const ProductsShowcase = ({ products, functions }) => {
 
     // If products of selected category are zero
     if (products.length === 0) {
@@ -200,62 +223,17 @@ const ProductsShowcase = ({ products, addItemToCart }) => {
     }
 
     return (
-        <div className="col-sm-6 col-md-8 col-lg-9 p-b-50">
-            <div className="row">
+        <Grid item xs={12} sm={12} md={10} className="p-b-50">
+            <Grid container>
                 {products.map(prod =>
-                    <Product key={prod.id} prod={prod} addItemToCart={addItemToCart} />
+                    <Grid item xs={6} sm={4} md={3} key={prod.id}>
+                        <Product prod={prod} functions={functions} />
+                    </Grid>
                 )}
-            </div>
-        </div>
+            </Grid>
+        </Grid>
     )
 }
-
-const Product = ({ prod, addItemToCart }) => {
-    return (
-        <div className="col-sm-12 col-md-6 col-lg-4 p-b-50">
-            <div className="block2">
-                <div className={classnames(
-                    'block2-img wrap-pic-w of-hidden pos-relative ',
-                    {
-                        'block2-labelnew': prod.createdAt.toDate().getDate() === new Date().getDate()
-                    }
-                )}>
-                    <img src={prod.productImages.images[0]} alt="IMG-PRODUCT" />
-
-                    <div className="block2-overlay trans-0-4">
-                        <a className="block2-btn-addwishlist hov-pointer trans-0-4">
-                            <i className="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
-                            <i className="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
-                        </a>
-
-                        <div className="block2-btn-addcart w-size1 trans-0-4">
-                            <div className="btn-group d-flex justify-content-center">
-                                <a className="flex-c-m btn bg4 s-text1 hov1 trans-0-4 rounded-left" onClick={() => { addItemToCart(prod) }}>
-                                    <i className="fas fa-cart-plus fa-2x text-white"></i>
-                                </a>
-                                <Link to={`/product/${prod.id}`} className="flex-c-m btn btn-primary s-text1 trans-0-4 rounded-right">
-                                    <i className="fas fa-search-plus fa-2x"></i>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="block2-txt p-t-20">
-                    <a href="product-detail.html" className="block2-name dis-block s-text3 p-b-5 text-truncate">
-                        {prod.productName}
-                    </a>
-
-                    <span className="block2-price m-text6 p-r-5">
-                        <del className="text-danger mr-1">Rs.{prod.originalPrice}</del>
-                        <span className="text-primary">Rs.{prod.discountPrice}</span>
-                    </span>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-
 
 export default compose(
     firestoreConnect(props => {

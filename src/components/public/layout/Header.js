@@ -22,6 +22,7 @@ import Logo from '../assets/images/Logo600w.png';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
+import { Grid } from '@material-ui/core';
 
 class Header extends Component {
 
@@ -30,7 +31,7 @@ class Header extends Component {
     }
 
     render() {
-        const { categories, activePage } = this.props;
+        const { categories, activePage, auth } = this.props;
         const { quantity } = this.props.cart;
         return (
             <header className="header1">
@@ -51,7 +52,7 @@ class Header extends Component {
 
                         <div className="topbar-child2">
                             <span className="topbar-email">
-                                fashe@example.com
+                                {auth.uid !== '' ? auth.email : null}
                             </span>
                         </div>
                     </div>
@@ -60,7 +61,6 @@ class Header extends Component {
                         {/* <!-- Logo --> */}
                         <Link to="/" className="logo">
                             <img src={Logo} alt="IMG-LOGO" />
-                            {/* <h2><b>Shopbox</b></h2> */}
                         </Link>
 
                         {/* <!-- Menu --> */}
@@ -97,9 +97,13 @@ class Header extends Component {
 
                         {/* <!-- Header Icon --> */}
                         <div className="header-icons">
-                            <a className="header-wrapicon1 dis-block">
-                                <img src={header1} className="header-icon1" alt="ICON" />
-                            </a>
+                            <Link to="/profile" className="header-wrapicon1 dis-block">
+                                {
+                                    !auth.isEmpty
+                                        ? <img src={auth.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
+                                        : <img src={header1} className="header-icon1" alt="ICON" />
+                                }
+                            </Link>
 
                             <span className="linedivide1"></span>
 
@@ -118,11 +122,11 @@ class Header extends Component {
                                             <div className="header-cart-item-txt">
                                                 <a href="!#" className="header-cart-item-name">
                                                     White Shirt With Pleat Detail Back
-                                            </a>
+                                                </a>
 
                                                 <span className="header-cart-item-info">
                                                     1 x $19.00
-                                            </span>
+                                                </span>
                                             </div>
                                         </li>
 
@@ -168,14 +172,14 @@ class Header extends Component {
                                             {/* <!-- Button --> */}
                                             <a href="cart.html" className="flex-c-m size1 bg1 bo-rad-20 hov1 s-text1 trans-0-4">
                                                 View Cart
-                                        </a>
+                                            </a>
                                         </div>
 
                                         <div className="header-cart-wrapbtn">
                                             {/* <!-- Button --> */}
                                             <a href="!#" className="flex-c-m size1 bg1 bo-rad-20 hov1 s-text1 trans-0-4">
                                                 Check Out
-                                        </a>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -185,18 +189,23 @@ class Header extends Component {
                 </div>
 
                 {/* <!-- Header Mobile --> */}
-                <div className="wrap_header_mobile shadow-sm p-3 mb-1 bg-white rounded">
-                    <Link to="/" className="logo-mobile">
-                        <img src={Logo} alt="IMG-LOGO" style={{ width: '185px' }} />
-                        {/* <h2><b>Shopbox</b></h2> */}
-                    </Link>
+                <Grid container className="wrap_header_mobile shadow-sm p-3 mb-1 bg-white rounded">
+                    <Grid item xs={6}>
+                        <Link to="/" className="logo-mobile">
+                            <img src={Logo} alt="IMG-LOGO" style={{ width: '180px' }} />
+                        </Link>
+                    </Grid>
 
                     {/* <!-- Button show menu --> */}
-                    <div className="btn-show-menu">
+                    <Grid item xs={6} className="btn-show-menu">
                         {/* <!-- Header Icon mobile --> */}
                         <div className="header-icons-mobile">
-                            <Link to="/" className="header-wrapicon1 dis-block">
-                                <img src={header1} className="header-icon1" alt="ICON" />
+                            <Link to="/profile" className="header-wrapicon1 dis-block">
+                                {
+                                    !auth.isEmpty
+                                        ? <img src={auth.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
+                                        : <img src={header1} className="header-icon1" alt="ICON" />
+                                }
                             </Link>
 
                             <span className="linedivide2"></span>
@@ -285,8 +294,8 @@ class Header extends Component {
                                 <span className="hamburger-inner"></span>
                             </span>
                         </div>
-                    </div>
-                </div>
+                    </Grid>
+                </Grid>
 
                 {/* <!-- Menu Mobile --> */}
                 <div className="collapse navbar-collapse" id="mobNavbarMenu">
@@ -315,5 +324,6 @@ class Header extends Component {
 }
 
 export default connect((state, props) => ({
-    cart: state.cart
+    cart: state.cart,
+    auth: state.firebase.auth
 }))(Header);

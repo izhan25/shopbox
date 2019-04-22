@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 
 // Route Protection
-import { UserIsAuthenticated, UserIsNotAuthenticated } from './helpers/auth';
+import { UserIsAuthenticated, UserIsNotAuthenticated, CustomerIsAuthenticated, CustomerIsNotAuthenticated } from './helpers/auth';
 
 
 // Components
@@ -19,6 +19,7 @@ import ProductsPublicDetails from './components/public/products/ProductDetails';
 import AboutPublic from './components/public/about/About';
 import ContactPublic from './components/public/contact/Contact';
 import Cart from './components/public/cart/Cart';
+import Login from './components/public/auth/Login';
 import Dashboard from './components/dashboard/Dashboard'; // Dashboard
 import Products from './components/dashboard/products/Products';
 import ProductDetails from './components/dashboard/products/ProductDetails';
@@ -30,9 +31,11 @@ import CustomerDetails from './components/dashboard/customers/CustomerDetails';
 import Orders from './components/dashboard/orders/Orders';
 import OrderDetails from './components/dashboard/orders/OrderDetails';
 import Profile from './components/dashboard/profile/Profile';
-import Login from './components/dashboard/auth/Login';
+import LoginPublic from './components/public/auth/Login';
 import Display from './components/dashboard/display/Display';
-
+import ProfilePublic from './components/public/dashboard/Profile';
+import OrdersPublic from './components/public/dashboard/Orders';
+import NotFound from './components/layout/NotFound';
 
 
 class App extends Component {
@@ -49,6 +52,10 @@ class App extends Component {
               <Route exact path="/about" component={AboutPublic} />
               <Route exact path="/contact" component={ContactPublic} />
               <Route exact path="/cart" component={Cart} />
+              <Route exact path="/login" component={CustomerIsNotAuthenticated(LoginPublic)} />
+              <Route exact path="/profile" component={CustomerIsAuthenticated(ProfilePublic)} />
+              <Route exact path="/orders" component={CustomerIsAuthenticated(OrdersPublic)} />
+
               <Route exact path="/dashboard/login" component={UserIsNotAuthenticated(Login)} />
               <Route exact path="/dashboard" component={UserIsAuthenticated(Dashboard)} />
               <Route exact path="/dashboard/products/:category?/:productType?" component={UserIsAuthenticated(Products)} />
@@ -62,6 +69,7 @@ class App extends Component {
               <Route exact path="/dashboard/order/:id" component={UserIsAuthenticated(OrderDetails)} />
               <Route exact path="/dashboard/profile" component={UserIsAuthenticated(Profile)} />
               <Route exact path="/dashboard/display" component={UserIsAuthenticated(Display)} />
+              <Route component={NotFound} />
             </Switch>
           </div>
         </Router>

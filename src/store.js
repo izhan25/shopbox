@@ -47,6 +47,8 @@ const rootReducer = combineReducers({
 const initialState = {};
 
 // Create store with reducers
+
+// with Redux
 const store = createStoreWithFirebase(
     rootReducer,
     initialState,
@@ -55,6 +57,8 @@ const store = createStoreWithFirebase(
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     )
 );
+
+// Simple
 // const store = createStoreWithFirebase(
 //     rootReducer,
 //     initialState,

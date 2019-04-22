@@ -4,13 +4,13 @@ import Header from '../layout/Header';
 import Footer from '../layout/Footer';
 import scrollToTop from '../functions/scrollToTop';
 import { compose } from 'redux';
-import { firestoreConnect } from 'react-redux-firebase';
+import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
-import classnames from 'classnames';
-import { Link } from 'react-router-dom';
 import { addItem, clearCart, decreaseQty } from '../../../actions/cartActions';
 import Snack from '../layout/Snack';
-
+import Grid from '@material-ui/core/Grid';
+import Product from '../layout/Product';
+import Swal from 'sweetalert2';
 
 class Cart extends Component {
 
@@ -88,6 +88,20 @@ class Cart extends Component {
         decreaseQty(updProd);
     }
 
+    checkout = () => {
+        const { auth } = this.props;
+
+        const success = () => {
+            Swal.fire('success');
+        }
+
+        const error = () => this.props.history.push('/login');
+
+        if (auth.uid !== undefined) success();
+        else error();
+
+    }
+
     render() {
         const { categories, moreProds, clearCart } = this.props;
         const { openSnackBar, msgSnackBar, cart } = this.state;
@@ -95,7 +109,8 @@ class Cart extends Component {
         const functions = {
             addItemToCart: this.addItemToCart,
             decreseQtyFromCart: this.decreseQtyFromCart,
-            increseQty: this.increseQty
+            increseQty: this.increseQty,
+            checkout: this.checkout
         }
 
         if (categories && moreProds) {
@@ -115,7 +130,7 @@ class Cart extends Component {
                                             <i className="fas fa-trash mr-1" />
                                             Clear Cart
                                         </button>
-                                        <CartTotal cart={cart} />
+                                        <CartTotal cart={cart} functions={functions} />
                                     </React.Fragment>
                             }
                         </div>
@@ -191,7 +206,14 @@ const CartItemRow = ({ prod, functions: { increseQty, decreseQtyFromCart } }) =>
     )
 }
 
-const CartTotal = ({ cart }) => {
+const CartTotal = ({ cart, functions: { checkout } }) => {
+
+    const RupeeFormater = amount => (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+
+    const subTotal = RupeeFormater(cart.total);
+    const deliveryCharges = 250;
+    const total = RupeeFormater(parseInt(cart.total.toString(), 10) + 250);
+
     return (
         <div className="bo9 w-size18 p-l-40 p-r-40 p-t-30 p-b-38 m-t-70 m-r-0 m-l-auto p-lr-15-sm">
             <h5 className="m-text20 p-b-24">
@@ -201,64 +223,35 @@ const CartTotal = ({ cart }) => {
             <div className="flex-w flex-sb-m p-b-12">
                 <span className="s-text18 w-size19 w-full-sm">
                     Subtotal:
-					</span>
+                </span>
 
                 <span className="m-text21 w-size20 w-full-sm">
-                    Rs.{cart.total}
+                    Rs. {subTotal}
                 </span>
             </div>
 
             <div className="flex-w flex-sb bo10 p-t-15 p-b-20">
                 <span className="s-text18 w-size19 w-full-sm">
-                    Shipping:
-					</span>
+                    Delivery Charges:
+                </span>
 
-                <div className="w-size20 w-full-sm">
-                    <p className="s-text8 p-b-23">
-                        There are no shipping methods available. Please double check your address, or contact us if you need any help.
-                    </p>
-
-                    <span className="s-text19">
-                        Calculate Shipping
-                    </span>
-
-                    <div className="rs2-select2 rs3-select2 rs4-select2 bo4 of-hidden w-size21 m-t-8 m-b-12">
-                        <select className="selection-2 form-control" name="country">
-                            <option>Select a country...</option>
-                            <option>US</option>
-                            <option>UK</option>
-                            <option>Japan</option>
-                        </select>
-                    </div>
-
-                    <div className="size13 bo4 m-b-12">
-                        <input className="sizefull s-text7 p-l-15 p-r-15" type="text" name="state" placeholder="State /  country" />
-                    </div>
-
-                    <div className="size13 bo4 m-b-22">
-                        <input className="sizefull s-text7 p-l-15 p-r-15" type="text" name="postcode" placeholder="Postcode / Zip" />
-                    </div>
-
-                    <div className="size14 trans-0-4 m-b-10">
-                        <button className="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
-                            Update Totals
-                        </button>
-                    </div>
-                </div>
+                <span className="m-text21 w-size20 w-full-sm">
+                    Rs. {deliveryCharges}
+                </span>
             </div>
 
             <div className="flex-w flex-sb-m p-t-26 p-b-30">
                 <span className="m-text22 w-size19 w-full-sm">
                     Total:
-					</span>
+                </span>
 
                 <span className="m-text21 w-size20 w-full-sm">
-                    Rs.{cart.total}
+                    Rs. {total}
                 </span>
             </div>
 
             <div className="size15 trans-0-4">
-                <button className="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
+                <button onClick={checkout} className="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
                     Proceed to Checkout
                 </button>
             </div>
@@ -293,11 +286,14 @@ const MoreProducts = ({ prods, functions }) => {
                 <div className="wrap-slick2">
                     <div className="slick2">
                         <div className="container">
-                            <div className="row d-flex justify-content-center">
+                            <Grid container className="d-flex justify-content-center">
                                 {
-                                    prods.map(prod => <MoreProductItem key={prod.id} prod={prod} functions={functions} />)
+                                    prods.map(prod => <Grid item xs={6} sm={4} md={3} key={prod.id}>
+                                        <Product prod={prod} functions={functions} />
+                                    </Grid>
+                                    )
                                 }
-                            </div>
+                            </Grid>
                         </div>
                     </div>
                 </div>
@@ -307,51 +303,6 @@ const MoreProducts = ({ prods, functions }) => {
     )
 }
 
-const MoreProductItem = ({ prod, functions: { scrollToTop, addItemToCart } }) => {
-
-    return (
-        <div className="col-md-3 mt-2">
-            <div className="block2">
-                <div className={classnames(
-                    'block2-img wrap-pic-w of-hidden pos-relative ',
-                    {
-                        'block2-labelnew': prod.createdAt.toDate().getDate() === new Date().getDate()
-                    }
-                )}>
-                    <img src={prod.productImages.images[0]} alt="IMG-PRODUCT" />
-
-                    <div className="block2-overlay trans-0-4">
-                        <a className="block2-btn-addwishlist hov-pointer trans-0-4">
-                            <i className="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
-                            <i className="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
-                        </a>
-
-                        <div className="block2-btn-addcart w-size1 trans-0-4">
-                            <div className="btn-group d-flex justify-content-center">
-                                <a onClick={() => { addItemToCart(prod) }} className="flex-c-m btn bg4 s-text1 hov1 trans-0-4 rounded-left">
-                                    <i className="fas fa-cart-plus fa-2x text-white"></i>
-                                </a>
-                                <Link to={`/product/${prod.id}`} className="flex-c-m btn btn-primary s-text1 trans-0-4 rounded-right">
-                                    <i className="fas fa-search-plus fa-2x"></i>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="block2-txt p-t-20">
-                    <a href="product-detail.html" className="block2-name dis-block s-text3 p-b-5 text-capitalize text-truncate">
-                        {prod.productName}
-                    </a>
-
-                    <span className="block2-price m-text6 p-r-5">
-                        <del className="text-danger mr-1">Rs.{prod.originalPrice}</del>
-                        <span className="text-primary">Rs.{prod.discountPrice}</span>
-                    </span>
-                </div>
-            </div>
-        </div>
-    )
-}
 
 export default compose(
     firestoreConnect(props => {
@@ -365,12 +316,14 @@ export default compose(
             }
         ]
     }),
+    firebaseConnect(),
     connect(
         (state, props) => (
             {
                 categories: state.firestore.ordered.categories,
                 cart: state.cart,
-                moreProds: state.firestore.ordered.products
+                moreProds: state.firestore.ordered.products,
+                auth: state.firebase.auth
             }
         ),
         { addItem, clearCart, decreaseQty }

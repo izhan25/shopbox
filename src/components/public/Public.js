@@ -12,6 +12,7 @@ import scrollToTop from './functions/scrollToTop';
 import { addItem } from '../../actions/cartActions';
 import Snack from './layout/Snack';
 import Grid from '@material-ui/core/Grid';
+import Product from './layout/Product';
 
 class Public extends Component {
 
@@ -114,42 +115,12 @@ const Shipping = () => {
 
 const Item = data => {
     if (data) {
-        const { productName, productImages: { images }, discountPrice, originalPrice } = data.prod;
+        const functions = {
+            addItemToCart: data.addItemToCart
+        }
         return (
-            <Grid item xs={6} sm={4} md={3} className="item-slick2 p-l-15 p-r-15">
-                {/* <!-- Block2 --> */}
-                <div className="block2">
-                    <div className="block2-img wrap-pic-w of-hidden pos-relative">
-                        <img src={images[0]} alt="IMG-PRODUCT" className="img-fluid" />
-
-                        <div className="block2-overlay trans-0-4">
-                            <a className="block2-btn-addwishlist hov-pointer trans-0-4">
-                                <i className="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
-                                <i className="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
-                            </a>
-
-                            <div className="block2-btn-addcart w-size1 trans-0-4">
-                                {/* <!-- Button --> */}
-                                <button onClick={() => { data.addItemToCart(data.prod) }} className="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
-                                    Add to Cart
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="block2-txt p-t-20">
-                        <a href="product-detail.html" className="text-capitalize block2-name dis-block s-text3 p-b-5">
-                            {productName}
-                        </a>
-
-                        <span className="text-danger block2-price m-text6 p-r-5">
-                            <del>RS.{originalPrice}</del>
-                        </span>
-                        <span className="font-weight-bold text-primary block2-price m-text6 p-r-5">
-                            RS.{discountPrice}
-                        </span>
-                    </div>
-                </div>
+            <Grid item xs={6} sm={4} md={3} className="">
+                <Product prod={data.prod} functions={functions} />
             </Grid>
         )
     }
@@ -213,11 +184,13 @@ const ProductDisplay = data => {
                                 <div className="block1 hov-img-zoom pos-relative m-b-30">
                                     <img src={prod.productImages.images[0]} alt="IMG-BENNER" className="img-fluid" />
 
-                                    <div className="block1-wrapbtn w-size2">
-                                        <Link to={`/product/${prod.id}`} className="flex-c-m size1 m-text2 bg3 hov1 trans-0-4">
-                                            {prod.category.catName}
-                                        </Link>
-                                    </div>
+                                    <Grid container className="block1-wrapbtn w-size2 d-flex justify-content-center">
+                                        <Grid item xs={11}>
+                                            <Link to={`/product/${prod.id}`} className="flex-c-m size1 text-capitalize bg3 hov1 trans-0-4">
+                                                {prod.category.catName}
+                                            </Link>
+                                        </Grid>
+                                    </Grid>
                                 </div>
                             </Grid>
                         ))
