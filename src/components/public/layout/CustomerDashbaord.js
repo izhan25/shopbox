@@ -6,10 +6,9 @@ import scrollToTop from '../functions/scrollToTop';
 import { compose } from 'redux';
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
-// import { Link } from 'react-router-dom';
 import { Grid, List, ListItem, ListItemIcon, ListItemText, Hidden } from '@material-ui/core';
-// import CircularProgress from '@material-ui/core/CircularProgress';
 import Swal from 'sweetalert2';
+import { removeCustomer } from '../../../actions/customerActions';
 
 class Profile extends Component {
 
@@ -18,7 +17,7 @@ class Profile extends Component {
     }
 
     onLogoutClick = () => {
-        const { firebase } = this.props;
+        const { firebase, removeCustomer } = this.props;
 
         // confirming
         Swal.fire({
@@ -33,6 +32,9 @@ class Profile extends Component {
             if (result.value) {
                 // logging out
                 firebase.logout();
+
+                // setting state
+                removeCustomer();
             }
         })
     }
@@ -46,7 +48,7 @@ class Profile extends Component {
                     <Header activePage="profile" categories={categories} history={this.props.history} />
 
                     <div className="container">
-                        <h5 className="mb-3 mt-4 border border-danger border-top-0 border-left-0 border-right-0 p-3">Welcome, {this.props.auth.displayName}</h5>
+                        <h5 className="mb-3 mt-4 border border-danger border-top-0 border-left-0 border-right-0 p-3 text-capitalize">Welcome, {this.props.auth.displayName}</h5>
 
                         <Hidden smDown>
                             <Grid container>
@@ -74,7 +76,7 @@ class Profile extends Component {
                                         </ListItem>
                                     </List>
                                 </Grid>
-                                <Grid item sm={4} md={4}>
+                                <Grid item sm={8} md={9}>
                                     {mainContent}
                                 </Grid>
                             </Grid>
@@ -100,7 +102,9 @@ class Profile extends Component {
                                     </ListItem>
                                 </List>
                             </div>
-                            {mainContent}
+                            <div style={{ paddingBottom: '180px' }}>
+                                {mainContent}
+                            </div>
                         </Hidden>
                     </div>
 
@@ -134,5 +138,6 @@ export default compose(
                 auth: state.firebase.auth
             }
         ),
+        { removeCustomer }
     )
 )(Profile);

@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Swal from 'sweetalert2';
+import { addCustomer } from '../../../actions/customerActions';
 
 
 class Login extends Component {
@@ -70,7 +71,7 @@ class Login extends Component {
     }
 
     signinWithGoogle = () => {
-        const { firebase, firestore } = this.props;
+        const { firebase, firestore, addCustomer } = this.props;
         const provider = new firebase.auth.GoogleAuthProvider();
 
         firebase.auth().signInWithPopup(provider)
@@ -86,20 +87,35 @@ class Login extends Component {
                     photoURL: user.photoURL,
                     password: null,
                     birthDate: null,
-                    address: null
+                    address: null,
+                    gender: null
                 }
 
                 // checking if the user exist in database
                 const db = firebase.firestore();
 
                 db.collection('customers').where('email', '==', newCustomer.email).get().then(querySnapshot => {
-                    if (querySnapshot) {
+                    if (!querySnapshot.empty) {
                         // logging if user exist
-                        console.log('user exists')
+                        console.log('user exists');
+
+                        let customer = null;
+                        querySnapshot.forEach(doc => {
+                            customer = {
+                                id: doc.id,
+                                ...doc.data()
+                            }
+                        });
+
+                        // saving customer to state
+                        addCustomer(customer);
                     }
                     else {
                         // storing to firestore if user is new
                         firestore.add({ collection: 'customers' }, newCustomer).then(console.log('user saved'));
+
+                        // saving customer to state
+                        addCustomer(newCustomer);
                     }
                 })
             })
@@ -112,7 +128,8 @@ class Login extends Component {
                 Swal.fire({
                     type: 'error',
                     title: 'Oops!',
-                    html: 'Something went wrong!'
+                    html: `<div>Something went wrong!</div>
+                            <div>Kindly Try Again</div>`
                 })
 
                 console.log('errorCode =>', errorCode);
@@ -211,5 +228,6 @@ export default compose(
                 auth: state.firebase.auth
             }
         ),
-    )
+        { addCustomer }
+    ),
 )(Login);

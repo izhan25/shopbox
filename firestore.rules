@@ -12,8 +12,7 @@ service cloud.firestore {
       allow write: if request.auth.token.email == 'izhan.yameen25@gmail.com';
     }
     match /customers/{custID}{
-      allow read: if request.auth.token.email == 'izhan.yameen25@gmail.com';
-      allow write;
+      allow read, write: if request.auth.uid != null;
     }
     match /orders/{orderID}{
       allow write: if request.auth.uid != null;

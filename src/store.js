@@ -9,6 +9,7 @@ import { reactReduxFirebase, firebaseReducer } from 'react-redux-firebase';
 import { reduxFirestore, firestoreReducer } from 'redux-firestore';
 // My Reducers Import Here
 import cartReducer from './reducers/cartReducer';
+import customerReducer from './reducers/customerReducer';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDuLVK2-TD3zf9o0ni2C6fmMifmaLL_p9I",
@@ -40,29 +41,37 @@ const rootReducer = combineReducers({
     firebase: firebaseReducer,
     firestore: firestoreReducer,
     // place my reducers here
-    cart: cartReducer
+    cart: cartReducer,
+    customer: customerReducer
 });
 
 // initial state
 const initialState = {};
 
 // Create store with reducers
-
-// with Redux
-const store = createStoreWithFirebase(
-    rootReducer,
-    initialState,
-    compose(
+let store;
+if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
+    // with Redux
+    store = createStoreWithFirebase(
+        rootReducer,
+        initialState,
+        compose(
+            reactReduxFirebase(firebase),
+            window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+        )
+    );
+}
+else {
+    // Simple
+    store = createStoreWithFirebase(
+        rootReducer,
+        initialState,
         reactReduxFirebase(firebase),
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-    )
-);
+    );
+}
 
-// Simple
-// const store = createStoreWithFirebase(
-//     rootReducer,
-//     initialState,
-//     reactReduxFirebase(firebase),
-// );
+
+
+
 
 export default store;
