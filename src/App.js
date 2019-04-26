@@ -36,6 +36,8 @@ import Display from './components/dashboard/display/Display';
 import ProfilePublic from './components/public/dashboard/Profile';
 import OrdersPublic from './components/public/dashboard/Orders';
 import NotFound from './components/layout/NotFound';
+import Register from './components/public/auth/Register';
+import ForgotPassword from './components/public/auth/ForgotPassword.js';
 
 
 class App extends Component {
@@ -53,8 +55,10 @@ class App extends Component {
               <Route exact path="/contact" component={ContactPublic} />
               <Route exact path="/cart" component={Cart} />
               <Route exact path="/login" component={CustomerIsNotAuthenticated(LoginPublic)} />
+              <Route exact path="/login/reset-password" component={ForgotPassword} />
               <Route exact path="/profile" component={CustomerIsAuthenticated(ProfilePublic)} />
               <Route exact path="/orders" component={CustomerIsAuthenticated(OrdersPublic)} />
+              <Route exact path="/register" component={Register} />
 
               <Route exact path="/dashboard/login" component={UserIsNotAuthenticated(Login)} />
               <Route exact path="/dashboard" component={UserIsAuthenticated(Dashboard)} />

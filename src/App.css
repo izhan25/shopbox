@@ -1,6 +1,9 @@
 body{
     font-family: 'Nanum Gothic', sans-serif;
 }
+.bg-pink{
+  background-color: #e65540;
+}
 .font-pink{
   color: #e65540;
 }

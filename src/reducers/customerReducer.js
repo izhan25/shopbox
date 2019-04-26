@@ -14,7 +14,6 @@ function setCustomerToLS(state) {
 }
 
 export default function (state = initalStage, action) {
-    console.log(action.type);
     switch (action.type) {
         case ADD_CUSTOMER:
             const newState = {
@@ -34,7 +33,6 @@ export default function (state = initalStage, action) {
             return emptyState;
 
         case UPDATE_CUSTOMER:
-            console.log(action.customer);
             const updState = {
                 ...state,
                 customer: action.customer

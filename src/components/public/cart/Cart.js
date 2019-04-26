@@ -79,13 +79,16 @@ class Cart extends Component {
     }
 
     decreseQtyFromCart = (prod, qty) => {
+        const { decreaseQty } = this.props;
 
-        const updProd = {
-            ...prod,
-            qty: prod.qty - 1,
-            decrementAmount: prod.discountPrice
+        if (prod.qty > 1) {
+            const updProd = {
+                ...prod,
+                qty: prod.qty - 1,
+                decrementAmount: prod.discountPrice
+            }
+            decreaseQty(updProd);
         }
-        decreaseQty(updProd);
     }
 
     checkout = () => {

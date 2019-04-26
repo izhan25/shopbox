@@ -211,7 +211,7 @@ const ProductDisplay = data => {
 
                                 <div className="w-size2 p-t-25">
                                     {/* <!-- Button --> */}
-                                    <Link to="/signup" className="flex-c-m size2 bg4 bo-rad-23 hov1 m-text3 trans-0-4">
+                                    <Link to="/register" className="flex-c-m size2 bg4 bo-rad-23 hov1 m-text3 trans-0-4">
                                         Sign Up
 								    </Link>
                                 </div>

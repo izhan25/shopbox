@@ -28,6 +28,8 @@ class Login extends Component {
         scrollToTop();
     }
 
+
+
     onChange = e => {
         const value = e.target.value;
         const name = e.target.name;
@@ -53,14 +55,23 @@ class Login extends Component {
             error: ''
         })
 
-        const { firebase } = this.props;
+        const { firebase, firestore, addCustomer } = this.props;
 
         firebase
             .login({
                 email,
                 password
             })
-            .then(user => this.setState({ showLoader: false, error: '' }))
+            .then(user => {
+                this.setState({ showLoader: false, error: '' });
+
+                // populating redux state with customer details
+                firestore.get({ collection: 'customers', where: ['email', '==', email] }).then(querySnapshot => {
+                    querySnapshot.forEach(doc => {
+                        addCustomer({ ...doc.data(), id: doc.id });
+                    });
+                });
+            })
             .catch(err => {
                 this.setState({
                     error: 'Invalid Credentials',
@@ -112,10 +123,14 @@ class Login extends Component {
                     }
                     else {
                         // storing to firestore if user is new
-                        firestore.add({ collection: 'customers' }, newCustomer).then(console.log('user saved'));
+                        firestore.add({ collection: 'customers' }, newCustomer).then(res => {
+                            // saving customer to state
+                            addCustomer({ ...newCustomer, id: res.id });
 
-                        // saving customer to state
-                        addCustomer(newCustomer);
+                            console.log('user added');
+                        });
+
+
                     }
                 })
             })
@@ -178,11 +193,11 @@ class Login extends Component {
                                         <form onSubmit={this.onSubmit}>
                                             <div className="form-group">
                                                 <label htmlFor="email">Email</label>
-                                                <input type="email" name="email" onChange={this.onChange} className="form-control" />
+                                                <input type="email" name="email" onChange={this.onChange} className="form-control form-control-pink" />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="password">Password</label>
-                                                <input type="password" name="password" onChange={this.onChange} className="form-control" />
+                                                <input type="password" name="password" onChange={this.onChange} className="form-control form-control-pink" />
                                             </div>
 
                                             <input type="submit" onClick={this.onSubmit} value="Submit" className="btn btn-pink d-flex mx-auto justify-content-center rounded-right rounded-left col-md-6" />
@@ -190,10 +205,16 @@ class Login extends Component {
 
                                         </form>
                                         <GoogleSigninBtn action={this.signinWithGoogle} />
+
                                     </div>
-                                    <div className="card-footer bg-white text-center">
-                                        Don't have an account?
+                                    <div className="card-footer bg-white  text-center">
+                                        <div className="row">
+                                            <span className="col-md-8">
+                                                Don't have an account?
                                         <Link to="/register" className="btn btn-link font-pink font-weight-bold">Signup</Link>
+                                            </span>
+                                            <Link to="login/reset-password" className="col-md-4 btn btn-default btn-sm float-right rounded-left rounded-right font-pink">Forgot Password</Link>
+                                        </div>
                                     </div>
                                 </div>
                             </Grid>
