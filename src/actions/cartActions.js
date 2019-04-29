@@ -1,4 +1,4 @@
-import { ADD_ITEM, CLEAR_CART, DEC_QTY } from './types';
+import { ADD_ITEM, CLEAR_CART, DEC_QTY, SET_LOGIN_ERROR } from './types';
 
 export const addItem = (product) => {
     return {
@@ -18,4 +18,11 @@ export const decreaseQty = (product) => {
     }
 }
 
+export const setLoginErrorMsg = (error, msg) => {
+    return {
+        type: SET_LOGIN_ERROR,
+        msg,
+        error
+    }
+}
 

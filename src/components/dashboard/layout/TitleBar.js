@@ -13,3 +13,11 @@ export default function TitleBar({ titleName, actions }) {
         </Grid>
     )
 }
+
+// const actionsForTitleBar = (
+//     <Grid item>
+//         <Link to="/dashboard/product/add" className="btn btn-secondary btn-sm" style={{ marginTop: '7px', borderRadius: '5px' }}>
+//             <i className="fas fa-plus-circle"></i> ADD NEW
+//         </Link>
+//     </Grid>
+// );

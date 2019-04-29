@@ -6,17 +6,21 @@ import scrollToTop from '../functions/scrollToTop';
 import { compose } from 'redux';
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
-import { addItem, clearCart, decreaseQty } from '../../../actions/cartActions';
+import { addItem, clearCart, decreaseQty, setLoginErrorMsg } from '../../../actions/cartActions';
 import Snack from '../layout/Snack';
 import Grid from '@material-ui/core/Grid';
 import Product from '../layout/Product';
 import Swal from 'sweetalert2';
+import numeral from 'numeral';
 
 class Cart extends Component {
 
     state = {
         openSnackBar: false,
         msgSnackBar: '',
+        address: '', addressError: false, addressMsg: '',
+        contact: '', contactError: false, contactMsg: '',
+        submitForm: false,
 
         cart: []
     }
@@ -26,15 +30,60 @@ class Cart extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        const { cart } = props;
+        const { cart, customer } = props;
 
         if (cart) {
+            if (customer) {
+                return {
+                    cart,
+                    address: customer.address,
+                    contact: customer.contact
+                }
+            }
             return {
                 cart
             }
         }
 
         return null;
+    }
+
+    onChange = e => {
+        const name = e.target.name;
+        const value = e.target.value;
+
+        // setting state
+        this.setState({ [name]: value });
+
+        switch (name) {
+            case 'contact':
+                if (isNaN(value)) {
+                    this.setState({ contactError: true, contactMsg: 'Contact Must Contain Only Digits', submitForm: false });
+                }
+                else if (value.length > 11 || value.length < 11) {
+                    this.setState({ contactError: true, contactMsg: 'Invalid Contact', submitForm: false });
+                }
+                else if (value.length === 11) {
+                    this.setState({ contactError: false, contactMsg: '', submitForm: true });
+                }
+                else {
+                    this.setState({ contactError: false, contactMsg: '', submitForm: true });
+                }
+                break;
+
+            case 'address':
+                if (value === '') {
+                    this.setState({ addressError: true, addressMsg: 'Address is Required', submitForm: false });
+                }
+                else {
+                    this.setState({ addressError: false, addressMsg: '', submitForm: true });
+                }
+                break;
+
+            default:
+                // do nothing
+                break;
+        }
     }
 
     scrollToTop = () => {
@@ -91,29 +140,62 @@ class Cart extends Component {
         }
     }
 
-    checkout = () => {
-        const { auth } = this.props;
+    
 
+    checkout = (e) => {
+        e.preventDefault();
+
+        const { auth, setLoginErrorMsg, history, firestore, customer, cart, clearCart } = this.props;
+        const { address, contact } = this.state;
+            
         const success = () => {
-            Swal.fire('success');
+            const orderObj = {
+                customer: { ...customer, address, contact },
+                orderedDate: new Date(),
+                products: [...cart.products],
+                status: 'pending',
+                totalPrice: cart.total,
+                deliveryDuration: '5 days',
+                deliveryCharges: cart.deliveryCharges
+            }
+
+            firestore
+                .add({ collection: 'orders' }, orderObj)
+                .then(() => {
+                    clearCart();
+                    Swal.fire({ type: 'success', text: 'Your order Has been placed' });
+                })
+                .catch(error => {
+                    Swal.fire({ type: 'success', text: 'Oops! something went wrong' });
+                    console.log(error.message);
+                })
         }
 
-        const error = () => this.props.history.push('/login');
+        const error = () => {
+            let msg = 'You must login to proceed checkout'
 
-        if (auth.uid !== undefined) success();
-        else error();
+            setLoginErrorMsg(true, msg);
+            history.push('/login');
+        }
 
+        
+        if ( auth.uid !== undefined )
+            success()
+        else 
+            error()
+        
     }
 
     render() {
         const { categories, moreProds, clearCart } = this.props;
-        const { openSnackBar, msgSnackBar, cart } = this.state;
+        const { openSnackBar, msgSnackBar, cart, address, addressError, addressMsg, contact, contactError, contactMsg, submitForm } = this.state;
 
         const functions = {
             addItemToCart: this.addItemToCart,
             decreseQtyFromCart: this.decreseQtyFromCart,
             increseQty: this.increseQty,
-            checkout: this.checkout
+            checkout: this.checkout,
+            onChange: this.onChange
         }
 
         if (categories && moreProds) {
@@ -133,7 +215,13 @@ class Cart extends Component {
                                             <i className="fas fa-trash mr-1" />
                                             Clear Cart
                                         </button>
-                                        <CartTotal cart={cart} functions={functions} />
+                                        <CartTotal
+                                            cart={cart}
+                                            functions={functions}
+                                            addressProp={{ address, addressMsg, addressError }}
+                                            contactProp={{ contact, contactError, contactMsg }}
+                                            submitForm={submitForm}
+                                        />
                                     </React.Fragment>
                             }
                         </div>
@@ -209,12 +297,15 @@ const CartItemRow = ({ prod, functions: { increseQty, decreseQtyFromCart } }) =>
     )
 }
 
-const CartTotal = ({ cart, functions: { checkout } }) => {
+const CartTotal = ({ cart, addressProp, contactProp, functions: { checkout, onChange }, submitForm }) => {
 
-    const RupeeFormater = amount => (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    const { address, addressError, addressMsg } = addressProp;
+    const { contact, contactError, contactMsg } = contactProp;
+
+    const RupeeFormater = amount => numeral(amount).format('0,0');
 
     const subTotal = RupeeFormater(cart.total);
-    const deliveryCharges = 250;
+    const deliveryCharges = cart.deliveryCharges;
     const total = RupeeFormater(parseInt(cart.total.toString(), 10) + 250);
 
     return (
@@ -243,7 +334,7 @@ const CartTotal = ({ cart, functions: { checkout } }) => {
                 </span>
             </div>
 
-            <div className="flex-w flex-sb-m p-t-26 p-b-30">
+            <div className="flex-w flex-sb bo10 p-t-15 p-b-20">
                 <span className="m-text22 w-size19 w-full-sm">
                     Total:
                 </span>
@@ -253,11 +344,61 @@ const CartTotal = ({ cart, functions: { checkout } }) => {
                 </span>
             </div>
 
-            <div className="size15 trans-0-4">
-                <button onClick={checkout} className="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
-                    Proceed to Checkout
-                </button>
-            </div>
+            <form onSubmit={checkout}>
+                <div className="flex-w flex-sb bo10 p-t-15 p-b-20">
+                    <span className="s-text18 w-size19 w-full-sm">
+                        Contact Number:
+                    </span>
+
+                    <span className="m-text21 w-size20 w-full-sm">
+                        <input
+                            type="text"
+                            name="contact"
+                            defaultValue={contact}
+                            onChange={onChange}
+                            className="form-control form-control-pink"
+                            maxLength="11"
+                            minLength="11"
+                            required
+                        />
+                        {
+                            contactError
+                                ? <small className="text-danger error">
+                                    {contactMsg}
+                                </small>
+                                : null
+                        }
+                    </span>
+                </div>
+
+                <div className="flex-w flex-sb-m p-t-26 p-b-30">
+                    <span className="s-text18 w-size19 w-full-sm">
+                        Address:
+                    </span>
+
+                    <span className="m-text21 w-size20 w-full-sm">
+                        <textarea
+                            name="address"
+                            rows="2"
+                            defaultValue={address}
+                            onChange={onChange}
+                            className="form-control form-control-pink"
+                            required
+                        />
+                        {
+                            addressError
+                                ? <small className="text-danger error">
+                                    {addressMsg}
+                                </small>
+                                : null
+                        }
+                    </span>
+                </div>
+
+                <div className="size15 trans-0-4">
+                    <input type="submit" value="Proceed to Checkout" className="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4" />
+                </div>
+            </form>
         </div>
     )
 }
@@ -326,9 +467,10 @@ export default compose(
                 categories: state.firestore.ordered.categories,
                 cart: state.cart,
                 moreProds: state.firestore.ordered.products,
-                auth: state.firebase.auth
+                auth: state.firebase.auth,
+                customer: state.customer.customer
             }
         ),
-        { addItem, clearCart, decreaseQty }
+        { addItem, clearCart, decreaseQty, setLoginErrorMsg }
     )
 )(Cart);

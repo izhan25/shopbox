@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import classnames from 'classnames';
-
+import moment from 'moment';
+import numeral from 'numeral';
 
 class OrderDetails extends Component {
 
@@ -32,13 +33,20 @@ class OrderDetails extends Component {
         if (order) {
             const {
                 customer: { fullName, contact, address, email },
-                status,
                 orderedDate,
-                deliveryDate,
-                totalPrice,
                 products,
+                status,
+                totalPrice,
+                deliveryDuration,
+                deliveryCharges,
             } = order;
 
+            // moment date and time
+            let date = Date(orderedDate).toString();
+            date = moment(Date.parse(date)).format('LLL');
+
+            // Ruppe Formatter
+            const RupeeFormater = amount => numeral(amount).format('0,0');
 
             mainContent = (
                 <React.Fragment>
@@ -98,21 +106,14 @@ class OrderDetails extends Component {
                                     <div className="row">
                                         <div className="col-md-4 text-secondary">Ordered Date</div>
                                         <div className="col-md-4">
-                                            {`${orderedDate.date}/${orderedDate.month}/${orderedDate.year}`}
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    <div className="row">
-                                        <div className="col-md-4 text-secondary">Delivery Date</div>
-                                        <div className="col-md-4">
-                                            {`${deliveryDate.date}/${deliveryDate.month}/${deliveryDate.year}`}
+                                            {date}
                                         </div>
                                     </div>
                                     <hr />
                                     <div className="row">
                                         <div className="col-md-4 text-secondary">Delivery Duration</div>
                                         <div className="col-md-4">
-                                            {parseInt(deliveryDate.date, 10) - parseInt(orderedDate.date, 10)} days
+                                            {deliveryDuration}
                                         </div>
                                     </div>
                                 </div>
@@ -126,7 +127,7 @@ class OrderDetails extends Component {
                             </div>
                         <div className="card-body">
                             <div className="table-responsive">
-                                <table className="table table-striped">
+                                <table className="table table-striped table-bordered">
                                     <thead className="font-weight-bold">
                                         <tr>
                                             <th><i className="far fa-image" style={{ fontSize: '25px' }}></i></th>
@@ -146,15 +147,19 @@ class OrderDetails extends Component {
                                                     <td className="text-capitalize">{prod.productName}</td>
                                                     <td>{prod.category.catName}</td>
                                                     <td>{prod.productStatus.stockQty}</td>
-                                                    <td>{prod.orderedQty} pcs</td>
-                                                    <td>{prod.discountPrice}</td>
-                                                    <td>{prod.price}</td>
+                                                    <td>{prod.qty} pcs</td>
+                                                    <td>{RupeeFormater(prod.discountPrice)}</td>
+                                                    <td>{RupeeFormater(prod.totalPrice)}</td>
                                                 </tr>
                                             ))
                                         }
+                                        <tr className="font-weight-bold">
+                                            <td colSpan="6" className="text-right">Delivery Charges</td>
+                                            <td>{RupeeFormater(deliveryCharges)}</td>
+                                        </tr>
                                         <tr className="font-weight-bold bg-secondary text-light" style={{ fontSize: '24px' }}>
                                             <td colSpan="6" className="text-right mr-4">TOTAL AMOUNT</td>
-                                            <td>{totalPrice}</td>
+                                            <td>Rs. {RupeeFormater(totalPrice + deliveryCharges)}</td>
                                         </tr>
                                     </tbody>
                                 </table>

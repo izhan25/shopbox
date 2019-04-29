@@ -19,7 +19,7 @@ import ProductsPublicDetails from './components/public/products/ProductDetails';
 import AboutPublic from './components/public/about/About';
 import ContactPublic from './components/public/contact/Contact';
 import Cart from './components/public/cart/Cart';
-import Login from './components/public/auth/Login';
+import Login from './components/dashboard/auth/Login';
 import Dashboard from './components/dashboard/Dashboard'; // Dashboard
 import Products from './components/dashboard/products/Products';
 import ProductDetails from './components/dashboard/products/ProductDetails';
@@ -54,8 +54,8 @@ class App extends Component {
               <Route exact path="/about" component={AboutPublic} />
               <Route exact path="/contact" component={ContactPublic} />
               <Route exact path="/cart" component={Cart} />
-              <Route exact path="/login" component={CustomerIsNotAuthenticated(LoginPublic)} />
               <Route exact path="/login/reset-password" component={ForgotPassword} />
+              <Route exact path="/login" component={CustomerIsNotAuthenticated(LoginPublic)} />
               <Route exact path="/profile" component={CustomerIsAuthenticated(ProfilePublic)} />
               <Route exact path="/orders" component={CustomerIsAuthenticated(OrdersPublic)} />
               <Route exact path="/register" component={Register} />

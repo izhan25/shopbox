@@ -31,8 +31,10 @@ class Header extends Component {
     }
 
     render() {
-        const { categories, activePage, auth } = this.props;
+        const { categories, activePage, customer } = this.props;
         const { quantity } = this.props.cart;
+
+
         return (
             <header className="header1">
                 {/* <!-- Header desktop --> */}
@@ -52,7 +54,7 @@ class Header extends Component {
 
                         <div className="topbar-child2">
                             <span className="topbar-email">
-                                {auth.uid !== '' ? auth.email : null}
+                                {customer ? customer.email : null}
                             </span>
                         </div>
                     </div>
@@ -99,8 +101,8 @@ class Header extends Component {
                         <div className="header-icons">
                             <Link to="/profile" className="header-wrapicon1 dis-block">
                                 {
-                                    !auth.isEmpty
-                                        ? <img src={auth.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
+                                    customer
+                                        ? <img src={customer.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
                                         : <img src={header1} className="header-icon1" alt="ICON" />
                                 }
                             </Link>
@@ -202,8 +204,8 @@ class Header extends Component {
                         <div className="header-icons-mobile">
                             <Link to="/profile" className="header-wrapicon1 dis-block">
                                 {
-                                    !auth.isEmpty
-                                        ? <img src={auth.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
+                                    customer
+                                        ? <img src={customer.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
                                         : <img src={header1} className="header-icon1" alt="ICON" />
                                 }
                             </Link>
@@ -320,10 +322,11 @@ class Header extends Component {
                 </div>
             </header>
         )
+
     }
 }
 
 export default connect((state, props) => ({
     cart: state.cart,
-    auth: state.firebase.auth
+    customer: state.customer.customer
 }))(Header);

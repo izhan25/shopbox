@@ -33,14 +33,14 @@ class Profile extends Component {
                 // logging out
                 firebase.logout();
 
-                // setting state
+                // setting redux-store state
                 removeCustomer();
             }
         })
     }
 
     render() {
-        const { categories, mainContent, history } = this.props;
+        const { categories, mainContent, history, customer, auth } = this.props;
 
         if (categories) {
             return (
@@ -48,7 +48,9 @@ class Profile extends Component {
                     <Header activePage="profile" categories={categories} history={this.props.history} />
 
                     <div className="container">
-                        <h5 className="mb-3 mt-4 border border-danger border-top-0 border-left-0 border-right-0 p-3 text-capitalize">Welcome, {this.props.auth.displayName}</h5>
+                        <h5 className="mb-3 mt-4 border border-danger border-top-0 border-left-0 border-right-0 p-3 text-capitalize">
+                            Welcome, {auth.displayName ? auth.displayName : customer ? customer.userName : null}
+                        </h5>
 
                         <Hidden smDown>
                             <Grid container>
@@ -66,6 +68,13 @@ class Profile extends Component {
                                                 <i className="fas fa-file-invoice-dollar"></i>
                                             </ListItemIcon>
                                             <ListItemText primary="My Orders" />
+                                        </ListItem>
+
+                                        <ListItem button onClick={() => history.push('/cart')}>
+                                            <ListItemIcon>
+                                                <i className="fas fa-shopping-cart"></i>
+                                            </ListItemIcon>
+                                            <ListItemText primary="Shopping Cart" />
                                         </ListItem>
 
                                         <ListItem button onClick={this.onLogoutClick}>
@@ -135,7 +144,8 @@ export default compose(
         (state, props) => (
             {
                 categories: state.firestore.ordered.categories,
-                auth: state.firebase.auth
+                auth: state.firebase.auth,
+                customer: state.customer.customer
             }
         ),
         { removeCustomer }

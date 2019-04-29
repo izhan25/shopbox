@@ -21,14 +21,22 @@ export default function Product({ prod, functions: { scrollToTop, addItemToCart 
                         </a>
 
                         <div className="block2-btn-addcart w-size1 trans-0-4">
-                            <div className="btn-group d-flex justify-content-center">
+                            <Link to={`/product/${prod.id}`} onClick={scrollToTop} className="col-md-12 flex-c-m btn btn-primary btn-sm s-text1 trans-0-4 rounded-right rounded-left mb-1">
+                                View
+                            </Link>
+
+                            <a onClick={() => { addItemToCart(prod) }} className="col-md-12 flex-c-m btn btn-sm bg4 s-text1 hov1 trans-0-4 rounded-right rounded-left text-white">
+                                Add to cart
+                            </a>
+
+                            {/* <div className="btn-group d-flex justify-content-center">
                                 <a onClick={() => { addItemToCart(prod) }} className="flex-c-m btn btn-sm bg4 s-text1 hov1 trans-0-4 rounded-left">
                                     <i className="fas fa-cart-plus text-white"></i>
                                 </a>
                                 <Link to={`/product/${prod.id}`} onClick={scrollToTop} className="flex-c-m btn btn-primary btn-sm s-text1 trans-0-4 rounded-right">
                                     <i className="fas fa-search-plus"></i>
                                 </Link>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

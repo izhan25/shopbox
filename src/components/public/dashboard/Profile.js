@@ -179,7 +179,7 @@ class Profile extends Component {
             })
             .catch(error => {
                 Swal.fire({ type: 'error', text: 'Oops! Something went wrong' });
-                console.log(error);
+                console.log(error.message);
             });
 
 

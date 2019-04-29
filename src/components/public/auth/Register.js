@@ -7,7 +7,7 @@ import { compose } from 'redux';
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { Grid, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
-import { Firebase_EmailValidator, addCustomer } from '../../../actions/customerActions';
+import { addCustomer } from '../../../actions/customerActions';
 import Swal from 'sweetalert2';
 import classnames from 'classnames';
 
@@ -139,62 +139,40 @@ class Register extends Component {
     onSubmit = e => {
         e.preventDefault();
 
-        const { firebase, firestore, addCustomer } = this.props;
+        const { firebase, addCustomer, history } = this.props;
         const { userName, fullName, contact, birthDate, address, gender, email, photoURL, password } = this.state;
 
         const newCustomer = { userName, fullName, contact, birthDate, address, gender, email, photoURL, password };
 
-        Firebase_EmailValidator(email, result => {
-            switch (result) {
-                case true:
-                    this.setState({ emailError: true, emailMsg: 'Email is already in use', submitForm: false });
-                    break;
-                case false:
-                    this.setState({ emailError: false, emailMsg: '', submitForm: true });
-                    break;
-                default:
-                    // do nothing
-                    break;
-            }
-        });
+        firebase
+            .auth()
+            .createUserWithEmailAndPassword(newCustomer.email, newCustomer.password)
+            .then(cred => {
+                // adding to firestore
+                const db = firebase.firestore();
+                db
+                    .collection('customers')
+                    .doc(cred.user.uid)
+                    .set(newCustomer)
+                    .then(() => {
+                        // adding to redux-store
+                        addCustomer({ ...newCustomer, id: cred.user.id });
 
-        firestore
-            .add({ collection: 'customers' }, newCustomer)
-            .then(res => {
-
-                const newlyCreatedCustomer = { ...newCustomer, id: res.id };
-
-                firebase
-                    .auth()
-                    .createUserWithEmailAndPassword(newCustomer.email, newCustomer.password)
-                    .then(cred => {
-                        addCustomer(newlyCreatedCustomer);
-                        Swal.fire({ type: 'success', text: 'Signup Complete' });
-
-                        const currentUser = firebase.auth().currentUser;
-                        currentUser.updateProfile({
-                            displayName: userName,
-                            photoURL
-                        });
-
+                        // redirecting to profile
+                        Swal.fire({ type: 'success', text: 'Signup complete' }).then(result => {
+                            if (result) {
+                                history.push('/profile');
+                            }
+                        })
                     })
-                    .catch((error) => {
-                        let errorCode = error.code;
-                        let errorMessage = error.message;
-
-                        console.log('errorCode => ', errorCode);
-                        console.log('errorMessage => ', errorMessage);
-
-                        Swal.fire({ type: 'error', text: errorMessage });
-                    });
-
             })
             .catch(error => {
-                Swal.fire({ type: 'error', text: 'Oops! Something went wrong...' });
-                console.log(error);
-            });
+                Swal.fire({ type: 'error', text: error.message });
 
-
+                if (error.code === 'auth/email-already-in-use') {
+                    this.setState({ emailError: true, emailMsg: 'The email address is already in use by another account.' });
+                }
+            })
 
     }
 

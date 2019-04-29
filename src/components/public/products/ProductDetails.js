@@ -200,7 +200,7 @@ const RightPanel = ({ prod, qty, functions }) => {
 
             <div className="p-t-33 p-b-60">
                 <div className="flex-m flex-w p-b-10">
-                    <div className="s-text15 w-size15 t-center">
+                    {/* <div className="s-text15 w-size15 t-center">
                         Size
                     </div>
 
@@ -212,11 +212,11 @@ const RightPanel = ({ prod, qty, functions }) => {
                             <option>Size L</option>
                             <option>Size XL</option>
                         </select>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="flex-m flex-w">
-                    <div className="s-text15 w-size15 t-center">
+                    {/* <div className="s-text15 w-size15 t-center">
                         Color
                     </div>
 
@@ -228,7 +228,7 @@ const RightPanel = ({ prod, qty, functions }) => {
                             <option>Black</option>
                             <option>Blue</option>
                         </select>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="flex-r-m flex-w p-t-10">

@@ -12,6 +12,8 @@ import { Grid } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Swal from 'sweetalert2';
 import { addCustomer } from '../../../actions/customerActions';
+import { setLoginErrorMsg } from '../../../actions/cartActions';
+import classnames from 'classnames';
 
 
 class Login extends Component {
@@ -55,7 +57,7 @@ class Login extends Component {
             error: ''
         })
 
-        const { firebase, firestore, addCustomer } = this.props;
+        const { firebase, firestore, addCustomer, history, cart, setLoginErrorMsg } = this.props;
 
         firebase
             .login({
@@ -66,11 +68,21 @@ class Login extends Component {
                 this.setState({ showLoader: false, error: '' });
 
                 // populating redux state with customer details
-                firestore.get({ collection: 'customers', where: ['email', '==', email] }).then(querySnapshot => {
-                    querySnapshot.forEach(doc => {
-                        addCustomer({ ...doc.data(), id: doc.id });
-                    });
-                });
+                firestore.get({ collection: 'customers', where: ['email', '==', email] })
+                    .then(querySnapshot => {
+                        querySnapshot.forEach(doc => {
+                            addCustomer({ ...doc.data(), id: doc.id });
+                        });
+
+                        if (cart.loginError.error) {
+                            // Re setting loginError in redux-store
+                            setLoginErrorMsg(false, '');
+                            history.push('/cart');
+                        }
+                    }
+
+                    );
+
             })
             .catch(err => {
                 this.setState({
@@ -155,7 +167,7 @@ class Login extends Component {
     }
 
     render() {
-        const { categories } = this.props;
+        const { categories, cart: { loginError } } = this.props;
         const { error, showLoader } = this.state;
 
         if (categories) {
@@ -168,6 +180,13 @@ class Login extends Component {
                             <Grid item xs={11} sm={7} md={5} >
                                 <div className="row">
                                     <div className="col-md-12">
+                                        {
+                                            loginError.error
+                                                ? <div className="alert alert-danger text-center" style={{ marginTop: '50px' }}>
+                                                    {loginError.msg}
+                                                </div>
+                                                : null
+                                        }
                                         {
                                             error !== ''
                                                 ? <div className="alert alert-danger text-center" style={{ marginTop: '50px' }}>
@@ -185,7 +204,7 @@ class Login extends Component {
                                         }
                                     </div>
                                 </div>
-                                <div className="card mt-5 rounded-left rounded-right">
+                                <div className={classnames('card rounded-left rounded-right', { 'mt-5': !loginError.error })}>
                                     <h4 className="card-header bg-white text-center font-pink font-weight-bold">
                                         <i className="fas fa-lock mr-1" />Login
                                     </h4>
@@ -249,6 +268,6 @@ export default compose(
                 auth: state.firebase.auth
             }
         ),
-        { addCustomer }
+        { addCustomer, setLoginErrorMsg }
     ),
 )(Login);

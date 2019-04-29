@@ -1,4 +1,4 @@
-import { ADD_ITEM, CLEAR_CART, DEC_QTY } from '../actions/types';
+import { ADD_ITEM, CLEAR_CART, DEC_QTY, SET_LOGIN_ERROR } from '../actions/types';
 
 const products = window.localStorage.getItem('products') ? JSON.parse(window.localStorage.getItem('products')) : [];
 const total = window.localStorage.getItem('total') ? JSON.parse(window.localStorage.getItem('total')) : 0;
@@ -7,7 +7,12 @@ const quantity = window.localStorage.getItem('quantity') ? JSON.parse(window.loc
 let initialState = {
     products,
     total,
-    quantity
+    quantity,
+    deliveryCharges: 250,
+    loginError: {
+        error: false,
+        msg: '',
+    }
 }
 
 function setCartToLS(state) {
@@ -22,6 +27,14 @@ export default function (state = initialState, action) {
     const products = state.products;
 
     switch (action.type) {
+        case SET_LOGIN_ERROR:
+            return {
+                ...state,
+                loginError: {
+                    error: action.error,
+                    msg: action.msg,
+                }
+            }
         case ADD_ITEM:
             const productsHasItem = products.find(prod => prod.id === action.product.id);
 
@@ -92,6 +105,7 @@ export default function (state = initialState, action) {
 
         case CLEAR_CART:
             const emptyState = {
+                ...state,
                 products: [],
                 total: 0,
                 quantity: 0
