@@ -23,6 +23,7 @@ class Products extends Component {
 
         openSnackBar: false,
         msgSnackBar: '',
+        view: false,
     }
 
     componentDidMount() {

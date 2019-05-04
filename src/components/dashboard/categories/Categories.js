@@ -93,7 +93,7 @@ class Categories extends Component {
 
     onDelete = id => {
         const { firestore } = this.props;
-        const that = this;
+        // const that = this;
         confirmAlert({
             message: 'Are You Sure You Want To Delete This Category?',
             buttons: [
@@ -107,23 +107,23 @@ class Categories extends Component {
                                     openSnackBar: true
                                 })
                             })
-                            .then(() => {
-                                const { firebase } = this.props;
-                                const db = firebase.firestore();
+                        // .then(() => {
+                        //     const { firebase } = this.props;
+                        //     const db = firebase.firestore();
 
-                                db.collection('products').where('category.id', '==', id).get().then(querySnapshot => {
-                                    querySnapshot.forEach(doc => {
-                                        const { firestore } = that.props;
-                                        firestore.delete({ collection: 'products', doc: doc.id }).then(() => {
-                                            this.setState({
-                                                msgSnackBar: `Deleted Associated Product`,
-                                                openSnackBar: true
-                                            })
-                                        })
-                                    })
-                                })
+                        //     db.collection('products').where('category.id', '==', id).get().then(querySnapshot => {
+                        //         querySnapshot.forEach(doc => {
+                        //             const { firestore } = that.props;
+                        //             firestore.delete({ collection: 'products', doc: doc.id }).then(() => {
+                        //                 this.setState({
+                        //                     msgSnackBar: `Deleted Associated Product`,
+                        //                     openSnackBar: true
+                        //                 })
+                        //             })
+                        //         })
+                        //     })
 
-                            });
+                        // });
                     }
                 },
                 {
@@ -144,7 +144,7 @@ class Categories extends Component {
 
         const updCat = { catName: catName.toLowerCase(), secured }
 
-        const that = this;
+        // const that = this;
 
         firestore
             .update({ collection: 'categories', doc: catId }, updCat)
@@ -156,25 +156,26 @@ class Categories extends Component {
                     openSnackBar: true
                 })
             })
-            .then(() => {
-                const { firebase } = this.props;
-                const db = firebase.firestore();
+        // .then(() => {
+        //     const { firebase } = this.props;
+        //     const db = firebase.firestore();
 
-                db.collection('products').where('category.id', '==', catId).get().then(querySnapshot => {
-                    querySnapshot.forEach((doc) => {
-                        const { firestore } = that.props;
-                        const updProd = {
-                            ...doc.data(),
-                            category: {
-                                id: catId,
-                                catName
-                            }
-                        }
-                        firestore.update({ collection: 'products', doc: doc.id }, updProd);
-                    });
-                })
-            })
+        //     db.collection('products').where('category.id', '==', catId).get().then(querySnapshot => {
+        //         querySnapshot.forEach((doc) => {
+        //             const { firestore } = that.props;
+        //             const updProd = {
+        //                 ...doc.data(),
+        //                 category: {
+        //                     id: catId,
+        //                     catName
+        //                 }
+        //             }
+        //             firestore.update({ collection: 'products', doc: doc.id }, updProd);
+        //         });
+        //     })
+        // })
     }
+
     onSubmit = e => {
         e.preventDefault();
 

@@ -38,6 +38,7 @@ import OrdersPublic from './components/public/dashboard/Orders';
 import NotFound from './components/layout/NotFound';
 import Register from './components/public/auth/Register';
 import ForgotPassword from './components/public/auth/ForgotPassword.js';
+import OrderDetailsPublic from './components/public/dashboard/OrderDetails';
 
 
 class App extends Component {
@@ -58,6 +59,7 @@ class App extends Component {
               <Route exact path="/login" component={CustomerIsNotAuthenticated(LoginPublic)} />
               <Route exact path="/profile" component={CustomerIsAuthenticated(ProfilePublic)} />
               <Route exact path="/orders" component={CustomerIsAuthenticated(OrdersPublic)} />
+              <Route exact path="/orders/:id" component={CustomerIsAuthenticated(OrderDetailsPublic)} />
               <Route exact path="/register" component={Register} />
 
               <Route exact path="/dashboard/login" component={UserIsNotAuthenticated(Login)} />
