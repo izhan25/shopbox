@@ -47,7 +47,6 @@ class ForgotPassword extends Component {
             .sendPasswordResetEmail(email)
             .then(() => {
                 // Email sent.
-                console.log('email sent');
                 Swal.fire({
                     type: 'success',
                     text: 'An email has been sent to your email address kindly check'

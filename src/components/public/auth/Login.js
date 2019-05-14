@@ -108,10 +108,10 @@ class Login extends Component {
                     email: user.email,
                     contact: user.phoneNumber,
                     photoURL: user.photoURL,
-                    password: null,
-                    birthDate: null,
-                    address: null,
-                    gender: null
+                    password: "",
+                    birthDate: "",
+                    address: "",
+                    gender: ""
                 }
 
                 // checking if the user exist in database

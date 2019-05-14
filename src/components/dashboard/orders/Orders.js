@@ -157,8 +157,17 @@ class Orders extends Component {
 
 export default compose(
     firestoreConnect([
-        { collection: 'orders', where: [['status', '==', 'pending']] },
-        { collection: 'orders', where: [['status', '==', 'dispatched']], storeAs: 'ordersDispatched' }
+        {
+            collection: 'orders',
+            orderBy: [['orderedDate', 'desc']],
+            where: [['status', '==', 'pending']],
+        },
+        {
+            collection: 'orders',
+            orderBy: [['orderedDate', 'desc']],
+            where: [['status', '==', 'dispatched']],
+            storeAs: 'ordersDispatched',
+        }
     ]),
     connect(
         (state, props) => ({

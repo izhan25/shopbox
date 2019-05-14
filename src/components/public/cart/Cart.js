@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Product from '../layout/Product';
 import Swal from 'sweetalert2';
 import numeral from 'numeral';
+import moment from 'moment';
 
 class Cart extends Component {
 
@@ -140,23 +141,24 @@ class Cart extends Component {
         }
     }
 
-    
+
 
     checkout = (e) => {
         e.preventDefault();
 
         const { auth, setLoginErrorMsg, history, firestore, customer, cart, clearCart } = this.props;
         const { address, contact } = this.state;
-            
+
         const success = () => {
             const orderObj = {
                 customer: { ...customer, address, contact },
-                orderedDate: new Date(),
+                createdAt: moment().format('MMMM Do YYYY, h:mm a'),
                 products: [...cart.products],
                 status: 'pending',
                 totalPrice: cart.total,
                 deliveryDuration: '5 days',
-                deliveryCharges: cart.deliveryCharges
+                deliveryCharges: cart.deliveryCharges,
+                orderedDate: new Date()
             }
 
             firestore
@@ -178,12 +180,12 @@ class Cart extends Component {
             history.push('/login');
         }
 
-        
-        if ( auth.uid !== undefined )
+
+        if (auth.uid !== undefined)
             success()
-        else 
+        else
             error()
-        
+
     }
 
     render() {

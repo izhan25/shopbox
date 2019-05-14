@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import moment from 'moment';
 import { Hidden } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import classnames from 'classnames';
 
 class Orders extends Component {
 
@@ -16,17 +16,27 @@ class Orders extends Component {
         view: false,
     }
 
-    static getDerivedStateFromProps(props, state) {
-        const { orders } = props;
-
-        if (orders) {
-            return { orders }
-        }
-
-        return null;
-    }
 
     componentDidMount() {
+
+        const { firebase, auth } = this.props;
+        const db = firebase.firestore();
+        const orders = [];
+
+        db.collection('orders').orderBy('orderedDate', 'desc').where('customer.email', '==', auth.email).get()
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    let order = {
+                        id: doc.id,
+                        ...doc.data()
+                    }
+                    orders.push(order);
+                });
+
+                this.setState({ orders });
+            })
+            .catch(err => console.log(err.message));
+
         setTimeout(() => {
             this.setState({ view: true })
         }, 1000);
@@ -37,13 +47,6 @@ class Orders extends Component {
         const { history } = this.props;
         const { orders, view } = this.state;
         let mainContent;
-
-        // moment date and time
-        const dateFormatter = date => {
-            let value = Date(date).toString();
-            return moment(Date.parse(value)).format('LL');
-        }
-
 
         if (orders && view) {
             mainContent = (
@@ -70,9 +73,16 @@ class Orders extends Component {
                                                         {order.id}
                                                     </small>
                                                 </td>
-                                                <td>{dateFormatter(order.orderedDate)}</td>
-                                                <td>Rs.{order.totalPrice}</td>
-                                                <td className="text-capitalize">{order.status}</td>
+                                                <td>{order.createdAt}</td>
+                                                <td>Rs.{order.totalPrice + order.deliveryCharges}</td>
+                                                <td
+                                                    className={classnames('text-capitalize font-weight-bold', {
+                                                        'text-success': order.status === 'dispatched',
+                                                        'text-primary': order.status === 'pending'
+                                                    })}
+                                                >
+                                                    {order.status}
+                                                </td>
                                                 <td className="d-flex justify-content-center">
                                                     <Link to={`/orders/${order.id}`} className="btn btn-sm btn-pink rounded-left rounded-right">
                                                         View
@@ -103,7 +113,7 @@ class Orders extends Component {
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col-md-6 font-weight-bold">Date:</div>
-                                            <div className="col-md-6">{dateFormatter(order.orderedDate)}</div>
+                                            <div className="col-md-6">{order.createdAt}</div>
                                         </div>
                                         <hr />
                                         <div className="row">
@@ -144,7 +154,6 @@ export default compose(
         [
             {
                 collection: 'orders',
-                where: ['customer.email', '==', 'test@gmail.com'],
             }
         ]
     ),
@@ -152,7 +161,6 @@ export default compose(
         (state, props) => ({
             auth: state.firebase.auth,
             customer: state.customer.customer,
-            orders: state.firestore.ordered.orders
         }),
     )
 )(Orders);
