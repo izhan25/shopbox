@@ -31,7 +31,7 @@ class Header extends Component {
     }
 
     render() {
-        const { categories, activePage, customer } = this.props;
+        const { categories, activePage, customer, auth } = this.props;
         const { quantity } = this.props.cart;
 
 
@@ -54,7 +54,7 @@ class Header extends Component {
 
                         <div className="topbar-child2">
                             <span className="topbar-email">
-                                {customer ? customer.email : null}
+                                {auth.isEmpty ? null : auth.email}
                             </span>
                         </div>
                     </div>
@@ -101,7 +101,7 @@ class Header extends Component {
                         <div className="header-icons">
                             <Link to="/profile" className="header-wrapicon1 dis-block">
                                 {
-                                    customer
+                                    !auth.isEmpty
                                         ? <img src={customer.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
                                         : <img src={header1} className="header-icon1" alt="ICON" />
                                 }
@@ -204,7 +204,7 @@ class Header extends Component {
                         <div className="header-icons-mobile">
                             <Link to="/profile" className="header-wrapicon1 dis-block">
                                 {
-                                    customer
+                                    !auth.isEmpty
                                         ? <img src={customer.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
                                         : <img src={header1} className="header-icon1" alt="ICON" />
                                 }
@@ -328,5 +328,6 @@ class Header extends Component {
 
 export default connect((state, props) => ({
     cart: state.cart,
-    customer: state.customer.customer
+    customer: state.customer.customer,
+    auth: state.firebase.auth
 }))(Header);
