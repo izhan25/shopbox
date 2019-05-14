@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import Loader from './LoaderForPublic';
-import Header from '../public/layout/Header';
-import Footer from '../public/layout/Footer';
-import scrollToTop from '../public/functions/scrollToTop';
 import { compose } from 'redux';
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
@@ -10,7 +7,7 @@ import { connect } from 'react-redux';
 class NotFound extends Component {
 
     componentDidMount() {
-        scrollToTop();
+        window.scroll(0, 0);
     }
 
     render() {
@@ -19,12 +16,10 @@ class NotFound extends Component {
         if (categories) {
             return (
                 <div className="bg-white" >
-                    <Header activePage="login" categories={categories} history={this.props.history} />
                     <h1 className="display-4 text-center mt-5 mb-5" style={{ paddingBottom: '300px' }}>
                         <span className="font-pink font-weight-bold mr-1">404</span>
                         Not Found
                     </h1>
-                    <Footer categories={categories} />
                 </div>
             )
         }

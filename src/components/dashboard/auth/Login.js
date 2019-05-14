@@ -24,6 +24,14 @@ class Login extends Component {
         const { firebase } = this.props;
         const { email, password } = this.state;
 
+        if (email !== 'izhan.yameen25@gmail.com') {
+            this.setState({
+                error: 'Permission Denied',
+                showLoader: false
+            })
+            return false;
+        }
+
         firebase
             .login({
                 email,
