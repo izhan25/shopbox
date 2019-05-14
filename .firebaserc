@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "shopbox-35ae7"
+  },
+  "targets": {
+    "shopbox-35ae7": {
+      "hosting": {
+        "store": [
+          "shopbox-35ae7"
+        ],
+        "admin": [
+          "admin-shopbox"
+        ]
+      }
+    }
   }
 }
