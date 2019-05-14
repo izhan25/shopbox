@@ -28,7 +28,7 @@ class ProductDetails extends Component {
                     label: 'Yes',
                     onClick: () => {
                         firestore.delete({ collection: 'products', doc: product.id })
-                            .then(history.push('/dashboard/products'));
+                            .then(history.push('/products'));
                     }
                 },
                 {
@@ -53,7 +53,7 @@ class ProductDetails extends Component {
 
             mainContent = (
                 <React.Fragment>
-                    <Link to="/dashboard/products" className="btn btn-link">
+                    <Link to="/products" className="btn btn-link">
                         <i className="fas fa-arrow-circle-left mr-1"></i>Back To Products
                     </Link>
                     <TitleBar titleName="Product Details" />
@@ -90,7 +90,7 @@ class ProductDetails extends Component {
                                         </div>
                                         <div className="col">
                                             <span className="btn-group float-right" role="group">
-                                                <Link to={`/dashboard/product/edit/${product.id}`} className="btn btn-secondary btn-sm rounded-left">
+                                                <Link to={`/product/edit/${product.id}`} className="btn btn-secondary btn-sm rounded-left">
                                                     Edit
                                                 </Link>
                                                 <button type="button" onClick={this.onDeleteClick} className="btn btn-danger btn-sm rounded-right">Delete</button>

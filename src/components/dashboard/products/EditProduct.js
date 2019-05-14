@@ -155,9 +155,9 @@ class EditProduct extends Component {
 
             firestore
                 .update({ collection: 'products', doc: product.id }, newProduct)
-                .then(history.push('/dashboard/products'));
+                .then(history.push('/products'));
 
-            // history.push(`/dashboard/product/${product.id}`)
+            // history.push(`/product/${product.id}`)
         }
         else {
             console.log('error in submiting');
@@ -168,8 +168,8 @@ class EditProduct extends Component {
 
     render() {
         const history = [
-            { link: '/dashboard', title: 'Dashboard' },
-            { link: '/dashboard/products', title: 'Products' },
+            { link: '/', title: 'Dashboard' },
+            { link: '/products', title: 'Products' },
         ];
 
         // Getting Data From Props    

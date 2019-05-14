@@ -36,7 +36,7 @@ class Customers extends Component {
                                             <td>{cust.email}</td>
                                             <td>{cust.contact}</td>
                                             <td>
-                                                <Link to={`/dashboard/customer/${cust.id}`} className="btn btn-sm btn-gray rounded-left rounded-right"> <i className="fas fa-arrow-circle-right" /> Details</Link>
+                                                <Link to={`/customer/${cust.id}`} className="btn btn-sm btn-gray rounded-left rounded-right"> <i className="fas fa-arrow-circle-right" /> Details</Link>
                                             </td>
                                         </tr>
                                     ))

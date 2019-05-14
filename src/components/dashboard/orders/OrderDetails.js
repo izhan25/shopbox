@@ -21,7 +21,7 @@ class OrderDetails extends Component {
             }
 
             firestore.update({ collection: 'orders', doc: order.id }, updOrder)
-                .then(history.push('/dashboard/orders'));
+                .then(history.push('/orders'));
         }
     }
 

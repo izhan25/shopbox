@@ -10,7 +10,7 @@ export const UserIsAuthenticated = connectedRouterRedirect({
     AuthenticatingComponent: LoadingScreen,
     allowRedirectBack: true,
     redirectPath: (state, ownProps) =>
-        locationHelper.getRedirectQueryParam(ownProps) || '/dashboard/login',
+        locationHelper.getRedirectQueryParam(ownProps) || '/login',
     authenticatingSelector: ({ firebase: { auth, profile, isInitializing } }) =>
         !auth.isLoaded || isInitializing === true,
     authenticatedSelector: ({ firebase: { auth } }) =>
@@ -22,31 +22,7 @@ export const UserIsNotAuthenticated = connectedRouterRedirect({
     AuthenticatingComponent: LoadingScreen,
     allowRedirectBack: false,
     redirectPath: (state, ownProps) =>
-        locationHelper.getRedirectQueryParam(ownProps) || '/dashboard',
-    authenticatingSelector: ({ firebase: { auth, isInitializing } }) =>
-        !auth.isLoaded || isInitializing === true,
-    authenticatedSelector: ({ firebase: { auth } }) =>
-        auth.isLoaded && auth.isEmpty
-});
-
-export const CustomerIsAuthenticated = connectedRouterRedirect({
-    wrapperDisplayName: 'UserIsAuthenticated',
-    AuthenticatingComponent: LoadingScreen,
-    allowRedirectBack: true,
-    redirectPath: (state, ownProps) =>
-        locationHelper.getRedirectQueryParam(ownProps) || '/login',
-    authenticatingSelector: ({ firebase: { auth, profile, isInitializing } }) =>
-        !auth.isLoaded || isInitializing === true,
-    authenticatedSelector: ({ firebase: { auth } }) =>
-        auth.isLoaded && !auth.isEmpty
-});
-
-export const CustomerIsNotAuthenticated = connectedRouterRedirect({
-    wrapperDisplayName: 'UserIsNotAuthenticated',
-    AuthenticatingComponent: LoadingScreen,
-    allowRedirectBack: false,
-    redirectPath: (state, ownProps) =>
-        locationHelper.getRedirectQueryParam(ownProps) || '/profile',
+        locationHelper.getRedirectQueryParam(ownProps) || '/',
     authenticatingSelector: ({ firebase: { auth, isInitializing } }) =>
         !auth.isLoaded || isInitializing === true,
     authenticatedSelector: ({ firebase: { auth } }) =>

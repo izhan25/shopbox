@@ -17,8 +17,8 @@ class CustomerDetails extends Component {
             const { date, month, year } = customer.birthDate;
             mainContent = (
                 <React.Fragment>
-                    <Link to="/dashboard/customers" className="btn btn-link">
-                        <i class="fas fa-arrow-circle-left mr-1"></i>Back To Customers
+                    <Link to="/customers" className="btn btn-link">
+                        <i className="fas fa-arrow-circle-left mr-1"></i>Back To Customers
                     </Link>
                     <TitleBar titleName="Customer Details" />
                     <div className="card">

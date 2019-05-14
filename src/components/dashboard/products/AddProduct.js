@@ -330,12 +330,12 @@ class AddProduct extends Component {
                                     btnError: false, btnMsg: ''
                                 })
                                 // Redirecting
-                                history.push('/dashboard/product/add');
+                                history.push('/product/add');
                             }
                         },
                         {
                             label: 'See All Products',
-                            onClick: () => history.push('/dashboard/products')
+                            onClick: () => history.push('/products')
                         }
                     ]
                 })

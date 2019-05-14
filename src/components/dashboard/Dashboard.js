@@ -55,7 +55,7 @@ class Dashboard extends Component {
         const { classes } = this.props;
         // const history = [
         //     // { link: '/', title: 'Home' },
-        //     // { link: '/dashboard', title: 'Dashboard' }
+        //     // { link: '/', title: 'Dashboard' }
         // ]
 
         const mainContent = (

@@ -54,7 +54,7 @@ class MyDrawer extends Component {
                 <Divider />
 
                 <List>
-                    <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+                    <Link to="/" style={{ textDecoration: 'none' }}>
                         <ListItem button>
                             <ListItemIcon>
                                 <i className="fas fa-tachometer-alt" style={{ fontSize: '22px' }}></i>
@@ -63,7 +63,7 @@ class MyDrawer extends Component {
                         </ListItem>
                     </Link>
 
-                    <Link to="/dashboard/categories" style={{ textDecoration: 'none' }}>
+                    <Link to="/categories" style={{ textDecoration: 'none' }}>
                         <ListItem button>
                             <ListItemIcon>
                                 <i className="fas fa-folder" style={{ fontSize: '22px' }}></i>
@@ -81,7 +81,7 @@ class MyDrawer extends Component {
                     </ListItem>
                     <Collapse in={this.state.showProducts} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
-                            <Link to="/dashboard/products" style={{ textDecoration: 'none' }}>
+                            <Link to="/products" style={{ textDecoration: 'none' }}>
                                 <ListItem button className={classes.nested}>
                                     <ListItemIcon>
                                         <StarBorder />
@@ -89,7 +89,7 @@ class MyDrawer extends Component {
                                     <ListItemText inset secondary="Show All Products" />
                                 </ListItem>
                             </Link>
-                            <Link to="/dashboard/product/add" style={{ textDecoration: 'none' }}>
+                            <Link to="/product/add" style={{ textDecoration: 'none' }}>
                                 <ListItem button className={classes.nested}>
                                     <ListItemIcon>
                                         <StarBorder />
@@ -97,7 +97,7 @@ class MyDrawer extends Component {
                                     <ListItemText inset secondary="Add New Product" />
                                 </ListItem>
                             </Link>
-                            <Link to="/dashboard/categories" style={{ textDecoration: 'none' }}>
+                            <Link to="/categories" style={{ textDecoration: 'none' }}>
                                 <ListItem button className={classes.nested}>
                                     <ListItemIcon>
                                         <StarBorder />
@@ -119,7 +119,7 @@ class MyDrawer extends Component {
                     </ListItem>
                     <Collapse in={this.state.showUsers} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
-                            <Link to="/dashboard/users" style={{ textDecoration: 'none' }}>
+                            <Link to="/users" style={{ textDecoration: 'none' }}>
                                 <ListItem button className={classes.nested}>
                                     <ListItemIcon>
                                         <StarBorder />
@@ -127,7 +127,7 @@ class MyDrawer extends Component {
                                     <ListItemText inset secondary="Show User" />
                                 </ListItem>
                             </Link>
-                            <Link to="/dashboard/user/add" style={{ textDecoration: 'none' }}>
+                            <Link to="/user/add" style={{ textDecoration: 'none' }}>
                                 <ListItem button className={classes.nested}>
                                     <ListItemIcon>
                                         <StarBorder />
@@ -138,7 +138,7 @@ class MyDrawer extends Component {
                         </List>
                     </Collapse> */}
 
-                    <Link to="/dashboard/customers" style={{ textDecoration: 'none' }}>
+                    <Link to="/customers" style={{ textDecoration: 'none' }}>
                         <ListItem button>
                             <ListItemIcon>
                                 <i className="fas fa-user-tag" style={{ fontSize: '22px' }}></i>
@@ -147,7 +147,7 @@ class MyDrawer extends Component {
                         </ListItem>
                     </Link>
 
-                    <Link to="/dashboard/orders" style={{ textDecoration: 'none' }}>
+                    <Link to="/orders" style={{ textDecoration: 'none' }}>
                         <ListItem button>
                             <ListItemIcon>
                                 <i className="fas fa-hand-pointer" style={{ fontSize: '22px' }}></i>
@@ -158,7 +158,7 @@ class MyDrawer extends Component {
 
                 </List>
                 <Divider />
-                <Link to="/dashboard/display" style={{ textDecoration: 'none' }}>
+                <Link to="/display" style={{ textDecoration: 'none' }}>
                     <ListItem button>
                         <ListItemIcon>
                             <i className="fas fa-images" style={{ fontSize: '22px' }}></i>
@@ -167,7 +167,7 @@ class MyDrawer extends Component {
                     </ListItem>
                 </Link>
                 <Divider />
-                <Link to="/dashboard/profile" style={{ textDecoration: 'none' }}>
+                <Link to="/profile" style={{ textDecoration: 'none' }}>
                     <ListItem button>
                         <ListItemIcon>
                             <i className="fas fa-user" style={{ fontSize: '22px' }}></i>

@@ -173,7 +173,7 @@ class Products extends Component {
         const { categories } = this.props;
         const actionsForTitleBar = (
             <Grid item>
-                <Link to="/dashboard/product/add" className="btn btn-secondary btn-sm" style={{ marginTop: '7px', borderRadius: '5px' }}>
+                <Link to="/product/add" className="btn btn-secondary btn-sm" style={{ marginTop: '7px', borderRadius: '5px' }}>
                     <i className="fas fa-plus-circle"></i> ADD NEW
                 </Link>
             </Grid>
@@ -305,7 +305,7 @@ class Products extends Component {
                                                 </div>
                                             </td>
                                             <td>
-                                                <Link to={`/dashboard/product/${prod.id}`} className="btn btn-secondary btn-sm" style={{ borderRadius: '3px' }}>
+                                                <Link to={`/product/${prod.id}`} className="btn btn-secondary btn-sm" style={{ borderRadius: '3px' }}>
                                                     <i className="fas fa-arrow-circle-right" /> Details
                                                 </Link>
                                             </td>

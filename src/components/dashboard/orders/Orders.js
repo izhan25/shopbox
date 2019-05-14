@@ -81,7 +81,7 @@ class Orders extends Component {
                                                 >{status}</td>
                                                 <td className="font-weight-bold">Rs. {RupeeFormater(totalPrice + deliveryCharges)}</td>
                                                 <td>
-                                                    <Link to={`/dashboard/order/${id}`} className="btn btn-sm btn-gray rounded-left rounded-right">
+                                                    <Link to={`/order/${id}`} className="btn btn-sm btn-gray rounded-left rounded-right">
                                                         <i className="fas fa-arrow-circle-right mr-1" />
                                                         Details
                                                     </Link>
@@ -127,7 +127,7 @@ class Orders extends Component {
                                                 >{status}</td>
                                                 <td className="font-weight-bold">Rs. {RupeeFormater(totalPrice + deliveryCharges)}</td>
                                                 <td>
-                                                    <Link to={`/dashboard/order/${id}`} className="btn btn-sm btn-gray rounded-left rounded-right">
+                                                    <Link to={`/order/${id}`} className="btn btn-sm btn-gray rounded-left rounded-right">
                                                         <i className="fas fa-arrow-circle-right mr-1" />
                                                         Details
                                                     </Link>
