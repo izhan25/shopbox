@@ -10,6 +10,9 @@ admin.initializeApp({
     messagingSenderId: "486576798153"
 });
 
+// admin.auth().setCustomUserClaims('dfFHU3bpNCPMAhty7DSMYGuS3M43', {admin: true}).then(() => {
+//   
+// });
 
 // Deletes all products of category
 exports.deleteProducts = functions.firestore
@@ -61,3 +64,4 @@ exports.updateProducts = functions.firestore
             })
 
     });
+

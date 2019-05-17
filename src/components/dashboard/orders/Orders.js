@@ -56,6 +56,7 @@ class Orders extends Component {
                 mainContent = (
                     <React.Fragment>
                         <TitleBar titleName="Orders" actions={actionsForTitleBar} />
+                        <h5>Showing Pending</h5>
                         <div className="table-responsive">
                             <table className="table table-striped">
                                 <thead className="font-weight-bold bg-light text-secondary">
@@ -79,7 +80,9 @@ class Orders extends Component {
                                                     'text-success': status === 'dispatched'
                                                 })}
                                                 >{status}</td>
-                                                <td className="font-weight-bold">Rs. {RupeeFormater(totalPrice + deliveryCharges)}</td>
+                                                <td className="font-weight-bold">
+                                                    Rs. {RupeeFormater(parseInt(totalPrice.toString(), 10) + parseInt(deliveryCharges.toString(), 10))}
+                                                </td>
                                                 <td>
                                                     <Link to={`/order/${id}`} className="btn btn-sm btn-gray rounded-left rounded-right">
                                                         <i className="fas fa-arrow-circle-right mr-1" />
@@ -103,6 +106,7 @@ class Orders extends Component {
                 mainContent = (
                     <React.Fragment>
                         <TitleBar titleName="Orders" actions={actionsForTitleBar} />
+                        <h5>Showing Disptached</h5>
                         <div className="table-responsive">
                             <table className="table table-striped">
                                 <thead className="font-weight-bold bg-light text-secondary">
@@ -125,7 +129,7 @@ class Orders extends Component {
                                                     'text-danger': status === 'pending',
                                                 })}
                                                 >{status}</td>
-                                                <td className="font-weight-bold">Rs. {RupeeFormater(totalPrice + deliveryCharges)}</td>
+                                                <td className="font-weight-bold">Rs. {RupeeFormater(parseInt(totalPrice.toString(), 10) + parseInt(deliveryCharges.toString(), 10))}</td>
                                                 <td>
                                                     <Link to={`/order/${id}`} className="btn btn-sm btn-gray rounded-left rounded-right">
                                                         <i className="fas fa-arrow-circle-right mr-1" />

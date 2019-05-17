@@ -4,15 +4,21 @@ import Loader from '../../layout/Loader';
 import TitleBar from '../layout/TitleBar';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { firestoreConnect } from 'react-redux-firebase';
+import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import classnames from 'classnames';
 import moment from 'moment';
 import numeral from 'numeral';
 
 class OrderDetails extends Component {
 
+    state = {
+        showDispatchError: false,
+        cancel: true
+    }
+
     onDispatch = () => {
-        const { firestore, order, history } = this.props;
+
+        const { firestore, order, history, firebase } = this.props;
 
         if (order) {
             const updOrder = {
@@ -21,13 +27,51 @@ class OrderDetails extends Component {
             }
 
             firestore.update({ collection: 'orders', doc: order.id }, updOrder)
+                .then(() => {
+                    // Updating Product Status after dispatching
+                    const { products } = order;
+                    const db = firebase.firestore();
+
+                    products.forEach(prod => {
+                        let prevSold = parseInt(prod.productStatus.orderQty.toString(), 10);
+                        let stock = parseInt(prod.productStatus.stockQty.toString(), 10);
+
+                        if (!prevSold) {
+                            prevSold = 0
+                        }
+                        if (!stock) {
+                            stock = 0
+                        }
+
+                        let newSold = prevSold + prod.qty;
+                        let newStock = stock - prod.qty;
+
+                        let updProductStatus = {
+                            ...prod.productStatus,
+                            stockQty: newStock,
+                            orderQty: newSold
+                        }
+
+                        db.collection('products').doc(prod.id)
+                            .update({ productStatus: updProductStatus })
+                            .then(() => {
+                                console.log('Product Updated SuccessFully');
+                            })
+                            .catch(error => {
+                                console.log(error.message);
+                            });
+
+                    })
+                })
                 .then(history.push('/orders'));
         }
+
     }
 
     render() {
 
         const { order } = this.props;
+        const { showDispatchError } = this.state;
         let mainContent;
 
         if (order) {
@@ -52,11 +96,23 @@ class OrderDetails extends Component {
                 <React.Fragment>
                     <TitleBar titleName="Order Details" />
 
-                    <div className="row mb-3">
-                        <div className="col-md-12">
-                            <button className="btn btn-lg- btn-gray rounded-right rounded-left" onClick={this.onDispatch}>Dispatch This Order</button>
-                        </div>
-                    </div>
+                    {
+                        order.status === 'pending'
+                            ? <div className="row mb-3">
+                                <div className="col-md-12">
+                                    <button className="btn btn-lg- btn-gray rounded-right rounded-left" onClick={this.onDispatch}>Dispatch This Order</button>
+                                </div>
+                            </div>
+                            : null
+                    }
+
+                    {
+                        showDispatchError
+                            ? <div className="alert alert-danger">
+                                You can't disptach this order because some products are out-of-stock
+                            </div>
+                            : null
+                    }
 
                     <div className="row">
                         <div className="col-md-6">
@@ -159,7 +215,7 @@ class OrderDetails extends Component {
                                         </tr>
                                         <tr className="font-weight-bold bg-secondary text-light" style={{ fontSize: '24px' }}>
                                             <td colSpan="6" className="text-right mr-4">TOTAL AMOUNT</td>
-                                            <td>Rs. {RupeeFormater(totalPrice + deliveryCharges)}</td>
+                                            <td>Rs. {RupeeFormater(parseInt(totalPrice.toString(), 10) + parseInt(deliveryCharges.toString(), 10))}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -183,6 +239,7 @@ class OrderDetails extends Component {
 }
 
 export default compose(
+    firebaseConnect(),
     firestoreConnect(props => [
         { collection: 'orders', storeAs: 'order', doc: props.match.params.id }
     ]),

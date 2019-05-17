@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Loader from './LoaderForPublic';
+import Loader from './Loader';
 import { compose } from 'redux';
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
