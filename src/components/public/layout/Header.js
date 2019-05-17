@@ -102,7 +102,9 @@ class Header extends Component {
                             <Link to="/profile" className="header-wrapicon1 dis-block">
                                 {
                                     !auth.isEmpty
-                                        ? <img src={customer.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
+                                        ? customer
+                                            ? <img src={customer.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
+                                            : <img src={header1} className="header-icon1" alt="ICON" />
                                         : <img src={header1} className="header-icon1" alt="ICON" />
                                 }
                             </Link>
@@ -205,7 +207,9 @@ class Header extends Component {
                             <Link to="/profile" className="header-wrapicon1 dis-block">
                                 {
                                     !auth.isEmpty
-                                        ? <img src={customer.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
+                                        ? customer
+                                            ? <img src={customer.photoURL} className="header-icon1" style={{ borderRadius: '20px' }} alt="ICON" />
+                                            : <img src={header1} className="header-icon1" alt="ICON" />
                                         : <img src={header1} className="header-icon1" alt="ICON" />
                                 }
                             </Link>

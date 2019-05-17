@@ -7,6 +7,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { Hidden } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
+import numeral from 'numeral';
 
 class Orders extends Component {
 
@@ -48,6 +49,9 @@ class Orders extends Component {
         const { orders, view } = this.state;
         let mainContent;
 
+        // Rupee Formatter
+        const RupeeFormatter = amount => numeral(amount).format('0,0');
+
         if (orders && view) {
             mainContent = (
                 <React.Fragment>
@@ -74,7 +78,7 @@ class Orders extends Component {
                                                     </small>
                                                 </td>
                                                 <td>{order.createdAt}</td>
-                                                <td>Rs.{order.totalPrice + order.deliveryCharges}</td>
+                                                <td>Rs.{RupeeFormatter(parseInt(order.totalPrice.toString(), 10) + parseInt(order.deliveryCharges.toString(), 10))}</td>
                                                 <td
                                                     className={classnames('text-capitalize font-weight-bold', {
                                                         'text-success': order.status === 'dispatched',
@@ -118,7 +122,7 @@ class Orders extends Component {
                                         <hr />
                                         <div className="row">
                                             <div className="col-md-6 font-weight-bold">Total:</div>
-                                            <div className="col-md-6">Rs.{order.totalPrice}</div>
+                                            <div className="col-md-6">Rs.{RupeeFormatter(parseInt(order.totalPrice.toString(), 10) + parseInt(order.deliveryCharges.toString(), 10))}</div>
                                         </div>
                                         <hr />
                                         <div className="row">
