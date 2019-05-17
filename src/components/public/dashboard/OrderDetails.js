@@ -27,22 +27,22 @@ class OrderDetails extends Component {
         return null;
     }
 
-    downloadInvoiceHandler = () => {
-        const invoice = document.querySelector('#invoice');
+    // downloadInvoiceHandler = () => {
+    //     const invoice = document.querySelector('#invoice');
 
-        const options = {
-            logging: true,
-            letterRendering: 1,
-            allowTaint: false,
-            useCORS: true,
-        }
+    //     const options = {
+    //         logging: true,
+    //         letterRendering: 1,
+    //         allowTaint: false,
+    //         useCORS: true,
+    //     }
 
-        html2canvas(invoice, options).then(canvas => {
-            document.body.appendChild(canvas);
-        });
+    //     html2canvas(invoice, options).then(canvas => {
+    //         document.body.appendChild(canvas);
+    //     });
 
-        console.log(invoice);
-    }
+    //     console.log(invoice);
+    // }
 
 
     render() {
@@ -61,7 +61,7 @@ class OrderDetails extends Component {
                                 <i className="fas fa-arrow-circle-left mr-1"></i>Back To Orders
                             </Link>
                         </div>
-                        <div className="col-md-3">
+                        {/* <div className="col-md-3">
                             <button
                                 onClick={this.downloadInvoiceHandler}
                                 className="btn btn-sm btn-pink rounded-left rounded-right mb-2 btn-block"
@@ -69,7 +69,7 @@ class OrderDetails extends Component {
                                 <i className="fas fa-download mr-1" />
                                 Download Invoice
                             </button>
-                        </div>
+                        </div> */}
                     </div>
 
 

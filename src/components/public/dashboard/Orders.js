@@ -91,12 +91,12 @@ class Orders extends Component {
                                                     <Link to={`/orders/${order.id}`} className="btn btn-sm btn-pink rounded-left rounded-right">
                                                         View
                                                     </Link>
-                                                    <button
+                                                    {/* <button
                                                         className="btn btn-sm btn-light rounded-left rounded-right ml-1"
                                                         style={{ border: '1px solid rgb(230, 85, 64)' }}
                                                     >
                                                         Download
-                                                    </button>
+                                                    </button> */}
                                                 </td>
                                             </tr>
                                         )
