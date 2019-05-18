@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const env = functions.config();
-const algoliasearch = require('algoliasearch');
+// const env = functions.config();
+// const algoliasearch = require('algoliasearch');
 
 admin.initializeApp({
     apiKey: "AIzaSyDuLVK2-TD3zf9o0ni2C6fmMifmaLL_p9I",
@@ -11,43 +11,6 @@ admin.initializeApp({
     storageBucket: "shopbox-35ae7.appspot.com",
     messagingSenderId: "486576798153"
 });
-
-// Initialize the Algolia Client
-const client = algoliasearch(env.algolia.appid, env.algolia.apikey);
-const index = client.initIndex('products');
-
-exports.indexProducts = functions.firestore
-    .document('products/{productId}')
-    .onCreate((snap, context) => {
-        const data = snap.data();
-        const objectID = snap.id;
-
-        const newProd = {
-            objectID,
-            productName: data.productName,
-            originalPrice: parseInt(data.originalPrice, 10),
-            discountPrice: parseInt(data.discountPrice, 10),
-            description: data.description,
-            category: data.category,
-            productImages: data.productImages,
-            productStatus: data.productStatus,
-            productType: data.productType,
-            createdAt: data.createdAt
-        }
-
-        // Add the data to the algolia index
-        return index.addObject(newProd);
-    });
-
-exports.unindexProducts = functions.firestore
-    .document('products/{productId}')
-    .onDelete((snap, context) => {
-        const objectId = snap.id;
-
-        // Delete an ID from the index
-        return index.deleteObject(objectId);
-    });
-
 
 // Deletes all products of category
 exports.deleteProducts = functions.firestore
@@ -100,3 +63,38 @@ exports.updateProducts = functions.firestore
 
     });
 
+// Initialize the Algolia Client
+// const client = algoliasearch(env.algolia.appid, env.algolia.apikey);
+// const index = client.initIndex('products');
+
+// exports.indexProducts = functions.firestore
+//     .document('products/{productId}')
+//     .onCreate((snap, context) => {
+//         const data = snap.data();
+//         const objectID = snap.id;
+
+//         const newProd = {
+//             objectID,
+//             productName: data.productName,
+//             originalPrice: parseInt(data.originalPrice, 10),
+//             discountPrice: parseInt(data.discountPrice, 10),
+//             description: data.description,
+//             category: data.category,
+//             productImages: data.productImages,
+//             productStatus: data.productStatus,
+//             productType: data.productType,
+//             createdAt: data.createdAt
+//         }
+
+//         // Add the data to the algolia index
+//         return index.addObject(newProd);
+//     });
+
+// exports.unindexProducts = functions.firestore
+//     .document('products/{productId}')
+//     .onDelete((snap, context) => {
+//         const objectId = snap.id;
+
+//         // Delete an ID from the index
+//         return index.deleteObject(objectId);
+//     });
