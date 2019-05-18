@@ -57,7 +57,11 @@ class Public extends Component {
                     <Slider bannerImages={bannerImages} />
                     <ProductDisplay products={productDisplay} />
                     <Featured products={featuredProducts} addItemToCart={this.addItemToCart} />
-                    <img src={bannerImages[2].url} alt="DUMMY_IMG" className="img-fluid" />
+                    {
+                        bannerImages[2]
+                            ? <img src={bannerImages[2].url} alt="DUMMY_IMG" className="img-fluid" />
+                            : null
+                    }
                     <Shipping />
                     <Footer categories={categories} />
                     <Snack
