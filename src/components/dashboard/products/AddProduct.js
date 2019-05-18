@@ -169,6 +169,8 @@ class AddProduct extends Component {
 
         const extValidator = ext => {
             switch (ext) {
+                case '.JPG':
+                    return true;
                 case '.jpg':
                     return true;
                 case '.png':
@@ -216,6 +218,10 @@ class AddProduct extends Component {
             else {
                 // If File is not Image
                 console.log('invalid');
+                this.setState({
+                    msgSnackBar: 'Image file Type not recognized',
+                    openSnackBar: true
+                });
             }
 
         }
