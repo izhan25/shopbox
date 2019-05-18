@@ -7,9 +7,6 @@ import 'firebase/firestore';
 
 import { reactReduxFirebase, firebaseReducer } from 'react-redux-firebase';
 import { reduxFirestore, firestoreReducer } from 'redux-firestore';
-// My Reducers Import Here
-import cartReducer from './reducers/cartReducer';
-import customerReducer from './reducers/customerReducer';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDuLVK2-TD3zf9o0ni2C6fmMifmaLL_p9I",
@@ -40,9 +37,6 @@ const createStoreWithFirebase = compose(
 const rootReducer = combineReducers({
     firebase: firebaseReducer,
     firestore: firestoreReducer,
-    // place my reducers here
-    cart: cartReducer,
-    customer: customerReducer
 });
 
 // initial state
