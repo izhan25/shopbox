@@ -63,7 +63,7 @@ class ProductDetails extends Component {
     }
 
     onQtyAdd = e => this.setState(state => {
-        return { qty: state.qty + 1 }
+        return { qty: state.qty < 10 ? state.qty + 1 : 10 }
     });
 
     onQtySub = e => this.setState(state => {

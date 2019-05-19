@@ -106,7 +106,7 @@ class Cart extends Component {
         const newProduct = {
             ...product,
             qty: 1,
-            totalPrice: product.discountPrice
+            totalPrice: parseInt(product.discountPrice.toString(), 10)
         }
 
         addItem(newProduct);
@@ -118,13 +118,15 @@ class Cart extends Component {
     increseQty = (prod, qty) => {
         const addItemToCart = this.addItemToCart;
 
-        const updProd = {
-            ...prod,
-            qty: prod.qty + 1,
-            totalPrice: prod.totalPrice + prod.discountPrice
-        }
+        if (prod.qty < 10) {
+            const updProd = {
+                ...prod,
+                qty: prod.qty + 1,
+                totalPrice: parseInt(prod.totalPrice.toString(), 10) + parseInt(prod.discountPrice.toString(), 10)
+            }
 
-        addItemToCart(updProd);
+            addItemToCart(updProd);
+        }
 
     }
 

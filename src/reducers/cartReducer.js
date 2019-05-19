@@ -45,7 +45,7 @@ export default function (state = initialState, action) {
                             ? (
                                 {
                                     ...prod,
-                                    totalPrice: prod.totalPrice + action.product.totalPrice,
+                                    totalPrice: parseInt(prod.totalPrice.toString(), 10) + parseInt(action.product.totalPrice.toString(), 10),
                                     qty: prod.qty + action.product.qty
                                 }
                             )
@@ -54,7 +54,7 @@ export default function (state = initialState, action) {
                 const newState = {
                     ...state,
                     products: updatedProducts,
-                    total: state.total + action.product.totalPrice,
+                    total: parseInt(state.total.toString(), 10) + parseInt(action.product.totalPrice.toString(), 10),
                     quantity: state.quantity + action.product.qty
                 }
                 setCartToLS(newState);
@@ -66,7 +66,7 @@ export default function (state = initialState, action) {
             const newState = {
                 ...state,
                 products,
-                total: state.total + action.product.totalPrice,
+                total: parseInt(state.total.toString(), 10) + parseInt(action.product.totalPrice.toString(), 10),
                 quantity: state.quantity + action.product.qty
             }
 
@@ -83,7 +83,7 @@ export default function (state = initialState, action) {
                             ? (
                                 {
                                     ...prod,
-                                    totalPrice: prod.totalPrice - prod.discountPrice,
+                                    totalPrice: parseInt(prod.totalPrice.toString(), 10) - parseInt(prod.discountPrice.toString(), 10),
                                     qty: prod.qty - 1
                                 }
                             )
@@ -92,7 +92,7 @@ export default function (state = initialState, action) {
                 const newState = {
                     ...state,
                     products: updatedProducts,
-                    total: state.total - action.product.decrementAmount,
+                    total: parseInt(state.total.toString(), 10) - parseInt(action.product.decrementAmount.toString(), 10),
                     quantity: state.quantity - 1
                 }
                 setCartToLS(newState);

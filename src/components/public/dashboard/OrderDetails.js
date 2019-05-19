@@ -7,7 +7,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 import numeral from 'numeral';
-import html2canvas from 'html2canvas';
+// import html2canvas from 'html2canvas';
 
 
 class OrderDetails extends Component {
