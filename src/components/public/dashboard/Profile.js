@@ -8,6 +8,7 @@ import { updateCustomer, Firebase_EmailValidator } from '../../../actions/custom
 import { Grid, IconButton, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 import classnames from 'classnames';
 import Swal from 'sweetalert2';
+import Options from '../layout/Options';
 
 
 class Profile extends Component {
@@ -17,24 +18,31 @@ class Profile extends Component {
         userName: '', userNameError: false, userNameMsg: '',
         fullName: '', fullNameError: false, fullNameMsg: '',
         contact: '', contactError: false, contactMsg: '',
-        birthDate: '', birthDateError: false, birthDateMsg: '',
         address: '', addressError: false, addressMsg: '',
         gender: '', genderError: false, genderMsg: '',
         email: '', emailError: false, emailMsg: '',
         photoURL: '',
         loadProps: true,
         editting: false,
-        submitForm: true
+        submitForm: true,
+
+        birthDate: '',
+        birthMonth: '',
+        birthYear: '',
+        birthDateError: false, birthDateMsg: '',
     }
 
     static getDerivedStateFromProps(props, state) {
         const { customer } = props;
 
         if (customer && state.loadProps) {
-            const { id, userName, fullName, contact, birthDate, address, gender, email, photoURL } = customer;
+            const { id, userName, fullName, contact, address, gender, email, photoURL, birthDate: { date, month, year } } = customer;
 
             return {
-                id, userName, fullName, contact, birthDate, address, gender, email, photoURL,
+                id, userName, fullName, contact, address, gender, email, photoURL,
+                birthDate: date,
+                birthMonth: month,
+                birthYear: year
             }
         }
 
@@ -47,12 +55,16 @@ class Profile extends Component {
             userName: '', userNameError: false, userNameMsg: '',
             fullName: '', fullNameError: false, fullNameMsg: '',
             contact: '', contactError: false, contactMsg: '',
-            birthDate: '', birthDateError: false, birthDateMsg: '',
             address: '', addressError: false, addressMsg: '',
             gender: '', genderError: false, genderMsg: '',
             email: '', emailError: false, emailMsg: '',
             photoURL: '',
             loadProps: true,
+
+            birthDate: '',
+            birthMonth: '',
+            birthYear: '',
+            birthDateError: false, birthDateMsg: '',
         })
     }
 
@@ -166,9 +178,22 @@ class Profile extends Component {
         e.preventDefault();
 
         const { firestore, updateCustomer } = this.props;
-        const { id, userName, fullName, contact, birthDate, address, gender, email, photoURL } = this.state;
+        const { id, userName, fullName, contact, birthDate, birthMonth, birthYear, address, gender, email, photoURL } = this.state;
 
-        const updCustomer = { userName, fullName, contact, birthDate, address, gender, email, photoURL };
+        const updCustomer = {
+            userName,
+            fullName,
+            contact,
+            address,
+            gender,
+            email,
+            photoURL,
+            birthDate: {
+                date: birthDate ? birthDate : "",
+                month: birthMonth ? birthMonth : "",
+                year: birthYear ? birthYear : ""
+            },
+        };
 
         firestore
             .update({ collection: 'customers', doc: id }, updCustomer)
@@ -194,15 +219,23 @@ class Profile extends Component {
             userName, userNameError, userNameMsg,
             fullName, fullNameError, fullNameMsg,
             contact, contactError, contactMsg,
-            birthDate, birthDateError, birthDateMsg,
+            birthDate, birthMonth, birthYear,
             address, addressError, addressMsg,
             gender, genderError, genderMsg,
             email, emailError, emailMsg,
             submitForm
         } = this.state;
+
+
         let mainContent;
 
+        const display_birthDate =
+            birthDate || birthMonth || birthYear
+                ? `${birthDate}-${birthMonth}-${birthYear}`
+                : null;
+
         const ResetPwdBtn = <button className="btn btn-light btn-sm rounded-left rounded-right text-primary">Reset Password</button>
+
         const Information =
             <React.Fragment>
                 <InfoRow label="Username" display={userName} />
@@ -210,7 +243,7 @@ class Profile extends Component {
                 <InfoRow label="Contact" display={contact} />
                 <InfoRow label="Gender" display={gender} />
                 <InfoRow label="Email" display={email} />
-                <InfoRow label="Birthday" display={birthDate} />
+                <InfoRow label="Birthday" display={display_birthDate} />
                 <InfoRow label="Address" display={address} />
                 <InfoRow label="Password" display={ResetPwdBtn} />
             </React.Fragment>;
@@ -273,18 +306,36 @@ class Profile extends Component {
                     validation={{ error: emailError, msg: emailMsg }}
                 />
 
+
                 <div className="form-group mt-2">
-                    <label className="text-muted">
-                        <small>Date of Birth</small>
-                    </label>
-                    <input type="date" name="birthDate" className="form-control form-control-pink" onChange={this.onChange} defaultValue={birthDate} />
-                    {
-                        birthDateError
-                            ? <small className="text-danger error">
-                                {birthDateMsg}
-                            </small>
-                            : null
-                    }
+                    <Grid container spacing={8} >
+                        <Grid item xs={4} sm={4} md={4}>
+                            <label className="text-muted">
+                                <small>Date</small>
+                            </label>
+                            <Options
+                                date={birthDate ? birthDate : true}
+                                onChange={this.onChange} />
+                        </Grid>
+                        <Grid item xs={4} sm={4} md={4}>
+                            <label className="text-muted">
+                                <small>Month</small>
+                            </label>
+                            <Options
+                                month={birthMonth ? birthMonth : true}
+                                onChange={this.onChange} />
+                        </Grid>
+                        <Grid item xs={4} sm={4} md={4}>
+                            <label className="text-muted">
+                                <small>Year</small>
+                            </label>
+                            <Options
+                                year={birthYear ? birthYear : true}
+                                onChange={this.onChange} />
+                        </Grid>
+
+                    </Grid>
+
                 </div>
 
                 <div className="form-group">

@@ -10,6 +10,7 @@ import { Grid, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 import { addCustomer } from '../../../actions/customerActions';
 import Swal from 'sweetalert2';
 import classnames from 'classnames';
+import Options from '../layout/Options';
 
 class Register extends Component {
 
@@ -18,14 +19,18 @@ class Register extends Component {
         userName: '', userNameError: false, userNameMsg: '',
         fullName: '', fullNameError: false, fullNameMsg: '',
         contact: '', contactError: false, contactMsg: '',
-        birthDate: '', birthDateError: false, birthDateMsg: '',
         address: '', addressError: false, addressMsg: '',
         gender: '', genderError: false, genderMsg: '',
         email: '', emailError: false, emailMsg: '',
         password: '', passwordError: false, passwordMsg: '',
         rePassword: '', rePasswordError: false, rePasswordMsg: '',
         photoURL: 'https://firebasestorage.googleapis.com/v0/b/shopbox-35ae7.appspot.com/o/customers%2Ficon-header-01.png?alt=media&token=0d657180-a5da-4c8b-88b4-8d0bb668adbe',
-        submitForm: true
+        submitForm: true,
+
+        birthDate: '',
+        birthMonth: '',
+        birthYear: '',
+        birthDateError: false, birthDateMsg: '',
     }
 
     componentDidMount() {
@@ -140,9 +145,24 @@ class Register extends Component {
         e.preventDefault();
 
         const { firebase, addCustomer, history } = this.props;
-        const { userName, fullName, contact, birthDate, address, gender, email, photoURL, password } = this.state;
+        const { userName, fullName, contact, birthDate, birthMonth, birthYear, address, gender, email, photoURL, password } = this.state;
 
-        const newCustomer = { userName, fullName, contact, birthDate, address, gender, email, photoURL, password };
+        const newCustomer = {
+            userName,
+            fullName,
+            contact,
+            birthDate: {
+                date: birthDate,
+                month: birthMonth,
+                year: birthYear
+            },
+            address,
+            gender,
+            email,
+            photoURL,
+            password,
+            createdAt: new Date()
+        };
 
         firebase
             .auth()
@@ -182,13 +202,12 @@ class Register extends Component {
             userName, userNameError, userNameMsg,
             fullName, fullNameError, fullNameMsg,
             contact, contactError, contactMsg,
-            birthDate, birthDateError, birthDateMsg,
             address, addressError, addressMsg,
             gender, genderError, genderMsg,
             email, emailError, emailMsg,
             password, passwordError, passwordMsg,
             rePassword, rePasswordError, rePasswordMsg,
-            submitForm
+            submitForm,
         } = this.state;
 
         if (categories) {
@@ -279,15 +298,30 @@ class Register extends Component {
                                                     validation={{ error: rePasswordError, msg: rePasswordMsg }}
                                                 />
 
+                                                <div className="form-group mt-2">
+                                                    <Grid container spacing={8} >
+                                                        <Grid item xs={4} sm={4} md={4}>
+                                                            <label className="text-muted">
+                                                                <small>Date</small>
+                                                            </label>
+                                                            <Options date onChange={this.onChange} />
+                                                        </Grid>
+                                                        <Grid item xs={4} sm={4} md={4}>
+                                                            <label className="text-muted">
+                                                                <small>Month</small>
+                                                            </label>
+                                                            <Options month onChange={this.onChange} />
+                                                        </Grid>
+                                                        <Grid item xs={4} sm={4} md={4}>
+                                                            <label className="text-muted">
+                                                                <small>Year</small>
+                                                            </label>
+                                                            <Options year onChange={this.onChange} />
+                                                        </Grid>
 
-                                                <InputRow
-                                                    name="birthDate"
-                                                    label="Date of Birth"
-                                                    type="date"
-                                                    onChange={this.onChange}
-                                                    defaultValue={birthDate}
-                                                    validation={{ error: birthDateError, msg: birthDateMsg }}
-                                                />
+                                                    </Grid>
+
+                                                </div>
 
                                                 <div className="form-group">
                                                     <label className="text-muted">
@@ -344,6 +378,7 @@ class Register extends Component {
         }
     }
 }
+
 const InputRow = ({ type = 'text', label, name, onChange, defaultValue, validation }) => {
     const { error, msg } = validation;
     return (

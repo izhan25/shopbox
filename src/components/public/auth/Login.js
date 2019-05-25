@@ -109,9 +109,14 @@ class Login extends Component {
                     contact: user.phoneNumber,
                     photoURL: user.photoURL,
                     password: "",
-                    birthDate: "",
+                    birthDate: {
+                        date: "",
+                        month: "",
+                        year: ""
+                    },
                     address: "",
-                    gender: ""
+                    gender: "",
+                    createdAt: new Date()
                 }
 
                 // checking if the user exist in database
@@ -130,6 +135,7 @@ class Login extends Component {
                             }
                         });
 
+
                         // saving customer to state
                         addCustomer(customer);
                     }
@@ -147,7 +153,7 @@ class Login extends Component {
                 })
             })
             .catch(error => {
-                const errorCode = error.code;
+                let errorCode = error.code;
                 const errorMessage = error.message;
                 const email = error.email;
                 const credential = error.credential;
@@ -156,7 +162,7 @@ class Login extends Component {
                     type: 'error',
                     title: 'Oops!',
                     html: `<div>Something went wrong!</div>
-                            <div>Kindly Try Again</div>`
+                <div>Kindly Try Again</div>`
                 })
 
                 console.log('errorCode =>', errorCode);
@@ -207,7 +213,7 @@ class Login extends Component {
                                 <div className={classnames('card rounded-left rounded-right', { 'mt-5': !loginError.error })}>
                                     <h4 className="card-header bg-white text-center font-pink font-weight-bold">
                                         <i className="fas fa-lock mr-1" />Login
-                                    </h4>
+                    </h4>
                                     <div className="card-body">
                                         <form onSubmit={this.onSubmit}>
                                             <div className="form-group">
@@ -230,7 +236,7 @@ class Login extends Component {
                                         <div className="row">
                                             <span className="col-md-8">
                                                 Don't have an account?
-                                        <Link to="/register" className="btn btn-link font-pink font-weight-bold">Signup</Link>
+                        <Link to="/register" className="btn btn-link font-pink font-weight-bold">Signup</Link>
                                             </span>
                                             <Link to="login/reset-password" className="col-md-4 btn btn-default btn-sm float-right rounded-left rounded-right font-pink">Forgot Password</Link>
                                         </div>
@@ -241,7 +247,7 @@ class Login extends Component {
                     </div>
 
                     <Footer categories={categories} />
-                </React.Fragment>
+                </React.Fragment >
             )
         }
         else {
