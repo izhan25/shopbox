@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
-import moment from 'moment';
 import numeral from 'numeral';
 import { Grid } from '@material-ui/core';
 
@@ -44,10 +43,6 @@ class Orders extends Component {
         let mainContent;
 
         if (orders && ordersDispatched) {
-            // moment date and time
-            const { orderedDate } = orders;
-            let date = Date(orderedDate).toString();
-            date = moment(Date.parse(date)).format('LLL');
 
             // Ruppe Formatter
             const RupeeFormater = amount => numeral(amount).format('0,0');
@@ -66,15 +61,16 @@ class Orders extends Component {
                                         <td>Status</td>
                                         <td>Price</td>
                                         <td></td>
+                                        <td></td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         ordersDispatched.map(order => {
-                                            const { customer: { fullName }, totalPrice, status, id, deliveryCharges } = order;
+                                            const { customer: { fullName }, totalPrice, status, id, deliveryCharges, createdAt } = order;
                                             return <tr key={id}>
                                                 <td>{fullName}</td>
-                                                <td>{date}</td>
+                                                <td>{createdAt}</td>
                                                 <td className={classnames({
                                                     'text-danger': status === 'pending',
                                                     'text-success': status === 'dispatched'
@@ -84,14 +80,18 @@ class Orders extends Component {
                                                     Rs. {RupeeFormater(parseInt(totalPrice.toString(), 10) + parseInt(deliveryCharges.toString(), 10))}
                                                 </td>
                                                 <td>
-                                                    <Link to={`/order/${id}`} className="btn btn-sm btn-gray rounded-left rounded-right">
+                                                    <Link to={`/order/${id}`} className="btn btn-sm btn-gray rounded-left rounded-right float-right">
                                                         <i className="fas fa-arrow-circle-right mr-1" />
                                                         Details
                                                     </Link>
-                                                    <button onClick={() => { this.onOrderDelete(order.id) }} className="btn btn-danger btn-sm ml-1 rounded-left rounded-right">
+
+                                                </td>
+                                                <td>
+                                                    <button onClick={() => { this.onOrderDelete(order.id) }} className="btn btn-danger btn-sm ml-1 rounded-left rounded-right float-left">
                                                         <i className="fas fa-trash mr-1" />
                                                         Delete
                                                     </button>
+
                                                 </td>
                                             </tr>
                                         })
@@ -121,10 +121,10 @@ class Orders extends Component {
                                 <tbody>
                                     {
                                         orders.map(order => {
-                                            const { customer: { fullName }, totalPrice, status, id, deliveryCharges } = order;
+                                            const { customer: { fullName }, totalPrice, status, id, deliveryCharges, createdAt } = order;
                                             return <tr key={id}>
                                                 <td>{fullName}</td>
-                                                <td>{date}</td>
+                                                <td>{createdAt}</td>
                                                 <td className={classnames({
                                                     'text-danger': status === 'pending',
                                                 })}

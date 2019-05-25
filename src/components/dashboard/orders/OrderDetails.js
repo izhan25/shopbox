@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase';
 import classnames from 'classnames';
-import moment from 'moment';
 import numeral from 'numeral';
 
 class OrderDetails extends Component {
@@ -77,17 +76,14 @@ class OrderDetails extends Component {
         if (order) {
             const {
                 customer: { fullName, contact, address, email },
-                orderedDate,
                 products,
                 status,
                 totalPrice,
                 deliveryDuration,
                 deliveryCharges,
+                createdAt
             } = order;
 
-            // moment date and time
-            let date = Date(orderedDate).toString();
-            date = moment(Date.parse(date)).format('LLL');
 
             // Ruppe Formatter
             const RupeeFormater = amount => numeral(amount).format('0,0');
@@ -119,7 +115,7 @@ class OrderDetails extends Component {
                             <div className="card">
                                 <div className="card-header bg-light font-weight-bold">
                                     Customer Details
-                        </div>
+                                </div>
                                 <div className="card-body">
                                     <div className="row">
                                         <div className="col-md-4 text-secondary">Name</div>
@@ -162,7 +158,7 @@ class OrderDetails extends Component {
                                     <div className="row">
                                         <div className="col-md-4 text-secondary">Ordered Date</div>
                                         <div className="col-md-4">
-                                            {date}
+                                            {createdAt}
                                         </div>
                                     </div>
                                     <hr />
