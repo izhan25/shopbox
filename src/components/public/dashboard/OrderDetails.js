@@ -93,7 +93,7 @@ class OrderDetails extends Component {
 const Invoice = ({ order }) => {
     const {
         customer: { fullName, contact, address, email },
-        orderedDate,
+        createdAt,
         products,
         status,
         totalPrice,
@@ -136,7 +136,7 @@ const Invoice = ({ order }) => {
                             <div className="row">
                                 <div className="col-md-4 text-secondary">Ordered Date</div>
                                 <div className="col-md-8">
-                                    {orderedDate.toString()}
+                                    {createdAt}
                                 </div>
                             </div>
                             <hr />

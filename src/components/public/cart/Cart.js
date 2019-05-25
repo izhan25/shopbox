@@ -23,6 +23,8 @@ class Cart extends Component {
         contact: '', contactError: false, contactMsg: '',
         submitForm: false,
 
+        loadProps: true,
+
         cart: []
     }
 
@@ -33,16 +35,18 @@ class Cart extends Component {
     static getDerivedStateFromProps(props, state) {
         const { cart, customer } = props;
 
-        if (cart) {
-            if (customer) {
-                return {
-                    cart,
-                    address: customer.address,
-                    contact: customer.contact
+        if(state.loadProps){
+            if (cart) {
+                if (customer) {
+                    return {
+                        cart,
+                        address: customer.address,
+                        contact: customer.contact
+                    }
                 }
-            }
-            return {
-                cart
+                return {
+                    cart
+                }
             }
         }
 
@@ -54,7 +58,7 @@ class Cart extends Component {
         const value = e.target.value;
 
         // setting state
-        this.setState({ [name]: value });
+        this.setState({ [name]: value, loadProps: false });
 
         switch (name) {
             case 'contact':
@@ -166,6 +170,7 @@ class Cart extends Component {
             firestore
                 .add({ collection: 'orders' }, orderObj)
                 .then(() => {
+                    this.setState({loadProps: true});
                     clearCart();
                     Swal.fire({ type: 'success', text: 'Your order Has been placed' });
                 })
