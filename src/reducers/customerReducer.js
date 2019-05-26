@@ -1,7 +1,24 @@
 import { ADD_CUSTOMER, REMOVE_CUSTOMER, UPDATE_CUSTOMER } from '../actions/types';
+import { secret_CrptoJS } from '../keys.json';
+import CryptoJS from 'crypto-js';
 
 // getting state from Lcal storage if exist
-const customer = window.localStorage.getItem('customer') ? JSON.parse(window.localStorage.getItem('customer')) : null;
+let customer = null;
+
+if (window.localStorage.getItem('customer')) {
+
+    try {
+        const encrypted_customer = window.localStorage.getItem('customer');
+        const bytes = CryptoJS.AES.decrypt(encrypted_customer, secret_CrptoJS);
+        customer = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    }
+    catch (error) {
+        console.log(error.message);
+        customer = JSON.parse(window.localStorage.getItem('customer'));
+    }
+
+    // customer = JSON.parse(window.localStorage.getItem('customer'));
+}
 
 const initalStage = {
     customer
@@ -10,7 +27,17 @@ const initalStage = {
 // setting customer to local storage
 function setCustomerToLS(state) {
     const { customer } = state;
-    window.localStorage.setItem('customer', JSON.stringify(customer));
+
+    if (!customer) {
+        // if user logs out
+        window.localStorage.setItem('customer', customer);
+        return true;
+    }
+
+    const encrypted_customer = CryptoJS.AES.encrypt(JSON.stringify(customer), secret_CrptoJS);
+    window.localStorage.setItem('customer', encrypted_customer);
+
+    // window.localStorage.setItem('customer', JSON.stringify(customer));
 }
 
 export default function (state = initalStage, action) {
