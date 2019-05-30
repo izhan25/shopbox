@@ -156,6 +156,15 @@ class MyDrawer extends Component {
                         </ListItem>
                     </Link>
 
+                    <Link to="/queries" style={{ textDecoration: 'none' }}>
+                        <ListItem button>
+                            <ListItemIcon>
+                                <i className="fas fa-question" style={{ fontSize: '22px' }}></i>
+                            </ListItemIcon>
+                            <ListItemText inset primary="Customer Queries" />
+                        </ListItem>
+                    </Link>
+
                 </List>
                 <Divider />
                 <Link to="/display" style={{ textDecoration: 'none' }}>
