@@ -112,11 +112,12 @@ class Products extends Component {
 
 const Content = ({ state, onSearchTextChange, gotoCat, functions }) => {
 
+    // eslint-disable-next-line
     const { categories, searchText, products, catDisplay } = state;
     return (
         <section className="bgwhite p-t-55 p-b-65">
             <div className="container">
-                <SearchBar searchText={searchText} onSearchTextChange={onSearchTextChange} />
+                {/* <SearchBar searchText={searchText} onSearchTextChange={onSearchTextChange} /> */}
                 <Hidden mdUp>
                     <CategoriesForMobile categories={categories} gotoCat={gotoCat} catDisplay={catDisplay} />
                 </Hidden>
@@ -160,6 +161,7 @@ const CategoriesForMobile = ({ categories, gotoCat, catDisplay }) => {
     )
 }
 
+// eslint-disable-next-line
 const SearchBar = ({ searchText, onSearchTextChange }) => {
     return (
         <div className="search-product pos-relative bo4 of-hidden mb-3">
@@ -227,7 +229,7 @@ const ProductsShowcase = ({ products, functions }) => {
         <Grid item xs={12} sm={12} md={10} className="p-b-50">
             <Grid container>
                 {products.map(prod =>
-                    <Grid item xs={6} sm={4} md={3} key={prod.id}>
+                    <Grid item xs={6} sm={4} md={3} key={prod.id} className="mb-5" >
                         <Product prod={prod} functions={functions} />
                     </Grid>
                 )}

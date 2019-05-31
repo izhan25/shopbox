@@ -86,31 +86,20 @@ const Shipping = () => {
                 <div className="flex-col-c w-size5 p-l-15 p-r-15 p-t-16 p-b-15 respon1">
                     <h4 className="m-text12 t-center">
                         Free Delivery In Pakistan
-				</h4>
+				    </h4>
 
-                    <a className="s-text11 t-center">
-                        Click here for more info
-				</a>
                 </div>
 
                 <div className="flex-col-c w-size5 p-l-15 p-r-15 p-t-16 p-b-15 bo2 respon2">
                     <h4 className="m-text12 t-center">
-                        30 Days Return
-				</h4>
-
-                    <span className="s-text11 t-center">
-                        Simply return it within 30 days for an exchange.
-				</span>
+                        10 Days Return
+				    </h4>
                 </div>
 
                 <div className="flex-col-c w-size5 p-l-15 p-r-15 p-t-16 p-b-15 respon1">
                     <h4 className="m-text12 t-center">
-                        Store Opening
-				</h4>
-
-                    <span className="s-text11 t-center">
-                        Shop open from Monday to Sunday
-				</span>
+                        24x7 Customer Support kardo
+				    </h4>
                 </div>
             </div>
         </section >
@@ -186,7 +175,10 @@ const ProductDisplay = data => {
                         products.map(prod => (
                             <Grid item xs={6} sm={4} md={3} key={prod.id} className="col-xs-3 col-md-3">
                                 <div className="block1 hov-img-zoom pos-relative m-b-30">
-                                    <img src={prod.productImages.images[0]} alt="IMG-BENNER" className="img-fluid" />
+
+                                    <Link to={`/product/${prod.id}`}>
+                                        <img src={prod.productImages.images[0]} alt="IMG-BENNER" className="img-fluid" />
+                                    </Link>
 
                                     <Grid container className="block1-wrapbtn w-size2 d-flex justify-content-center">
                                         <Grid item xs={11}>

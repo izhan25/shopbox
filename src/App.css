@@ -1,6 +1,9 @@
 body{
     font-family: 'Nanum Gothic', sans-serif;
 }
+.hov-prod:hover {
+  opacity: 0.8;
+}
 .bg-pink{
   background-color: #e65540;
 }

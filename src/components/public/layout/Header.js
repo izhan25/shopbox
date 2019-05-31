@@ -49,7 +49,7 @@ class Header extends Component {
                         </div>
 
                         <span className="topbar-child1">
-                            Free shipping for standard order over $100
+                            Free shipping for standard order over Rs.5000
                         </span>
 
                         <div className="topbar-child2">

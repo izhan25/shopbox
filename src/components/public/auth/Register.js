@@ -27,10 +27,31 @@ class Register extends Component {
         photoURL: 'https://firebasestorage.googleapis.com/v0/b/shopbox-35ae7.appspot.com/o/customers%2Ficon-header-01.png?alt=media&token=0d657180-a5da-4c8b-88b4-8d0bb668adbe',
         submitForm: true,
 
-        birthDate: '',
-        birthMonth: '',
-        birthYear: '',
+        birthDate: '1',
+        birthMonth: 'jan',
+        birthYear: '1980',
         birthDateError: false, birthDateMsg: '',
+    }
+
+    resetState = () => {
+        this.setState({
+            id: '',
+            userName: '', userNameError: false, userNameMsg: '',
+            fullName: '', fullNameError: false, fullNameMsg: '',
+            contact: '', contactError: false, contactMsg: '',
+            address: '', addressError: false, addressMsg: '',
+            gender: '', genderError: false, genderMsg: '',
+            email: '', emailError: false, emailMsg: '',
+            password: '', passwordError: false, passwordMsg: '',
+            rePassword: '', rePasswordError: false, rePasswordMsg: '',
+            photoURL: 'https://firebasestorage.googleapis.com/v0/b/shopbox-35ae7.appspot.com/o/customers%2Ficon-header-01.png?alt=media&token=0d657180-a5da-4c8b-88b4-8d0bb668adbe',
+            submitForm: true,
+
+            birthDate: '1',
+            birthMonth: 'jan',
+            birthYear: '1980',
+            birthDateError: false, birthDateMsg: '',
+        })
     }
 
     componentDidMount() {
@@ -45,6 +66,7 @@ class Register extends Component {
         this.setState({
             [name]: value,
         });
+
 
         // Validating inputs
         switch (name) {
@@ -208,6 +230,9 @@ class Register extends Component {
             password, passwordError, passwordMsg,
             rePassword, rePasswordError, rePasswordMsg,
             submitForm,
+            birthDate,
+            birthMonth,
+            birthYear
         } = this.state;
 
         if (categories) {
@@ -304,19 +329,19 @@ class Register extends Component {
                                                             <label className="text-muted">
                                                                 <small>Date</small>
                                                             </label>
-                                                            <Options date onChange={this.onChange} />
+                                                            <Options date={birthDate} onChange={this.onChange} />
                                                         </Grid>
                                                         <Grid item xs={4} sm={4} md={4}>
                                                             <label className="text-muted">
                                                                 <small>Month</small>
                                                             </label>
-                                                            <Options month onChange={this.onChange} />
+                                                            <Options month={birthMonth} onChange={this.onChange} />
                                                         </Grid>
                                                         <Grid item xs={4} sm={4} md={4}>
                                                             <label className="text-muted">
                                                                 <small>Year</small>
                                                             </label>
-                                                            <Options year onChange={this.onChange} />
+                                                            <Options year={birthYear} onChange={this.onChange} />
                                                         </Grid>
 
                                                     </Grid>

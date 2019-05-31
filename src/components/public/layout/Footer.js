@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-// images
-import paypal from '../assets/images/icons/paypal.png';
-import visa from '../assets/images/icons/visa.png';
-import mastercard from '../assets/images/icons/mastercard.png';
-import express from '../assets/images/icons/express.png';
-import discover from '../assets/images/icons/discover.png';
-
 export default class Footer extends Component {
+
+    onSubmit = e => {
+        e.preventDefault();
+    }
+
     render() {
         const { categories } = this.props;
         return (
@@ -21,7 +19,7 @@ export default class Footer extends Component {
 
                         <div>
                             <p className="s-text7 w-size27">
-                                Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
+                                Any questions? Let us know by contacting us on 0300-1234567 or you can visit our office at 2nd Floor, Office#203, Amma Tower, Saddar, Karachi, Pakistan
 					        </p>
 
                             <div className="flex-m p-t-30">
@@ -61,12 +59,6 @@ export default class Footer extends Component {
 				        </h4>
 
                         <ul>
-                            <li className="p-b-9">
-                                <a className="s-text7">
-                                    Search
-						</a>
-                            </li>
-
                             <li className="p-b-9">
                                 <Link to="/about" className="s-text7">
                                     About Us
@@ -120,14 +112,19 @@ export default class Footer extends Component {
                             Newsletter
 				        </h4>
 
-                        <form>
+                        <form onSubmit={this.onSubmit}>
                             <div className="effect1 w-size9">
-                                <input className="s-text7 bg6 w-full p-b-5" autoComplete="off" style={{ border: 'none' }} type="text" name="email" placeholder="email@example.com" />
+                                <input
+                                    className="s-text7 bg6 w-full p-b-5"
+                                    autoComplete="off" style={{ border: 'none' }}
+                                    type="text"
+                                    name="email"
+                                    placeholder="email@example.com"
+                                />
                                 <span className="effect1-line"></span>
                             </div>
 
                             <div className="w-size2 p-t-20">
-                                {/* <!-- Button --> */}
                                 <button className="flex-c-m size2 bg4 bo-rad-23 hov1 m-text3 trans-0-4">
                                     Subscribe
 						        </button>
@@ -138,28 +135,8 @@ export default class Footer extends Component {
                 </div>
 
                 <div className="t-center p-l-15 p-r-15">
-                    <a>
-                        <img className="h-size2" src={paypal} alt="IMG-PAYPAL" />
-                    </a>
-
-                    <a>
-                        <img className="h-size2" src={visa} alt="IMG-VISA" />
-                    </a>
-
-                    <a>
-                        <img className="h-size2" src={mastercard} alt="IMG-MASTERCARD" />
-                    </a>
-
-                    <a>
-                        <img className="h-size2" src={express} alt="IMG-EXPRESS" />
-                    </a>
-
-                    <a>
-                        <img className="h-size2" src={discover} alt="IMG-DISCOVER" />
-                    </a>
-
                     <div className="t-center s-text8 p-t-20">
-                        Copyright © 2018 All rights reserved. | This Webapp is made by <b>Izhan Yameen</b>
+                        Copyright © 2019 All rights reserved. | This Webapp is made by <b>Izhan Yameen</b>
                     </div>
                 </div>
             </footer>
