@@ -12,6 +12,9 @@ import Snack from '../layout/Snack';
 import Product from '../layout/Product';
 import { Grid } from '@material-ui/core';
 import scrollToTop from '../functions/scrollToTop';
+// import LoaderNormal from '../../layout/Loader';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 
 class ProductDetails extends Component {
@@ -24,10 +27,12 @@ class ProductDetails extends Component {
 
         openSnackBar: false,
         msgSnackBar: '',
+
     }
     componentDidMount() {
         scrollToTop();
     }
+
 
     static getDerivedStateFromProps(props, state) {
         const { categories, product } = props;
@@ -265,6 +270,8 @@ const RightPanel = ({ prod, qty, functions }) => {
 const Images = ({ images, state, functions: { displayImage } }) => {
     const { displayImg } = state;
 
+
+
     return (
         <div className="w-size13 p-t-30 respon5">
             <div className="wrap-slick3 flex-sb flex-w">
@@ -281,7 +288,7 @@ const Images = ({ images, state, functions: { displayImage } }) => {
                                     role="presentation"
                                     onClick={() => { displayImage(img) }}
                                 >
-                                    <img src={img} alt="IMG_THUMB" />
+                                    <Image src={img} />
                                     <div className="slick3-dot-overlay"></div>
                                 </li>
                             ))
@@ -292,13 +299,53 @@ const Images = ({ images, state, functions: { displayImage } }) => {
                 <div className="slick3">
                     <div className="item-slick3">
                         <div className="wrap-pic-w">
-                            <img src={displayImg} alt="IMG-PRODUCT" />
+                            <Image src={displayImg} />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     )
+}
+
+class Image extends Component {
+
+    state = {
+        showContent: false
+    }
+
+
+    timerForContent() {
+        setTimeout(
+            () => {
+                this.setState({ showContent: true });
+            },
+            3000
+        )
+    }
+
+    componentDidUpdate() {
+        this.timerForContent();
+    }
+    componentDidMount() {
+        this.timerForContent();
+    }
+
+
+    render() {
+        const { src } = this.props;
+        const { showContent } = this.state;
+
+        if (!showContent) {
+            return (
+                <div style={{ padding: '50px 0' }}>
+                    <CircularProgress style={{ margin: 'auto', display: 'block' }} color="inherit" />
+                </div>
+            )
+        }
+
+        return <img src={src} alt="IMG_THUMB" />
+    }
 }
 
 const RelatedProducts = ({ related, functions }) => {
